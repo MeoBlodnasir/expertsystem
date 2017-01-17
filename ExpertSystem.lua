@@ -10,7 +10,7 @@ RootDir					= "./"
 		
 function DefineProject(ProjectName, ProjectDir, ProjectKind)
 	
-	local ProjectCodeDir = ProjectDir.."../"..CodeDir
+	local ProjectCodeDir = ProjectDir..CodeDir
 	
 	project (ProjectName)
 		location (ProjectDir)
@@ -34,22 +34,20 @@ function DefineProject(ProjectName, ProjectDir, ProjectKind)
 			
 			excludes	{ProjectCodeDir.."**/*.bak"}
 			
-			flags		{"ExtraWarnings", "FatalWarnings"}	-- Wextra Werror
-			
 		configuration {"Debug"}
 			targetname		(ProjectName.."_d")
 			flags			{"Symbols"}
 			--buildoptions	{}
 		configuration {"Release"}
 			targetname		(ProjectName)
-			flags			{"Optimize"}
+			flags			{"Optimize", "ExtraWarnings", "FatalWarnings"} -- Wextra Werror
 			--buildoptions	{}
 		
 		configuration {}
 end
 
 solution (RootName)
-	location (RootName.."/")
+	location (RootDir)
 	configurations {"Debug", "Release"}
 	configuration {"Debug"}
 		defines	{"__FT_DEBUG__=1"}
@@ -57,4 +55,4 @@ solution (RootName)
 		defines	{"__FT_RELEASE__=1"}
 	configuration {}
 	
-	DefineProject("ExpertSystem", "ExpertSystem/", "ConsoleApp")
+	DefineProject("ExpertSystem", RootDir, "ConsoleApp")
