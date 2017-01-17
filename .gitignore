@@ -1,6 +1,11 @@
 Bin/
 *.o
+*.obj
 obj
-ExpertSystem.make
+*.make
 Makefile
 *.swp
+*.sdf
+*.sln
+*.suo
+*.vcxproj*
