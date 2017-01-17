@@ -49,7 +49,8 @@ namespace ft
 			{
 				while (IsLetter(c[iOffset]) || IsDigit(c[iOffset]))
 					++iOffset;
-				pToken->SetupToken(Token::E_VARIABLE, std::string(c, iOffset));
+				if (iOffset > 0)
+					pToken->SetupToken(Token::E_VARIABLE, std::string(c, iOffset));
 			}
 
 			*pOffset = iOffset;

@@ -16,9 +16,9 @@ namespace ft
 	{
 	}
 
-	EErrorCode	FileReader::Read(const char* oFilePath) const
+	EErrorCode	FileReader::Read(const char* csFilePath) const
 	{
-		std::ifstream		oIFStream(oFilePath);
+		std::ifstream		oIFStream(csFilePath);
 		std::stringstream	oStringStream;
 		std::vector<Token>	oTokens;
 
@@ -30,6 +30,11 @@ namespace ft
 
 		if (Lexer::ReadInput(&oTokens, oStringStream.str().c_str()) != FT_OK)
 			return FT_FAIL; 
+
+		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
+		{
+
+		}
 
 		return FT_OK;
 	}
