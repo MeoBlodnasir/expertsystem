@@ -1,14 +1,54 @@
 
+#include "Output.h"
 #include "FileReader.h"
+#include "Rule.h"
+#include "Variable.h"
+#include "Operator.h"
 
 #include <vector>
-#include <iostream> //
 
-int main(int ac, char *av[])
+int main()
 {
 	ft::FileReader	oFileReader;
 	
-	std::cout << (oFileReader.Read("../Assets/test.txt") == ft::FT_OK ? "FT_OK" : "FT_FAIL") << std::endl;
+	FT_COUT << (oFileReader.Read("./test.txt") == ft::FT_OK ? "FT_OK" : "FT_FAIL") << std::endl;
+
+	ft::Rule		oRule;
+
+	ft::Variable	oT(true, 'T');
+	ft::Variable	oF(false, 'F');
+
+	ft::OperatorNOT	oNot;
+	ft::OperatorAND	oAnd;
+	ft::OperatorOR	oOr;
+	ft::OperatorXOR	oXor;
+
+	oRule.AddConditionElement(&oT);
+	oRule.AddConditionElement(&oT);
+	oRule.AddConditionElement(&oAnd);
+	oRule.Evaluate();	// true
+
+	oRule.AddConditionElement(&oF);
+	oRule.AddConditionElement(&oAnd);
+	oRule.Evaluate();	// false
+
+	oRule.AddConditionElement(&oT);
+	oRule.AddConditionElement(&oOr);
+	oRule.Evaluate();	// true
+
+	oRule.AddConditionElement(&oT);
+	oRule.AddConditionElement(&oXor);
+	oRule.Evaluate();	// false
+
+	oRule.AddConditionElement(&oT);
+	oRule.AddConditionElement(&oNot);
+	oRule.AddConditionElement(&oXor);
+	oRule.Evaluate();	// false
+
+	oRule.AddConditionElement(&oF);
+	oRule.AddConditionElement(&oNot);
+	oRule.AddConditionElement(&oOr);
+	oRule.Evaluate();	// true
 
 	return 0;
 }

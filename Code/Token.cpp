@@ -19,7 +19,7 @@ namespace ft
 	{
 	}
 
-	EErrorCode	Token::SetupToken(ETypes eTokenType, const std::string& sDesc)
+	EErrorCode	Token::SetupToken(EType eTokenType, const std::string& sDesc)
 	{
 		m_eType = eTokenType;
 		m_sDesc = sDesc;

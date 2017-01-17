@@ -19,14 +19,16 @@ namespace ft
 
 	void	RuleStack::AddElement(const IRuleElement* pElement)
 	{
-		m_oElements.push_front(pElement);
+		FT_ASSERT(pElement != nullptr);
+
+		m_oElements.push_back(pElement);
 	}
 
-	bool	RuleStack::EvaluateStack() const
+	bool	RuleStack::Evaluate() const
 	{
 		std::stack<bool>	oResultStack;
 
-		for (RuleDeque::const_iterator it = m_oElements.begin(), itEnd = m_oElements.end(); it != itEnd; ++it)
+		for (ElementsIt it = m_oElements.begin(), itEnd = m_oElements.end(); it != itEnd; ++it)
 		{
 			if ((*it)->GetType() == IRuleElement::E_VARIABLE)
 			{
@@ -44,22 +46,22 @@ namespace ft
 				{
 					bool bTemp = oResultStack.top();
 					oResultStack.pop();
-					oResultStack.top() = reinterpret_cast<const ABinaryOperator*>(*it)->Evaluate(bTemp, oResultStack.top());
+					oResultStack.top() = reinterpret_cast<const ABinaryOperator*>(*it)->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (temp, top) ou (top, temp)
 				}
 				else
 				{
-					// erreur
+					FT_NOT_IMPLEMENTED("erreur");
 				}
 			}
 			else
 			{
-				// erreur
+				FT_NOT_IMPLEMENTED("erreur");
 			}
 		}
 
 		if (oResultStack.size() == 0)
 		{
-			// erreur
+			FT_NOT_IMPLEMENTED("erreur");
 		}
 
 		return oResultStack.top();

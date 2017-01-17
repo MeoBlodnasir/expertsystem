@@ -20,10 +20,8 @@ namespace ft
 			E_VARIABLE
 		};
 
-	public:
-
-		IRuleElement();
-		virtual ~IRuleElement() = 0;
+		IRuleElement()			{}
+		virtual ~IRuleElement()	{}
 
 		virtual EType	GetType() const = 0;
 	};

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <deque> // queue, stack ?
+#include <vector> // deque, queue, stack ?
 
 namespace ft
 {
@@ -15,11 +15,11 @@ namespace ft
 		~RuleStack();
 
 		void	AddElement(const IRuleElement* pElement);
-		bool	EvaluateStack() const;
+		bool	Evaluate() const;
 
 	private:
 
-		typedef std::deque<const IRuleElement*>	RuleDeque;
-		RuleDeque	m_oElements;
+		std::vector<const IRuleElement*>	m_oElements;
+		typedef std::vector<const IRuleElement*>::const_iterator	ElementsIt;
 	};
 }

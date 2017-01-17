@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "ErrorCode.h"
 
 #include <string>
 
@@ -10,7 +10,7 @@ namespace ft
 	{
 	public:
 
-		enum ETypes
+		enum EType
 		{
 			// Type invalide
 			E_NONE = -1,
@@ -38,11 +38,11 @@ namespace ft
 
 		//Token& operator = (const Token& oToken);
 
-		EErrorCode	SetupToken(ETypes eTokenType, const std::string& sDesc);
+		EErrorCode	SetupToken(EType eTokenType, const std::string& sDesc);
 
 	private:
 
-		ETypes		m_eType;
+		EType		m_eType;
 		std::string	m_sDesc;
 	};
 }

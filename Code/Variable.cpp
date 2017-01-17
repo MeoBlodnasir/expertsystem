@@ -9,6 +9,12 @@ namespace ft
 	{
 	}
 
+	Variable::Variable(bool bState, char cId)
+		: m_bState(bState)
+		, m_cId(cId)
+	{
+	}
+
 	Variable::Variable(const Variable& oVar)
 		: m_bState(oVar.m_bState)
 		, m_cId(oVar.m_cId)

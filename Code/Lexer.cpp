@@ -1,6 +1,7 @@
 
 #include "Lexer.h"
 
+#include "Core.h"
 #include "Types.h"
 #include "StringUtils.h"
 
@@ -22,6 +23,10 @@ namespace ft
 
 		EErrorCode	ReadToken(Token* pToken, uint32* pOffset, const char* csInput)
 		{
+			FT_ASSERT(pToken != nullptr);
+			FT_ASSERT(pOffset != nullptr);
+			FT_ASSERT(csInput != nullptr);
+
 			const char*	c = NULL;
 			bool		bIsKeyWord = false;
 			uint32		iOffset = 0;
@@ -38,7 +43,7 @@ namespace ft
 					bIsKeyWord &= c[j] == sKeyWord[j];
 				if (bIsKeyWord)
 				{
-					pToken->SetupToken((Token::ETypes)i, sKeyWord);
+					pToken->SetupToken((Token::EType)i, sKeyWord);
 					iOffset = sKeyWord.size();
 					break;
 				}
@@ -61,6 +66,9 @@ namespace ft
 
 		EErrorCode	ReadInput(std::vector<Token>* pTokens, const char* csInput)
 		{
+			FT_ASSERT(pTokens != nullptr);
+			FT_ASSERT(csInput != nullptr);
+
 			const char*	c = csInput;
 			Token		oToken;
 			uint32		iOffset;

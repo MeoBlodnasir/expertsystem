@@ -1,6 +1,8 @@
 
 #include "FileReader.h"
 
+#include "Core.h"
+#include "Output.h"
 #include "Lexer.h"
 
 #include <fstream>
@@ -18,18 +20,22 @@ namespace ft
 
 	EErrorCode	FileReader::Read(const char* csFilePath) const
 	{
+		FT_ASSERT(csFilePath != nullptr);
+
 		std::ifstream		oIFStream(csFilePath);
 		std::stringstream	oStringStream;
 		std::vector<Token>	oTokens;
 
 		if (oIFStream.rdstate() & std::ifstream::failbit)
+		{
+			FT_CERR << "Echec dans l'ouverture du fichier " << csFilePath << std::endl;
 			return FT_FAIL;
+		}
 
 		oStringStream << oIFStream.rdbuf();
 		oIFStream.close();
 
-		if (Lexer::ReadInput(&oTokens, oStringStream.str().c_str()) != FT_OK)
-			return FT_FAIL; 
+		FT_TEST_OK(Lexer::ReadInput(&oTokens, oStringStream.str().c_str()));
 
 		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
 		{

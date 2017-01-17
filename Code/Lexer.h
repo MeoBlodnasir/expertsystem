@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "ErrorCode.h"
 #include "Token.h"
 
 #include <vector>

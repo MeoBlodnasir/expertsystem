@@ -9,8 +9,12 @@ namespace ft
 	public:
 
 		Variable();
+		Variable(bool bState, char cId);
 		Variable(const Variable& oVar);
-		~Variable();
+		virtual ~Variable();
+
+		// implémentation interface IRuleElement
+		virtual EType	GetType() const						{ return E_VARIABLE; }
 
 		bool	GetState() const						{ return m_bState; }
 		char	GetId() const							{ return m_cId; }

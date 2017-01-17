@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ErrorCode.h"
 #include "RuleStack.h"
 
 namespace ft
@@ -11,10 +12,12 @@ namespace ft
 		Rule();
 		~Rule();
 
-		// Evaluate
+		void		AddConditionElement(const IRuleElement* pElement);
+		void		AddResultElement(const IRuleElement* pElement);
+		EErrorCode	Evaluate() const;
 
 	private:
 
-		RuleStack	m_oRuleStack;
+		RuleStack	m_oConditionStack;
 	};
 }

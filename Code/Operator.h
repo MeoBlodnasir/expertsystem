@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core.h"
 #include "Types.h"
 #include "IRuleElement.h"
 
@@ -15,9 +16,13 @@ namespace ft
 
 		const uint32	iOperandCount;
 
-		AOperator() : iOperandCount(0)	{}
-		virtual ~AOperator() = 0;
+		AOperator() : iOperandCount(0)			{}
+		AOperator(uint32 n) : iOperandCount(n)	{}
+		virtual ~AOperator()					{}
 
+		AOperator&	operator = (const AOperator&)			{ return *this; }
+
+		// implémentation interface IRuleElement
 		virtual EType	GetType() const						{ return E_OPERATOR; }
 	};
 
@@ -27,8 +32,8 @@ namespace ft
 	{
 	public:
 
-		OperatorTemplate() : iOperandCount(N)	{}
-		virtual ~OperatorTemplate() = 0;
+		OperatorTemplate() : AOperator(N)	{}
+		virtual ~OperatorTemplate()			{}
 	};
 
 	// Opérateur unaire
@@ -36,8 +41,8 @@ namespace ft
 	{
 	public:
 
-		AUnaryOperator();
-		virtual ~AUnaryOperator() = 0;
+		AUnaryOperator()				{}
+		virtual ~AUnaryOperator()		{}
 
 		virtual bool	Evaluate(bool b) const = 0;
 	};
@@ -47,8 +52,8 @@ namespace ft
 	{
 	public:
 
-		ABinaryOperator();
-		virtual ~ABinaryOperator() = 0;
+		ABinaryOperator()				{}
+		virtual ~ABinaryOperator()		{}
 
 		virtual bool	Evaluate(bool b1, bool b2) const = 0;
 	};
@@ -59,6 +64,8 @@ namespace ft
 
 	class OperatorNOT : public AUnaryOperator
 	{
+	public:
+
 		OperatorNOT()			{}
 		virtual ~OperatorNOT()	{}
 
@@ -67,6 +74,8 @@ namespace ft
 
 	class OperatorAND : public ABinaryOperator
 	{
+	public:
+
 		OperatorAND()			{}
 		virtual ~OperatorAND()	{}
 
@@ -75,6 +84,8 @@ namespace ft
 
 	class OperatorOR : public ABinaryOperator
 	{
+	public:
+
 		OperatorOR()			{}
 		virtual ~OperatorOR()	{}
 
@@ -83,6 +94,8 @@ namespace ft
 
 	class OperatorXOR : public ABinaryOperator
 	{
+	public:
+
 		OperatorXOR()			{}
 		virtual ~OperatorXOR()	{}
 
