@@ -30,18 +30,18 @@ function DefineProject(ProjectName, ProjectDir, ProjectKind)
 						 ProjectCodeDir.."**.tpp",
 						 ProjectCodeDir.."**.inl"}
 
-			vpaths		{["*"] = ProjectCodeDir}
+			--vpaths		{["*"] = ProjectCodeDir}
 			
 			excludes	{ProjectCodeDir.."**/*.bak"}
+			
+			buildoptions {"-std=c++11"}
 			
 		configuration {"Debug"}
 			targetname		(ProjectName.."_d")
 			flags			{"Symbols"}
-			--buildoptions	{}
 		configuration {"Release"}
 			targetname		(ProjectName)
 			flags			{"Optimize", "ExtraWarnings", "FatalWarnings"} -- Wextra Werror
-			--buildoptions	{}
 		
 		configuration {}
 end
