@@ -1,0 +1,6 @@
+Bin/
+*.o
+obj
+ExpertSystem.make
+Makefile
+*.swp
