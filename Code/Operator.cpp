@@ -3,11 +3,4 @@
 
 namespace ft
 {
-	Operator::Operator()
-	{
-	}
-
-	Operator::~Operator()
-	{
-	}
 }

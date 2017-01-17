@@ -2,13 +2,29 @@
 
 namespace ft
 {
+	//////////////////////////////
+	// Interface				//
+	//////////////////////////////
+
+	// Element de base de la RuleStack
+	// les classes Operator et Variable en héritent
+
 	class IRuleElement
 	{
+	public:
+
+		enum EType
+		{
+			E_NONE = -1,
+			E_OPERATOR = 0,
+			E_VARIABLE
+		};
+
 	public:
 
 		IRuleElement();
 		virtual ~IRuleElement() = 0;
 
-		// Evaluate
+		virtual EType	GetType() const = 0;
 	};
 }

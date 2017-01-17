@@ -12,14 +12,14 @@ namespace ft
 	public:
 
 		RuleStack();
-		RuleStack(const RuleStack& oRuleStack);
 		~RuleStack();
 
-		// AddElement
-		// EvaluateStack
+		void	AddElement(const IRuleElement* pElement);
+		bool	EvaluateStack() const;
 
 	private:
 
-		std::deque<IRuleElement*>	m_oElements;
+		typedef std::deque<const IRuleElement*>	RuleDeque;
+		RuleDeque	m_oElements;
 	};
 }
