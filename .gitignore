@@ -6,6 +6,7 @@ obj
 Makefile
 *.swp
 *.sdf
+*.opensdf
 *.sln
 *.suo
 *.vcxproj*
