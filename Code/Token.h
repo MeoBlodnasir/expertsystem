@@ -35,6 +35,10 @@ namespace ft
 		Token();
 		Token(const Token& oToken);
 		~Token();
+		EType	GetType() const
+		{ return m_eType; }
+		std::string GetDesc() const
+		{ return m_sDesc;}
 
 		//Token& operator = (const Token& oToken);
 

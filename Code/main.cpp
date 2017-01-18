@@ -1,6 +1,7 @@
 
 #include "Output.h"
 #include "FileReader.h"
+#include "VariableStorage.h"
 #include "Rule.h"
 #include "Variable.h"
 #include "Operator.h"
@@ -10,10 +11,11 @@
 int main()
 {
 	ft::FileReader	oFileReader;
-	
-	FT_COUT << (oFileReader.Read("./test.txt") == ft::FT_OK ? "FT_OK" : "FT_FAIL") << std::endl;
-
+	ft::VariableStorage oVariableStorage;
 	ft::Rule		oRule;
+// ok to put oRule in Filereader? ok to put VarStorage too maybe?	
+	FT_COUT << (oFileReader.Read("./test.txt", oRule) == ft::FT_OK ? "FT_OK" : "FT_FAIL") << std::endl;
+
 
 	ft::Variable	oT(true, 'T');
 	ft::Variable	oF(false, 'F');

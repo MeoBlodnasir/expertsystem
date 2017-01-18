@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ErrorCode.h"
+#include "Rule.h"
 
 namespace ft
 {
@@ -11,7 +12,7 @@ namespace ft
 		FileReader();
 		~FileReader();
 
-		EErrorCode	Read(const char* oFilePath) const;
+		EErrorCode	Read(const char* oFilePath, Rule oRule) const;
 
 	private:
 

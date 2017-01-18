@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Output.h"
 #include "Lexer.h"
+#include "Parser.h"
 
 #include <fstream>
 #include <sstream>
@@ -18,7 +19,7 @@ namespace ft
 	{
 	}
 
-	EErrorCode	FileReader::Read(const char* csFilePath) const
+	EErrorCode	FileReader::Read(const char* csFilePath, Rule oRule) const
 	{
 		FT_ASSERT(csFilePath != nullptr);
 
@@ -39,6 +40,7 @@ namespace ft
 
 		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
 		{
+			oRule.AddConditionElement(Parser::CheckTokenType(*it));
 
 		}
 

@@ -34,7 +34,7 @@ function DefineProject(ProjectName, ProjectDir, ProjectKind)
 			
 			excludes	{ProjectCodeDir.."**/*.bak"}
 			
-			buildoptions {"-std=c++11"}
+			buildoptions {"-std=c++0x"}
 			
 		configuration {"Debug"}
 			targetname		(ProjectName.."_d")

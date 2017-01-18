@@ -1,17 +1,13 @@
 #pragma once
 
+#include "Token.h"
+#include "RuleStack.h"
+
 namespace ft
 {
-	class Parser
+	namespace Parser
 	{
-	public:
-
-		Parser();
-		~Parser();
-
-	private:
-
-		Parser(const Parser&);
-		Parser& operator=(const Parser&);
+		IRuleElement	*CheckTokenType(Token token);
+		
 	};
 }
