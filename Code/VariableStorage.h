@@ -1,8 +1,6 @@
 #pragma once
 
-#include "ErrorCode.h"
 #include "Variable.h"
-#include <string>
 #include <vector>
 
 
@@ -10,17 +8,16 @@ namespace ft
 {
 	class VariableStorage
 	{
-		public:
+	public:
 
-			VariableStorage();
-			~VariableStorage();
+		VariableStorage();
+		~VariableStorage();
 
-			Variable	*GetVar(const char Id);
-			void		SetVar(const char Id, bool value);
+		const Variable&	GetVar(const char Id);
+		void			SetVar(const char Id, bool value);
 
+	private:
 
-		private:
-			std::vector<Variable*> m_oVars;
-
+		std::vector<Variable>	m_oVars;
 	};
 }

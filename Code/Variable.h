@@ -14,7 +14,7 @@ namespace ft
 		virtual ~Variable();
 
 		// implémentation interface IRuleElement
-		virtual EType	GetType() const						{ return E_VARIABLE; }
+		virtual EType	GetType() const					{ return E_VARIABLE; }
 
 		bool	GetState() const						{ return m_bState; }
 		char	GetId() const							{ return m_cId; }

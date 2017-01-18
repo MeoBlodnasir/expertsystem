@@ -5,14 +5,13 @@ namespace ft
 {
 	namespace Parser
 	{
-		IRuleElement	*CheckTokenType(Token token)
+		EErrorCode	ReadTokens(ParsingResult* pOutParsingResult, const std::vector<Token>& oTokens)
 		{
-			if (token.GetType() == Token::E_VARIABLE)
-			{
-			//	return VariableStorage->GetVar(token.GetDesc()[0]);
-			//	need variablestorage here
+			// 1) Vérifier la validité des Tokens
+			// 2) Créer les éléments liés aux Tokens
+			// 3) Appliquer dans le ParsingResult
 
-			}
+			return FT_OK;
 		}
 	};
 }

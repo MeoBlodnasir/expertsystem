@@ -35,7 +35,7 @@ namespace ft
 
 		bConditions = m_oConditionStack.Evaluate();
 
-		FT_COUT << (bConditions ? "true" : "false") << std::endl;
+		FT_COUT << (bConditions ? "true" : "false") << std::endl; // temporaire, pour tester
 
 		return FT_OK;
 	}

@@ -46,7 +46,7 @@ namespace ft
 				{
 					bool bTemp = oResultStack.top();
 					oResultStack.pop();
-					oResultStack.top() = reinterpret_cast<const ABinaryOperator*>(*it)->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (temp, top) ou (top, temp)
+					oResultStack.top() = reinterpret_cast<const ABinaryOperator*>(*it)->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (1, 2) ou (2, 1)
 				}
 				else
 				{
@@ -59,7 +59,7 @@ namespace ft
 			}
 		}
 
-		if (oResultStack.size() == 0)
+		if (oResultStack.size() != 1)
 		{
 			FT_NOT_IMPLEMENTED("erreur");
 		}
