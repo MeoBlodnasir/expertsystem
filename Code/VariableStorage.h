@@ -1,8 +1,9 @@
 #pragma once
 
+#include "ErrorCode.h"
 #include "Variable.h"
-#include <vector>
 
+#include <map>
 
 namespace ft
 {
@@ -13,11 +14,16 @@ namespace ft
 		VariableStorage();
 		~VariableStorage();
 
-		const Variable&	GetVar(const char Id);
-		void			SetVar(const char Id, bool value);
+		const Variable*	CreateVariable(Variable::Id iId);
+		const Variable*	GetVariable(Variable::Id iId) const;
+
+		EErrorCode		SetVariableState(Variable::Id iId, bool bState);
 
 	private:
 
-		std::vector<Variable>	m_oVars;
+		std::map<Variable::Id, Variable>	m_oVariables;
+
+		VariableStorage(const VariableStorage&);
+		VariableStorage& operator = (const VariableStorage&);
 	};
 }

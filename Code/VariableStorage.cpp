@@ -1,10 +1,11 @@
 
+#include "Core.h"
 #include "VariableStorage.h"
-
 
 namespace ft
 {
 	VariableStorage::VariableStorage()
+		: m_oVariables()
 	{
 	}
 
@@ -12,38 +13,25 @@ namespace ft
 	{
 	}
 
-	const Variable&	VariableStorage::GetVar(const char Id)
+	const Variable*	VariableStorage::CreateVariable(Variable::Id iId)
 	{
-		for (std::vector<Variable>::const_iterator it = m_oVars.begin(), itEnd = m_oVars.end(); it != itEnd; it++)
-		{
-			if (it->GetId() == Id)
-			{
-				return (*it);
-			}
+		if (m_oVariables.count(iId) == 0)
+			m_oVariables[iId] = Variable(iId, false);
 
-		}
-
-		m_oVars.push_back(Variable(false, Id));
-		return m_oVars.back();
+		return &m_oVariables.at(iId);
 	}
 
-	void	VariableStorage::SetVar(const char Id, bool value)
+	const Variable*	VariableStorage::GetVariable(Variable::Id iId) const
 	{
-		for (std::vector<Variable>::iterator it = m_oVars.begin(), itEnd = m_oVars.end(); it != itEnd; it++)
-		{
-			if (it->GetId() == Id)
-			{
-				it->SetState(value);
-				it->SetId(Id);
-				return ;
-			}
-
-		}
-
-		// If var isnt found, create a new one, with correct attributes
-		m_oVars.push_back(Variable(value, Id));
+		return m_oVariables.count(iId) == 1 ? &m_oVariables.at(iId) : nullptr;
 	}
 
+	EErrorCode		VariableStorage::SetVariableState(Variable::Id iId, bool bState)
+	{
+		FT_TEST_RETURN(m_oVariables.count(iId) == 1, FT_FAIL);
 
-
+		m_oVariables[iId].SetState(bState);
+		
+		return FT_OK;
+	}
 }

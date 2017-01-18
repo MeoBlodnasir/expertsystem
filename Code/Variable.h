@@ -8,8 +8,10 @@ namespace ft
 	{
 	public:
 
+		typedef	char	Id;
+
 		Variable();
-		Variable(bool bState, char cId);
+		Variable(bool bState, Id iId);
 		Variable(const Variable& oVar);
 		virtual ~Variable();
 
@@ -17,14 +19,14 @@ namespace ft
 		virtual EType	GetType() const					{ return E_VARIABLE; }
 
 		bool	GetState() const						{ return m_bState; }
-		char	GetId() const							{ return m_cId; }
+		Id		GetId() const							{ return m_iId; }
 
 		void	SetState(bool bState)					{ m_bState = bState; }
-		void	SetId(char cId)							{ m_cId = cId; }
+		void	SetId(Id iId)							{ m_iId = iId; }
 
 	private:
 
 		bool	m_bState;
-		char	m_cId;
+		Id		m_iId;
 	};
 }
