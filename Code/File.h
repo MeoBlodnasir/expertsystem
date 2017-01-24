@@ -8,6 +8,6 @@ namespace ft
 {
 	namespace File
 	{
-		EErrorCode	Read(std::string* pOutFileContent, const char* csFilePath);
+		EErrorCode	GetContent(std::string* pOutFileContent, const char* csFilePath);
 	};
 }

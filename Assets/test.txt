@@ -1,2 +1,5 @@
-A + TOTO | (B^C)=> V
+A + D | (B^C)=> E
 !B<=>C
+
+=AC
+?B

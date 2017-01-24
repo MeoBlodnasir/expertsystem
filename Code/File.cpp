@@ -11,7 +11,7 @@ namespace ft
 {
 	namespace File
 	{
-		EErrorCode	Read(std::string *pOutFileContent, const char* csFilePath)
+		EErrorCode	GetContent(std::string *pOutFileContent, const char* csFilePath)
 		{
 			FT_ASSERT(pOutFileContent != nullptr);
 			FT_ASSERT(csFilePath != nullptr);

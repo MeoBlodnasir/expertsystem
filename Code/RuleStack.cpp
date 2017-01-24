@@ -8,31 +8,55 @@
 
 namespace ft
 {
-	RuleStack::RuleStack()
-		: m_oElements()
+	typedef std::vector<const IRuleElement*>::const_iterator	ElementsIt;
+
+	//////////////////////////////
+	// ARuleStack				//
+	//////////////////////////////
+
+	ARuleStack::ARuleStack()
 	{
 	}
 
-	RuleStack::~RuleStack()
+	ARuleStack::~ARuleStack()
 	{
 	}
 
-	void	RuleStack::AddElement(const IRuleElement* pElement)
+	void	ARuleStack::AddElement(const IRuleElement* pElement)
 	{
 		FT_ASSERT(pElement != nullptr);
 
 		m_oElements.push_back(pElement);
 	}
 
-	bool	RuleStack::Evaluate() const
+	//////////////////////////////
+	// ConditionRuleStack		//
+	//////////////////////////////
+
+	ConditionRuleStack::ConditionRuleStack()
+		: ARuleStack()
 	{
+	}
+
+	ConditionRuleStack::~ConditionRuleStack()
+	{
+	}
+
+	bool	ConditionRuleStack::Evaluate() const
+	{
+		FT_ASSERT(SelfAssert());
+
 		std::stack<bool>	oResultStack;
 
 		for (ElementsIt it = m_oElements.begin(), itEnd = m_oElements.end(); it != itEnd; ++it)
 		{
 			if ((*it)->GetType() == IRuleElement::E_VARIABLE)
 			{
-				oResultStack.push(reinterpret_cast<const Variable*>(*it)->GetState());
+				Variable::EState	eState = reinterpret_cast<const Variable*>(*it)->GetState();
+
+				FT_ASSERT(eState != Variable::E_UNDEF);
+				if (eState != Variable::E_UNDEF)
+					oResultStack.push(eState == Variable::E_TRUE);
 			}
 			else if ((*it)->GetType() == IRuleElement::E_OPERATOR)
 			{
@@ -65,5 +89,38 @@ namespace ft
 		}
 
 		return oResultStack.top();
+	}
+
+	bool	ConditionRuleStack::SelfAssert() const
+	{
+		return true;
+	}
+
+	//////////////////////////////
+	// ResultRuleStack			//
+	//////////////////////////////
+
+	ResultRuleStack::ResultRuleStack()
+		: ARuleStack()
+	{
+	}
+
+	ResultRuleStack::~ResultRuleStack()
+	{
+	}
+
+	bool	ResultRuleStack::Evaluate() const
+	{
+		FT_ASSERT(SelfAssert());
+
+		// Déterminer ce que veut dire "évaluer les résultats d'une règle"
+		FT_TODO("ResultRuleStack::Evaluate()");
+
+		return true;
+	}
+
+	bool	ResultRuleStack::SelfAssert() const
+	{
+		return true;
 	}
 }

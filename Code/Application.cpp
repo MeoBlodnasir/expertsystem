@@ -2,15 +2,17 @@
 #include "Application.h"
 
 #include "File.h"
-#include "Variable.h"
-#include "Operator.h"
-#include "Rule.h"
 #include "Lexer.h"
+#include "VariablesManager.h"
+#include "OperatorsProvider.h"
 #include "Parser.h"
+#include "Output.h" // tmp
 
 namespace ft
 {
 	Application::Application()
+		: m_pVariablesManager(nullptr)
+		, m_pOperatorProvider(nullptr)
 	{
 	}
 
@@ -22,64 +24,90 @@ namespace ft
 	{
 		(void)ac; (void)av;
 
-		std::string				sFileContent;
-		std::vector<Token>		oTokens;
-		Parser::ParsingResult	oParsingResult;
+		std::string			sFileContent;
+		std::vector<Token>	oTokens;
 
-		FT_TEST_OK(File::Read(&sFileContent, "./test.txt"));
+		m_pVariablesManager = new VariablesManager();
+		m_pOperatorProvider = new OperatorsProvider();
+
+		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
-
-		oParsingResult.pVariableStorage = &m_oVariableStorage;
-		FT_TEST_OK(Parser::ReadTokens(&oParsingResult, oTokens));
-
-		// Appliquer oParsingResult à m_oVariableStorage, m_oRules et m_oPendingQueries
+		FT_TEST_OK(ReadTokens(oTokens));
 
 		return FT_OK;
 	}
 
 	EErrorCode	Application::Destroy()
 	{
+		FT_SAFE_DELETE(m_pVariablesManager);
+		FT_SAFE_DELETE(m_pOperatorProvider);
+
 		return FT_OK;
 	}
 
 	EErrorCode	Application::Run()
 	{
-		ft::Rule		oRule;
+		// Vérifie que c'est initialisé
+		FT_ASSERT(m_pVariablesManager != nullptr);
+		FT_ASSERT(m_pOperatorProvider != nullptr);
 
-		ft::Variable	oT(true, 'T');
-		ft::Variable	oF(false, 'F');
+		ft::Rule	oRule;
 
-		ft::OperatorNOT	oNot;
-		ft::OperatorAND	oAnd;
-		ft::OperatorOR	oOr;
-		ft::OperatorXOR	oXor;
+		const Variable*	pA = nullptr;
+		const Variable*	pB = nullptr;
+		const Variable*	pC = nullptr;
+		const Variable*	pD = nullptr;
 
-		oRule.AddConditionElement(&oT);
-		oRule.AddConditionElement(&oT);
-		oRule.AddConditionElement(&oAnd);
+		pA = m_pVariablesManager->CreateVariable('A', Variable::E_TRUE);
+		pB = m_pVariablesManager->CreateVariable('B', Variable::E_FALSE);
+		pC = m_pVariablesManager->CreateVariable('C', Variable::E_FALSE);
+		pD = m_pVariablesManager->CreateVariable('D', Variable::E_FALSE);
+
+		oRule.AddConditionElement(pA);
+		oRule.AddConditionElement(pA);
+		oRule.AddConditionElement(m_pOperatorProvider->And());
 		oRule.Evaluate();	// true
 
-		oRule.AddConditionElement(&oF);
-		oRule.AddConditionElement(&oAnd);
+		oRule.AddConditionElement(pB);
+		oRule.AddConditionElement(m_pOperatorProvider->And());
 		oRule.Evaluate();	// false
 
-		oRule.AddConditionElement(&oT);
-		oRule.AddConditionElement(&oOr);
+		oRule.AddConditionElement(pA);
+		oRule.AddConditionElement(m_pOperatorProvider->Or());
 		oRule.Evaluate();	// true
 
-		oRule.AddConditionElement(&oT);
-		oRule.AddConditionElement(&oXor);
+		oRule.AddConditionElement(pA);
+		oRule.AddConditionElement(m_pOperatorProvider->Xor());
 		oRule.Evaluate();	// false
 
-		oRule.AddConditionElement(&oT);
-		oRule.AddConditionElement(&oNot);
-		oRule.AddConditionElement(&oXor);
+		oRule.AddConditionElement(pA);
+		oRule.AddConditionElement(m_pOperatorProvider->Not());
+		oRule.AddConditionElement(m_pOperatorProvider->Xor());
 		oRule.Evaluate();	// false
 
-		oRule.AddConditionElement(&oF);
-		oRule.AddConditionElement(&oNot);
-		oRule.AddConditionElement(&oOr);
+		oRule.AddConditionElement(pB);
+		oRule.AddConditionElement(m_pOperatorProvider->Not());
+		oRule.AddConditionElement(m_pOperatorProvider->Or());
 		oRule.Evaluate();	// true
+
+		return FT_OK;
+	}
+
+	EErrorCode Application::ReadTokens(const std::vector<Token>& oTokens)
+	{
+		Parser	oParser;
+		
+		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
+		{
+			if (oParser.CheckToken(*it))
+			{
+				FT_COUT << "ok" << std::endl; // tmp
+			}
+			else
+			{
+				FT_COUT << "nop" << std::endl; // tmp
+			}
+		}
 
 		return FT_OK;
 	}

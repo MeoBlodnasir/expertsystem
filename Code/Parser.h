@@ -1,23 +1,39 @@
 #pragma once
 
-#include "Token.h"
-#include "VariableStorage.h"
-#include "Rule.h"
-
-#include <set>
+#include "Types.h"
 
 namespace ft
 {
-	namespace Parser
+	//fw
+	class Token;
+
+	class Parser
 	{
-		struct ParsingResult
+	public:
+
+		enum EStateFlag
 		{
-			VariableStorage*	pVariableStorage;
-			std::vector<Rule>	oRules;
-			std::set<char>		oFacts;
-			std::set<char>		oQueries;
+			E_NONE					= 0,
+			E_WAITFOR_ENTRY			= (1 << 0),
+			E_WAITFOR_SYMBOL		= (1 << 1),
+			E_WAITFOR_VARIABLE		= (1 << 2),
+			E_WAITFOR_OPERATOR		= (1 << 3),
+			E_WAITFOR_IMPLY			= (1 << 4),
+			E_WAITFOR_EOL_EOF		= (1 << 5),
+			E_DONTWAIT_OPEN_PAR		= (1 << 6),
+			E_DONTWAIT_CLOSE_PAR	= (1 << 7),
+			E_WAITONLY_VARIABLE		= (1 << 8)
 		};
 
-		EErrorCode	ReadTokens(ParsingResult *pOutParsingResult, const std::vector<Token>& oTokens);
+		Parser();
+		~Parser();
+
+		void	Reset();
+		bool	CheckToken(const Token& oToken);
+
+	private:
+
+		int32	m_iStateFlags;
+		int32	m_iParenthesisLevel;
 	};
 }

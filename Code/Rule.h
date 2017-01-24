@@ -18,6 +18,7 @@ namespace ft
 
 	private:
 
-		RuleStack	m_oConditionStack;
+		ConditionRuleStack	m_oCondition;
+		ResultRuleStack		m_oResult;
 	};
 }

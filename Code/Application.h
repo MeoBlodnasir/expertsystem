@@ -1,10 +1,17 @@
 #pragma once
 
 #include "ErrorCode.h"
-#include "VariableStorage.h"
+#include "Token.h"
+#include "Rule.h"
+
+#include <vector>
 
 namespace ft
 {
+	// fw
+	class VariablesManager;
+	class OperatorsProvider;
+
 	class Application
 	{
 	public:
@@ -19,8 +26,11 @@ namespace ft
 
 	private:
 
-		VariableStorage		m_oVariableStorage;
-		std::vector<Rule>	m_oRules;
+		VariablesManager*	m_pVariablesManager;
+		OperatorsProvider*	m_pOperatorProvider;
+		std::vector<Rule>	m_oRules; // classe de gestionnaire de règles ? genre RulesManager
 		std::vector<char>	m_oPendingQueries;
+
+		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);
 	};
 }

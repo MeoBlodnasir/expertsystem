@@ -9,16 +9,22 @@ namespace ft
 {
 	namespace Lexer
 	{
-		const std::string s_sKeyWords[Token::E_OP_COUNT] =
+		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT] =
+		{
+			"(",
+			")",
+			"=",
+			"?"
+		};
+
+		static const std::string s_sOperatorsKeyWord[Token::E_OP_COUNT] =
 		{
 			"<=>",
 			"=>",
 			"+",
 			"|",
 			"^",
-			"!",
-			"(",
-			")"
+			"!"
 		};
 
 		EErrorCode	ReadToken(Token* pToken, uint32* pOffset, const char* csInput)
@@ -34,18 +40,39 @@ namespace ft
 			*pOffset = 0;
 
 			// Vérifie les mots clés
-			for (uint32 i = 0; i < sizeof(s_sKeyWords) / sizeof(std::string); ++i)
+			
+			// Opérateurs logiques
+			for (uint32 i = 0; i < sizeof(s_sOperatorsKeyWord) / sizeof(std::string); ++i)
 			{
-				const std::string& sKeyWord = s_sKeyWords[i];
+				const std::string& sKeyWord = s_sOperatorsKeyWord[i];
 				c = csInput;
 				bIsKeyWord = true;
 				for (uint32 j = 0; bIsKeyWord & (j < sKeyWord.size()); ++j)
 					bIsKeyWord &= c[j] == sKeyWord[j];
 				if (bIsKeyWord)
 				{
-					pToken->SetupToken((Token::EType)i, sKeyWord);
+					pToken->SetupToken(Token::E_LOGIC_OPERATOR, i, sKeyWord);
 					iOffset = sKeyWord.size();
 					break;
+				}
+			}
+
+			// Symboles syntaxiques
+			if (!bIsKeyWord)
+			{
+				for (uint32 i = 0; i < sizeof(s_sSymbolsKeyWord) / sizeof(std::string); ++i)
+				{
+					const std::string& sKeyWord = s_sSymbolsKeyWord[i];
+					c = csInput;
+					bIsKeyWord = true;
+					for (uint32 j = 0; bIsKeyWord & (j < sKeyWord.size()); ++j)
+						bIsKeyWord &= c[j] == sKeyWord[j];
+					if (bIsKeyWord)
+					{
+						pToken->SetupToken(Token::E_SYNTAX_SYMBOL, i, sKeyWord);
+						iOffset = sKeyWord.size();
+						break;
+					}
 				}
 			}
 
@@ -55,7 +82,7 @@ namespace ft
 				while (IsLetter(c[iOffset]) || IsDigit(c[iOffset]))
 					++iOffset;
 				if (iOffset > 0)
-					pToken->SetupToken(Token::E_VARIABLE, std::string(c, iOffset));
+					pToken->SetupToken(Token::E_VARIABLE, -1, std::string(c, iOffset));
 			}
 
 			*pOffset = iOffset;
@@ -78,6 +105,13 @@ namespace ft
 				while (IsWhiteSpace(*c))
 					++c;
 
+				if (*c == '\n')
+				{
+					oToken.SetupToken(Token::E_EOL);
+					pTokens->push_back(oToken);
+					++c;
+				}
+
 				if (ReadToken(&oToken, &iOffset, c) == FT_OK)
 				{
 					pTokens->push_back(oToken);
@@ -88,6 +122,9 @@ namespace ft
 					++c;
 				}
 			}
+
+			oToken.SetupToken(Token::E_EOF);
+			pTokens->push_back(oToken);
 
 			return FT_OK;
 		}

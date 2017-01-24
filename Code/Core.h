@@ -30,25 +30,39 @@
 #	define FT_TODO(s)
 #endif
 
+namespace ft
+{
+	namespace Core
+	{
+		void	PrintAssertInfos(const char* csExpression, const char* csFilePath, const int iLine, const char* csFunction);
+	}
+}
+
 // Asserts
 // FT_ASSERT à l'exécution
 // FT_STATIC_ASSERT à la compilation
 // en DEBUG uniquement -> à utiliser sans modération !
 // ATTENTION -> ne tester dans un FT_ASSERT que des variables ou des fonctions const (qui n'ont pas d'incidence sur le code ou la donnée) vu que ce sera effacé en Release
-FT_TODO("FT_ASSERT a etoffer: ajouter des messages, des infos sur le fichier, sur la ligne, sur l'expression testee, ...")
 #if defined(__FT_DEBUG__)
 
-#	define FT_ASSERT(expr)						\
-	{											\
-		if (!(expr))							\
-		{										\
-			FT_BREAK_CPU();						\
-		}										\
+#	define FT_FAILED_ASSERTION(expr)	\
+	{									\
+		ft::Core::PrintAssertInfos(#expr, __FILE__, __LINE__, __FUNCTION__);	\
+		FT_BREAK_CPU();					\
 	}
 
-#	define FT_STATIC_ASSERT(expr)	typedef char _FT_S_ASSERT[(expr) ? 1 : -1]
+#	define FT_ASSERT(expr)				\
+	{									\
+		if (!(expr))					\
+		{								\
+			FT_FAILED_ASSERTION(expr)	\
+		}								\
+	}
+
+#	define FT_STATIC_ASSERT(expr)		typedef char _FT_S_ASSERT[(expr) ? 1 : -1]
 
 #else
+#	define FT_FAILED_ASSERTION(expr)
 #	define FT_ASSERT(expr)
 #	define FT_STATIC_ASSERT(expr)
 #endif
@@ -58,7 +72,7 @@ FT_TODO("FT_ASSERT a etoffer: ajouter des messages, des infos sur le fichier, su
 {									\
 	if (!(expr))					\
 	{								\
-		FT_ASSERT(false);			\
+		FT_FAILED_ASSERTION(expr)	\
 	}								\
 }
 
@@ -66,7 +80,7 @@ FT_TODO("FT_ASSERT a etoffer: ajouter des messages, des infos sur le fichier, su
 {									\
 	if (!(expr))					\
 	{								\
-		FT_ASSERT(false);			\
+		FT_FAILED_ASSERTION(expr)	\
 		return (ret);				\
 	}								\
 }
@@ -76,5 +90,11 @@ FT_TODO("FT_ASSERT a etoffer: ajouter des messages, des infos sur le fichier, su
 #define FT_NOT_IMPLEMENTED(mess)	\
 {									\
 	FT_TODO(mess);					\
-	FT_ASSERT(false);				\
+	FT_FAILED_ASSERTION(false)		\
 }
+
+// Macros utiles
+#define FT_DELETE(ptr)				{ delete ptr; ptr = nullptr; }
+#define FT_DELETE_ARRAY(ptr)		{ delete [] ptr; ptr = nullptr; }
+#define FT_SAFE_DELETE(ptr)			{ if (ptr) FT_DELETE(ptr); }
+#define FT_SAFE_DELETE_ARRAY(ptr)	{ if (ptr) FT_DELETE_ARRAY(ptr); }

@@ -7,19 +7,50 @@ namespace ft
 	// fw
 	class IRuleElement;
 
-	class RuleStack
+	//////////////////////////////
+	// Classe abstraite			//
+	//////////////////////////////
+
+	class ARuleStack
 	{
 	public:
 
-		RuleStack();
-		~RuleStack();
+		ARuleStack();
+		virtual ~ARuleStack();
 
-		void	AddElement(const IRuleElement* pElement);
-		bool	Evaluate() const;
+		virtual bool	Evaluate() const = 0;
+		virtual bool	SelfAssert() const = 0;
 
-	private:
+		void			AddElement(const IRuleElement* pElement);
+
+	protected:
 
 		std::vector<const IRuleElement*>	m_oElements;
-		typedef std::vector<const IRuleElement*>::const_iterator	ElementsIt;
+	};
+
+	//////////////////////////////
+	// Classes instanciables	//
+	//////////////////////////////
+
+	class ConditionRuleStack : public ARuleStack
+	{
+	public:
+
+		ConditionRuleStack();
+		virtual ~ConditionRuleStack();
+
+		virtual bool	Evaluate() const;
+		virtual bool	SelfAssert() const;
+	};
+
+	class ResultRuleStack : public ARuleStack
+	{
+	public:
+
+		ResultRuleStack();
+		virtual ~ResultRuleStack();
+
+		virtual bool	Evaluate() const;
+		virtual bool	SelfAssert() const;
 	};
 }
