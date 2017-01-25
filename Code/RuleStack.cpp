@@ -52,11 +52,8 @@ namespace ft
 		{
 			if ((*it)->GetType() == IRuleElement::E_VARIABLE)
 			{
-				Variable::EState	eState = reinterpret_cast<const Variable*>(*it)->GetState();
-
-				FT_ASSERT(eState != Variable::E_UNDEF);
-				if (eState != Variable::E_UNDEF)
-					oResultStack.push(eState == Variable::E_TRUE);
+				bool	bState = reinterpret_cast<const Variable*>(*it)->GetState();
+				oResultStack.push(bState == true);
 			}
 			else if ((*it)->GetType() == IRuleElement::E_OPERATOR)
 			{
@@ -107,6 +104,11 @@ namespace ft
 
 	ResultRuleStack::~ResultRuleStack()
 	{
+	}
+	
+	Variable::Id	ResultRuleStack::GetTopVariableId() const
+	{
+		return (dynamic_cast<const Variable*>(m_oElements.front()))->GetId();
 	}
 
 	bool	ResultRuleStack::Evaluate() const

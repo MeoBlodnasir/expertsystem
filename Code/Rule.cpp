@@ -6,38 +6,43 @@
 
 namespace ft
 {
-	Rule::Rule()
-		: m_oCondition()
-	{
-	}
+    Rule::Rule()
+        : m_oCondition()
+    {
+    }
 
-	Rule::~Rule()
-	{
-	}
+    Rule::~Rule()
+    {
+    }
 
-	void		Rule::AddConditionElement(const IRuleElement* pElement)
-	{
-		FT_ASSERT(pElement != nullptr);
+    void		Rule::AddConditionElement(const IRuleElement* pElement)
+    {
+        FT_ASSERT(pElement != nullptr);
 
-		m_oCondition.AddElement(pElement);
-	}
+        m_oCondition.AddElement(pElement);
+    }
 
-	void		Rule::AddResultElement(const IRuleElement* pElement)
-	{
-		FT_ASSERT(pElement != nullptr);
+    void		Rule::AddResultElement(const IRuleElement* pElement)
+    {
+        FT_ASSERT(pElement != nullptr);
 
-		m_oResult.AddElement(pElement);
-	}
+        m_oResult.AddElement(pElement);
+    }
 
-	EErrorCode	Rule::Evaluate() const
-	{
-		bool	bConditions = false;
+    bool 		Rule::Evaluate() const
+    {
+        bool	bConditions = false;
 
-		bConditions = m_oCondition.Evaluate();
+        bConditions = m_oCondition.Evaluate();
 
-		FT_COUT << (bConditions ? "true" : "false") << std::endl; // temporaire, pour tester
+        FT_COUT << (bConditions ? "true" : "false") << std::endl; // temporaire, pour tester
 
-		return FT_OK;
-	}
+        return bConditions;
+    }
+
+	Variable::Id	Rule::GetResultVariableId() const
+    {
+		return (m_oResult.GetTopVariableId());
+    }
 
 }

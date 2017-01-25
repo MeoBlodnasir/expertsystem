@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector> // deque, queue, stack ?
+#include "Variable.h"
 
 namespace ft
 {
@@ -13,19 +14,19 @@ namespace ft
 
 	class ARuleStack
 	{
-	public:
+		public:
 
-		ARuleStack();
-		virtual ~ARuleStack();
+			ARuleStack();
+			virtual ~ARuleStack();
 
-		virtual bool	Evaluate() const = 0;
-		virtual bool	SelfAssert() const = 0;
+			virtual bool	Evaluate() const = 0;
+			virtual bool	SelfAssert() const = 0;
 
-		void			AddElement(const IRuleElement* pElement);
+			void			AddElement(const IRuleElement* pElement);
 
-	protected:
+		protected:
 
-		std::vector<const IRuleElement*>	m_oElements;
+			std::vector<const IRuleElement*>	m_oElements;
 	};
 
 	//////////////////////////////
@@ -34,23 +35,24 @@ namespace ft
 
 	class ConditionRuleStack : public ARuleStack
 	{
-	public:
+		public:
 
-		ConditionRuleStack();
-		virtual ~ConditionRuleStack();
+			ConditionRuleStack();
+			virtual ~ConditionRuleStack();
 
-		virtual bool	Evaluate() const;
-		virtual bool	SelfAssert() const;
+			virtual bool	Evaluate() const;
+			virtual bool	SelfAssert() const;
 	};
 
 	class ResultRuleStack : public ARuleStack
 	{
-	public:
+		public:
 
-		ResultRuleStack();
-		virtual ~ResultRuleStack();
+			ResultRuleStack();
+			virtual ~ResultRuleStack();
 
-		virtual bool	Evaluate() const;
-		virtual bool	SelfAssert() const;
+			Variable::Id	GetTopVariableId() const;
+			virtual bool	Evaluate() const;
+			virtual bool	SelfAssert() const;
 	};
 }

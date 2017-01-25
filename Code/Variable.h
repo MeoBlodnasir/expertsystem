@@ -13,15 +13,8 @@ namespace ft
 
 		typedef	char	Id;
 
-		enum EState
-		{
-			E_UNDEF = -1,
-			E_FALSE = 0,
-			E_TRUE = 1
-		};
-
 		Variable();
-		Variable(Id iId, EState eState);
+		Variable(Id iId, bool bState, bool bLock);
 		Variable(const Variable& oVar);
 		virtual ~Variable();
 
@@ -29,12 +22,14 @@ namespace ft
 		virtual EType	GetType() const					{ return E_VARIABLE; }
 
 		inline Id		GetId() const					{ return m_iId; }
-		inline EState	GetState() const				{ return m_eState; }
+		inline bool	GetState() const				{ return m_bState; }
+		inline bool	IsLocked() const				{ return m_bLock; }
 
 	private:
 		friend class VariablesManager;
 
 		Id		m_iId;
-		EState	m_eState;
+		bool	m_bState;
+		bool	m_bLock;
 	};
 }

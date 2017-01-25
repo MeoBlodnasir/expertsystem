@@ -14,10 +14,12 @@ namespace ft
 		VariablesManager();
 		~VariablesManager();
 
-		const Variable*	CreateVariable(Variable::Id iId, Variable::EState bCreationState = Variable::E_UNDEF);
+		const Variable*	CreateVariable(Variable::Id iId, bool  bCreationState = false, bool bCreationLock = false);
 		const Variable*	GetVariable(Variable::Id iId) const;
 
-		EErrorCode		SetVariableState(Variable::Id iId, Variable::EState bState);
+		EErrorCode		SetVariableState(Variable::Id iId, bool bState);
+		EErrorCode		SetVariableLock(Variable::Id iId, bool bLock);
+		bool			GetLockState(Variable::Id iId);
 
 	private:
 

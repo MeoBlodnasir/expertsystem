@@ -2,6 +2,7 @@
 
 #include "ErrorCode.h"
 #include "RuleStack.h"
+#include "Variable.h"
 
 namespace ft
 {
@@ -14,7 +15,8 @@ namespace ft
 
 		void		AddConditionElement(const IRuleElement* pElement);
 		void		AddResultElement(const IRuleElement* pElement);
-		EErrorCode	Evaluate() const;
+		bool		Evaluate() const;
+		Variable::Id	GetResultVariableId() const;
 
 	private:
 

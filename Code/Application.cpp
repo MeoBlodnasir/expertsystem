@@ -4,6 +4,7 @@
 #include "File.h"
 #include "Lexer.h"
 #include "VariablesManager.h"
+#include "RulesManager.h"
 #include "OperatorsProvider.h"
 #include "Parser.h"
 
@@ -13,7 +14,8 @@ namespace ft
 {
 	Application::Application()
 		: m_pVariablesManager(nullptr)
-		, m_pOperatorProvider(nullptr)
+		  , m_pOperatorProvider(nullptr)
+		  , m_pRulesManager(nullptr)
 	{
 	}
 
@@ -29,9 +31,10 @@ namespace ft
 		std::vector<Token>	oTokens;
 
 		m_pVariablesManager = new VariablesManager();
+		m_pRulesManager = new RulesManager(m_pVariablesManager);
 		m_pOperatorProvider = new OperatorsProvider();
 
-		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test.txt"));
+		FT_TEST_OK(File::GetContent(&sFileContent, "../Assets/test.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 		FT_TEST_OK(ReadTokens(oTokens));
 
@@ -41,6 +44,7 @@ namespace ft
 	EErrorCode	Application::Destroy()
 	{
 		FT_SAFE_DELETE(m_pVariablesManager);
+		FT_SAFE_DELETE(m_pRulesManager);
 		FT_SAFE_DELETE(m_pOperatorProvider);
 
 		return FT_OK;
@@ -50,6 +54,7 @@ namespace ft
 	{
 		// Vérifie que c'est initialisé
 		FT_ASSERT(m_pVariablesManager != nullptr);
+		FT_ASSERT(m_pRulesManager != nullptr);
 		FT_ASSERT(m_pOperatorProvider != nullptr);
 
 		ft::Rule	oRule;
@@ -59,15 +64,23 @@ namespace ft
 		const Variable*	pC = nullptr;
 		const Variable*	pD = nullptr;
 
-		pA = m_pVariablesManager->CreateVariable('A', Variable::E_TRUE);
-		pB = m_pVariablesManager->CreateVariable('B', Variable::E_FALSE);
-		pC = m_pVariablesManager->CreateVariable('C', Variable::E_FALSE);
-		pD = m_pVariablesManager->CreateVariable('D', Variable::E_FALSE);
+		pA = m_pVariablesManager->CreateVariable('A', true, false);
+		pB = m_pVariablesManager->CreateVariable('B', false, false);
+		pC = m_pVariablesManager->CreateVariable('C', false, false);
+		pD = m_pVariablesManager->CreateVariable('D', false, false);
 
 		oRule.AddConditionElement(pA);
 		oRule.AddConditionElement(pA);
+		oRule.AddResultElement(pB);
 		oRule.AddConditionElement(m_pOperatorProvider->And());
 		oRule.Evaluate();	// true
+
+
+		FT_COUT << pB->GetState() << std::endl;
+		m_pRulesManager->AddRule(oRule);
+		m_pRulesManager->EvaluateRules();
+		FT_COUT << pB->GetState() << std::endl;
+
 
 		oRule.AddConditionElement(pB);
 		oRule.AddConditionElement(m_pOperatorProvider->And());
@@ -96,6 +109,7 @@ namespace ft
 
 	EErrorCode	Application::ReadTokens(const std::vector<Token>& oTokens)
 	{
+<<<<<<< HEAD
 		enum ETokenReadingState
 		{
 			E_NONE = -1,
@@ -108,6 +122,11 @@ namespace ft
 		ETokenReadingState	eState = E_NONE;
 		
 		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
+=======
+		Parser	oParser;
+
+		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
+>>>>>>> origin/master
 		{
 			if (oParser.CheckToken(*itToken))
 			{
