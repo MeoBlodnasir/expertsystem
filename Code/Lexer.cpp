@@ -11,7 +11,7 @@ namespace ft
 	{
 		static const std::string s_sCommentEntry = "#";
 
-		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT] =
+		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT - (Token::E_SYM_OFFSET+1)] =
 		{
 			"(",
 			")",
@@ -19,7 +19,7 @@ namespace ft
 			"?"
 		};
 
-		static const std::string s_sOperatorsKeyWord[Token::E_OP_COUNT] =
+		static const std::string s_sOperatorsKeyWord[Token::E_OP_COUNT - (Token::E_OP_OFFSET+1)] =
 		{
 			"<=>",
 			"=>",
@@ -54,29 +54,29 @@ namespace ft
 			{
 				while (*c != '\n' && *c != '\0')
 					++c;
-				pToken->SetupToken(Token::E_COMMENT, -1, std::string(csInput, c - csInput));
+				pToken->SetupToken(Token::E_COMMENT, std::string(csInput, c - csInput));
 				goto KeywordFound;
 			}
 			
 			// Opérateurs logiques
-			for (uint32 i = 0; i < sizeof(s_sOperatorsKeyWord) / sizeof(std::string); ++i)
+			for (uint32 i = 0, iCount = sizeof(s_sOperatorsKeyWord) / sizeof(std::string); i < iCount; ++i)
 			{
 				const std::string& sKeyWord = s_sOperatorsKeyWord[i];
 				if (IsKeyWord(c, sKeyWord))
 				{
-					pToken->SetupToken(Token::E_LOGIC_OPERATOR, i, sKeyWord);
+					pToken->SetupToken((Token::EType)(Token::E_OP_OFFSET+1 + i), sKeyWord);
 					c += sKeyWord.size();
 					goto KeywordFound;
 				}
 			}
 
 			// Symboles syntaxiques
-			for (uint32 i = 0; i < sizeof(s_sSymbolsKeyWord) / sizeof(std::string); ++i)
+			for (uint32 i = 0, iCount = sizeof(s_sSymbolsKeyWord) / sizeof(std::string); i < iCount; ++i)
 			{
 				const std::string& sKeyWord = s_sSymbolsKeyWord[i];
 				if (IsKeyWord(c, sKeyWord))
 				{
-					pToken->SetupToken(Token::E_SYNTAX_SYMBOL, i, sKeyWord);
+					pToken->SetupToken((Token::EType)(Token::E_SYM_OFFSET+1 + i), sKeyWord);
 					c += sKeyWord.size();
 					goto KeywordFound;
 				}
@@ -86,7 +86,7 @@ namespace ft
 			while (IsLetter(*c) || IsDigit(*c))
 				++c;
 			if (c != csInput)
-				pToken->SetupToken(Token::E_VARIABLE, -1, std::string(csInput, c - csInput));
+				pToken->SetupToken(Token::E_VARIABLE, std::string(csInput, c - csInput));
 
 KeywordFound:
 
