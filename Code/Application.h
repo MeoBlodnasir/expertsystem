@@ -12,6 +12,7 @@ namespace ft
 	// fw
 	class VariablesManager;
 	class OperatorsProvider;
+	class RulesManager;
 
 	class Application
 	{
@@ -29,7 +30,7 @@ namespace ft
 
 		VariablesManager*			m_pVariablesManager;
 		OperatorsProvider*			m_pOperatorProvider;
-		std::vector<Rule>			m_oRules; // classe de gestionnaire de règles ? genre RulesManager
+		RulesManager*				m_pRulesManager;
 		std::vector<Variable::Id>	m_oPendingQueries;
 
 		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);

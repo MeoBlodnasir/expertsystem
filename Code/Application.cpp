@@ -14,8 +14,8 @@ namespace ft
 {
 	Application::Application()
 		: m_pVariablesManager(nullptr)
-		  , m_pOperatorProvider(nullptr)
-		  , m_pRulesManager(nullptr)
+		, m_pOperatorProvider(nullptr)
+		, m_pRulesManager(nullptr)
 	{
 	}
 
@@ -34,7 +34,7 @@ namespace ft
 		m_pRulesManager = new RulesManager(m_pVariablesManager);
 		m_pOperatorProvider = new OperatorsProvider();
 
-		FT_TEST_OK(File::GetContent(&sFileContent, "../Assets/test.txt"));
+		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 		FT_TEST_OK(ReadTokens(oTokens));
 
@@ -109,7 +109,6 @@ namespace ft
 
 	EErrorCode	Application::ReadTokens(const std::vector<Token>& oTokens)
 	{
-<<<<<<< HEAD
 		enum ETokenReadingState
 		{
 			E_NONE = -1,
@@ -122,11 +121,6 @@ namespace ft
 		ETokenReadingState	eState = E_NONE;
 		
 		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
-=======
-		Parser	oParser;
-
-		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
->>>>>>> origin/master
 		{
 			if (oParser.CheckToken(*itToken))
 			{
