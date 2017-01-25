@@ -9,7 +9,9 @@ namespace ft
 {
 	namespace Lexer
 	{
-		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT] =
+		static const std::string s_sCommentEntry = "#";
+
+		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT - (Token::E_SYM_OFFSET+1)] =
 		{
 			"(",
 			")",
@@ -17,7 +19,7 @@ namespace ft
 			"?"
 		};
 
-		static const std::string s_sOperatorsKeyWord[Token::E_OP_COUNT] =
+		static const std::string s_sOperatorsKeyWord[Token::E_OP_COUNT - (Token::E_OP_OFFSET+1)] =
 		{
 			"<=>",
 			"=>",
@@ -27,68 +29,70 @@ namespace ft
 			"!"
 		};
 
+		static bool	IsKeyWord(const char* csInput, const std::string& sKeyWord)
+		{
+			bool bIsKeyWord = true;
+			for (uint32 i = 0; bIsKeyWord & (i < sKeyWord.size()); ++i)
+				bIsKeyWord &= csInput[i] == sKeyWord[i];
+			return bIsKeyWord;
+		}
+
 		EErrorCode	ReadToken(Token* pToken, uint32* pOffset, const char* csInput)
 		{
 			FT_ASSERT(pToken != nullptr);
 			FT_ASSERT(pOffset != nullptr);
 			FT_ASSERT(csInput != nullptr);
 
-			const char*	c = NULL;
-			bool		bIsKeyWord = false;
-			uint32		iOffset = 0;
+			const char*	c = csInput;
 
 			*pOffset = 0;
 
 			// Vérifie les mots clés
+
+			// Commentaire
+			if (IsKeyWord(c, s_sCommentEntry))
+			{
+				while (*c != '\n' && *c != '\0')
+					++c;
+				pToken->SetupToken(Token::E_COMMENT, std::string(csInput, c - csInput));
+				goto KeywordFound;
+			}
 			
 			// Opérateurs logiques
-			for (uint32 i = 0; i < sizeof(s_sOperatorsKeyWord) / sizeof(std::string); ++i)
+			for (uint32 i = 0, iCount = sizeof(s_sOperatorsKeyWord) / sizeof(std::string); i < iCount; ++i)
 			{
 				const std::string& sKeyWord = s_sOperatorsKeyWord[i];
-				c = csInput;
-				bIsKeyWord = true;
-				for (uint32 j = 0; bIsKeyWord & (j < sKeyWord.size()); ++j)
-					bIsKeyWord &= c[j] == sKeyWord[j];
-				if (bIsKeyWord)
+				if (IsKeyWord(c, sKeyWord))
 				{
-					pToken->SetupToken(Token::E_LOGIC_OPERATOR, i, sKeyWord);
-					iOffset = sKeyWord.size();
-					break;
+					pToken->SetupToken((Token::EType)(Token::E_OP_OFFSET+1 + i), sKeyWord);
+					c += sKeyWord.size();
+					goto KeywordFound;
 				}
 			}
 
 			// Symboles syntaxiques
-			if (!bIsKeyWord)
+			for (uint32 i = 0, iCount = sizeof(s_sSymbolsKeyWord) / sizeof(std::string); i < iCount; ++i)
 			{
-				for (uint32 i = 0; i < sizeof(s_sSymbolsKeyWord) / sizeof(std::string); ++i)
+				const std::string& sKeyWord = s_sSymbolsKeyWord[i];
+				if (IsKeyWord(c, sKeyWord))
 				{
-					const std::string& sKeyWord = s_sSymbolsKeyWord[i];
-					c = csInput;
-					bIsKeyWord = true;
-					for (uint32 j = 0; bIsKeyWord & (j < sKeyWord.size()); ++j)
-						bIsKeyWord &= c[j] == sKeyWord[j];
-					if (bIsKeyWord)
-					{
-						pToken->SetupToken(Token::E_SYNTAX_SYMBOL, i, sKeyWord);
-						iOffset = sKeyWord.size();
-						break;
-					}
+					pToken->SetupToken((Token::EType)(Token::E_SYM_OFFSET+1 + i), sKeyWord);
+					c += sKeyWord.size();
+					goto KeywordFound;
 				}
 			}
 
-			// Si l'entrée n'est pas un mot clé, crée une variable (uniquement alphanumérique)
-			if (!bIsKeyWord)
-			{
-				while (IsLetter(c[iOffset]) || IsDigit(c[iOffset]))
-					++iOffset;
-				if (iOffset > 0)
-					pToken->SetupToken(Token::E_VARIABLE, -1, std::string(c, iOffset));
-			}
+			// Si l'entrée n'est pas un mot clé, créer une variable (uniquement alphanumérique)
+			while (IsLetter(*c) || IsDigit(*c))
+				++c;
+			if (c != csInput)
+				pToken->SetupToken(Token::E_VARIABLE, std::string(csInput, c - csInput));
 
-			*pOffset = iOffset;
+KeywordFound:
 
-			// Si l'offset n'a pas bougé, c'est qu'il y a un problème (csInput pointant sur un caractère inutilisé)
-			return iOffset == 0 ? FT_FAIL : FT_OK;
+			*pOffset = c - csInput;
+
+			return c == csInput ? FT_FAIL : FT_OK;
 		}
 
 		EErrorCode	ReadInput(std::vector<Token>* pTokens, const char* csInput)

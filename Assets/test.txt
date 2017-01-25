@@ -1,5 +1,6 @@
-A + D | (B^C)=> E
+#Commentairetiti
+A + D | (B^C)=> E#Commentaire tutu
 !B<=>C
-
+#Commentaire toto  
 =AC
-?B
+?B#Commentaitaire
