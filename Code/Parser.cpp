@@ -125,6 +125,7 @@ namespace ft
 
 		case Token::E_COMMENT:
 			{
+				m_iStateFlags = E_WAITFOR_EOL_EOF;
 				break;
 			}
 
