@@ -1,9 +1,9 @@
 
-#include "Core.h"
 #include "RulesManager.h"
+
+#include "Core.h"
+#include "VariablesManager.h"
 #include "Output.h"
-#include "Variable.h"
-#include <iterator>
 
 namespace ft
 {

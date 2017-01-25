@@ -1,13 +1,15 @@
 #pragma once
 
 #include "ErrorCode.h"
-#include "VariablesManager.h"
 #include "Rule.h"
 
-#include <map>
+#include <vector>
 
 namespace ft
 {
+	// fw
+	class VariablesManager;
+
 	class RulesManager
 	{
 	public:

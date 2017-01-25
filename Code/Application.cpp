@@ -57,7 +57,7 @@ namespace ft
 		FT_ASSERT(m_pRulesManager != nullptr);
 		FT_ASSERT(m_pOperatorProvider != nullptr);
 
-		ft::Rule	oRule;
+		Rule	oRule;
 
 		const Variable*	pA = nullptr;
 		const Variable*	pB = nullptr;
@@ -149,6 +149,7 @@ namespace ft
 
 						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
 						}
+						break;
 					}
 
 				case E_RULE:
@@ -210,7 +211,6 @@ namespace ft
 						case Token::E_VARIABLE:
 							{
 								// Vérifier ou créer dans le VariableManager avant ou pas?
-								m_oPendingQueries.push_back(itToken->GetDesc()[0]);
 								break;
 							}
 
