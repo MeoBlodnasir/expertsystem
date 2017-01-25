@@ -8,21 +8,22 @@
 namespace ft
 {
 	RulesManager::RulesManager()
+		: m_pVariablesManager(nullptr)
 	{
 	}
 
-	RulesManager::RulesManager(VariablesManager *oVariablesManager)
+	RulesManager::RulesManager(VariablesManager* pVariablesManager)
 	{
-		m_oVariablesManager = oVariablesManager;
+		m_pVariablesManager = pVariablesManager;
 	}
 
 	RulesManager::~RulesManager()
 	{
 	}
 
-	void	RulesManager::AddRule(Rule rule)
+	void		RulesManager::AddRule(const Rule& oRule)
 	{
-		m_oRules.push_back(rule);
+		m_oRules.push_back(oRule);
 	}
 
 	EErrorCode	RulesManager::EvaluateRules()
@@ -32,10 +33,10 @@ namespace ft
 			if (it->Evaluate()) // Rule is verified
 			{
 				Variable::Id id = it->GetResultVariableId();
-				if (!m_oVariablesManager->GetLockState(id))
+				if (!m_pVariablesManager->GetVariable(id)->IsLocked())
 				{
-					m_oVariablesManager->SetVariableState(id, true);
-					m_oVariablesManager->SetVariableLock(id, true);
+					m_pVariablesManager->SetVariableState(id, true);
+					m_pVariablesManager->SetVariableLock(id, true);
 				}
 				FT_COUT << "rule is verified" << std::endl;
 			}
@@ -44,7 +45,6 @@ namespace ft
 				//	m_oRules.erase(it); // erasing invalid rule ? or just end program?
 				FT_COUT << "rule not verified" << std::endl;
 			}
-
 		}
 
 		return FT_OK;

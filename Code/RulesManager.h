@@ -12,19 +12,18 @@ namespace ft
 	{
 	public:
 
-		RulesManager();
-		RulesManager(VariablesManager *oVariablesManager);
+		RulesManager(VariablesManager* pVariablesManager);
 		~RulesManager();
 
-		void	AddRule(Rule rule);
+		void		AddRule(const Rule& oRule);
 		EErrorCode	EvaluateRules();
-
 
 	private:
 
 		std::vector<Rule>	m_oRules;
-		VariablesManager	*m_oVariablesManager;
+		VariablesManager*	m_pVariablesManager;
 
+		RulesManager();
 		RulesManager(const RulesManager&);
 		RulesManager& operator = (const RulesManager&);
 	};

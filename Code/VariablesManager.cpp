@@ -20,34 +20,20 @@ namespace ft
 		return &m_oVariables.at(iId);
 	}
 
-	const Variable*	VariablesManager::GetVariable(Variable::Id iId) const
+	const Variable*	VariablesManager::GetVariable(Variable::Id iId)
 	{
-		// Retour nullptr si la variable n'existe pas ou on la crée et on l'initialise à false?
-		return m_oVariables.count(iId) == 1 ? &m_oVariables.at(iId) : nullptr;
+		return CreateVariable(iId);
 	}
 
-	EErrorCode		VariablesManager::SetVariableState(Variable::Id iId, bool bState)
+	void			VariablesManager::SetVariableState(Variable::Id iId, bool bState)
 	{
-		// Retour fail si la variable n'existe pas ou on la crée? Voir à l'utilisation.
-		FT_TEST_RETURN(m_oVariables.count(iId) == 1, FT_FAIL);
-
+		CreateVariable(iId);
 		m_oVariables[iId].m_bState = bState;
-		
-		return FT_OK;
 	}
 	
-	EErrorCode		VariablesManager::SetVariableLock(Variable::Id iId, bool bLock)
+	void			VariablesManager::SetVariableLock(Variable::Id iId, bool bLock)
 	{
-		// Retour fail si la variable n'existe pas ou on la crée? Voir à l'utilisation.
-		FT_TEST_RETURN(m_oVariables.count(iId) == 1, FT_FAIL);
-
+		CreateVariable(iId);
 		m_oVariables[iId].m_bLock = bLock;
-		
-		return FT_OK;
-	}
-
-	bool		VariablesManager::GetLockState(Variable::Id iId)
-	{
-		return m_oVariables[iId].m_bLock;
 	}
 }

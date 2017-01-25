@@ -14,7 +14,7 @@ namespace ft
 		typedef	char	Id;
 
 		Variable();
-		Variable(Id iId, bool bState, bool bLock);
+		Variable(Id iId, bool bState = false, bool bLock = false);
 		Variable(const Variable& oVar);
 		virtual ~Variable();
 

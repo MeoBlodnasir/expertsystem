@@ -10,7 +10,7 @@ namespace ft
 	{
 	}
 
-	Variable::Variable(Id iId, bool bState, bool bLock)
+	Variable::Variable(Id iId, bool bState /*= false*/, bool bLock /*= false*/)
 		: m_iId(iId)
 		, m_bState(bState)
 		, m_bLock(bLock)
@@ -20,6 +20,7 @@ namespace ft
 	Variable::Variable(const Variable& oVar)
 		: m_iId(oVar.m_iId)
 		, m_bState(oVar.m_bState)
+		, m_bLock(oVar.m_bLock)
 	{
 	}
 
