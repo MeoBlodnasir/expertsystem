@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ErrorCode.h"
+#include "Variable.h"
 #include "Token.h"
 #include "Rule.h"
 
@@ -26,10 +27,10 @@ namespace ft
 
 	private:
 
-		VariablesManager*	m_pVariablesManager;
-		OperatorsProvider*	m_pOperatorProvider;
-		std::vector<Rule>	m_oRules; // classe de gestionnaire de règles ? genre RulesManager
-		std::vector<char>	m_oPendingQueries;
+		VariablesManager*			m_pVariablesManager;
+		OperatorsProvider*			m_pOperatorProvider;
+		std::vector<Rule>			m_oRules; // classe de gestionnaire de règles ? genre RulesManager
+		std::vector<Variable::Id>	m_oPendingQueries;
 
 		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);
 	};

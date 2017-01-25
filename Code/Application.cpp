@@ -6,6 +6,7 @@
 #include "VariablesManager.h"
 #include "OperatorsProvider.h"
 #include "Parser.h"
+
 #include "Output.h" // tmp
 
 namespace ft
@@ -93,19 +94,125 @@ namespace ft
 		return FT_OK;
 	}
 
-	EErrorCode Application::ReadTokens(const std::vector<Token>& oTokens)
+	EErrorCode	Application::ReadTokens(const std::vector<Token>& oTokens)
 	{
-		Parser	oParser;
-		
-		for (std::vector<Token>::const_iterator it = oTokens.begin(), itEnd = oTokens.end(); it != itEnd; ++it)
+		enum ETokenReadingState
 		{
-			if (oParser.CheckToken(*it))
+			E_NONE = -1,
+			E_RULE,
+			E_FACTS,
+			E_QUERIES
+		};
+
+		Parser				oParser;
+		ETokenReadingState	eState = E_NONE;
+		
+		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
+		{
+			if (oParser.CheckToken(*itToken))
 			{
-				FT_COUT << "ok" << std::endl; // tmp
+				switch (eState)
+				{
+				case E_NONE:
+					{
+						switch (itToken->GetType())
+						{
+						case Token::E_EOF:
+						case Token::E_EOL:
+						case Token::E_COMMENT:					{ break; }
+
+						case Token::E_SYM_START_FACTS:			{ eState = E_FACTS; break; }
+
+						case Token::E_SYM_START_QUERIES:		{ eState = E_QUERIES; break; }
+
+						case Token::E_SYM_OPEN_PAR:
+						case Token::E_OP_LOGIC_NOT:
+						case Token::E_VARIABLE:
+							{
+								// Créer une nouvelle règle
+								eState = E_RULE;
+								break;
+							}
+
+						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+						}
+					}
+
+				case E_RULE:
+					{
+						switch (itToken->GetType())
+						{
+						case Token::E_EOF:
+						case Token::E_EOL:
+						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+
+						case Token::E_SYM_OPEN_PAR:
+						case Token::E_SYM_CLOSE_PAR:
+						case Token::E_SYM_START_FACTS:
+						case Token::E_SYM_START_QUERIES:
+						case Token::E_OP_IMPLIES_IFANDONLYIF:
+						case Token::E_OP_IMPLIES:
+						case Token::E_OP_LOGIC_AND:
+						case Token::E_OP_LOGIC_OR:
+						case Token::E_OP_LOGIC_XOR:
+						case Token::E_OP_LOGIC_NOT:
+						case Token::E_VARIABLE:
+							{
+								// Ajouter l'élément à la règle en cours
+								break;
+							}
+
+						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+						}
+						break;
+					}
+
+				case E_FACTS:
+					{
+						switch (itToken->GetType())
+						{
+						case Token::E_EOF:
+						case Token::E_EOL:
+						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+
+						case Token::E_VARIABLE:
+							{
+								// Appliquer la valeur à la variable
+								break;
+							}
+
+						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+						}
+						break;
+					}
+
+				case E_QUERIES:
+					{
+						switch (itToken->GetType())
+						{
+						case Token::E_EOF:
+						case Token::E_EOL:
+						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+
+						case Token::E_VARIABLE:
+							{
+								// Vérifier ou créer dans le VariableManager avant ou pas?
+								m_oPendingQueries.push_back(itToken->GetDesc()[0]);
+								break;
+							}
+
+						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+						}
+						break;
+					}
+
+				default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+				}
 			}
 			else
 			{
-				FT_COUT << "nop" << std::endl; // tmp
+				FT_ASSERT(false);
+				FT_COUT << "TOKEN NOP" << std::endl; // tmp
 			}
 		}
 
