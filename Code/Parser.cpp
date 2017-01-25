@@ -5,7 +5,6 @@
 
 namespace ft
 {
-
 	Parser::Parser()
 		: m_iStateFlags(E_NONE)
 		, m_iParenthesisLevel(0)
@@ -121,6 +120,11 @@ namespace ft
 				if (!(m_iStateFlags & E_WAITFOR_VARIABLE))
 					return false;
 				m_iStateFlags = E_WAITFOR_EOL_EOF | E_WAITFOR_OPERATOR | E_WAITFOR_IMPLY;
+				break;
+			}
+
+		case Token::E_COMMENT:
+			{
 				break;
 			}
 

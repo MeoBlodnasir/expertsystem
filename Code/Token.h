@@ -16,6 +16,7 @@ namespace ft
 			E_NONE = -1,	// Invalide
 			E_EOF,			// EndOfFile
 			E_EOL,			// EndOfLine
+			E_COMMENT,
 			E_SYNTAX_SYMBOL,
 			E_LOGIC_OPERATOR,
 			E_VARIABLE,

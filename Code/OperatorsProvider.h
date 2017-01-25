@@ -22,5 +22,8 @@ namespace ft
 		OperatorAND	m_oAnd;
 		OperatorOR	m_oOr;
 		OperatorXOR	m_oXor;
+
+		OperatorsProvider(const OperatorsProvider&);
+		OperatorsProvider& operator = (const OperatorsProvider&);
 	};
 }
