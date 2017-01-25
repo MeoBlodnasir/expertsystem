@@ -2,7 +2,7 @@
 
 #include "ErrorCode.h"
 #include "Token.h"
-#include "Rule.h"
+#include "RulesManager.h"
 
 #include <vector>
 
@@ -14,23 +14,23 @@ namespace ft
 
 	class Application
 	{
-	public:
+		public:
 
-		Application();
-		~Application();
+			Application();
+			~Application();
 
-		EErrorCode	Init(int ac, char **av);
-		EErrorCode	Destroy();
+			EErrorCode	Init(int ac, char **av);
+			EErrorCode	Destroy();
 
-		EErrorCode	Run();
+			EErrorCode	Run();
 
-	private:
+		private:
 
-		VariablesManager*	m_pVariablesManager;
-		OperatorsProvider*	m_pOperatorProvider;
-		std::vector<Rule>	m_oRules; // classe de gestionnaire de règles ? genre RulesManager
-		std::vector<char>	m_oPendingQueries;
+			VariablesManager*	m_pVariablesManager;
+			RulesManager*		m_pRulesManager;
+			OperatorsProvider*	m_pOperatorProvider;
+			std::vector<char>	m_oPendingQueries;
 
-		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);
+			EErrorCode	ReadTokens(const std::vector<Token>& oTokens);
 	};
 }

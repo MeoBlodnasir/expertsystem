@@ -5,19 +5,21 @@ namespace ft
 {
 	Variable::Variable()
 		: m_iId(0)
-		, m_eState(E_UNDEF)
+		, m_bState(false)
+		, m_bLock(false)
 	{
 	}
 
-	Variable::Variable(Id iId, EState eState)
+	Variable::Variable(Id iId, bool bState, bool bLock)
 		: m_iId(iId)
-		, m_eState(eState)
+		, m_bState(bState)
+		, m_bLock(bLock)
 	{
 	}
 
 	Variable::Variable(const Variable& oVar)
 		: m_iId(oVar.m_iId)
-		, m_eState(oVar.m_eState)
+		, m_bState(oVar.m_bState)
 	{
 	}
 
