@@ -1,0 +1,10 @@
+#https://fr.wikipedia.org/wiki/Cha%C3%AEnage_arri%C3%A8re#Fonctionnement
+
+A + B => C
+D + E => F
+C => G
+F => H
+
+=AB
+
+?GH

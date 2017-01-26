@@ -2,47 +2,44 @@
 #include "Rule.h"
 
 #include "Core.h"
-#include "Output.h" // tmp
+#include "Atom.h"
+#include "Proposition.h"
+
+#include <unordered_set>
 
 namespace ft
 {
-    Rule::Rule()
-        : m_oCondition()
-    {
-    }
+	Rule::Rule()
+	{
+	}
 
-    Rule::~Rule()
-    {
-    }
+	Rule::Rule(const Rule& oRule)
+		: m_oAntecedent(oRule.m_oAntecedent)
+		, m_oConsequent(oRule.m_oConsequent)
+	{
+	}
 
-    void		Rule::AddConditionElement(const IRuleElement* pElement)
-    {
-        FT_ASSERT(pElement != nullptr);
+	Rule::~Rule()
+	{
+	}
 
-        m_oCondition.AddElement(pElement);
-    }
+	ILogicElement::AtomId	Rule::GetConsequentAtomId() const
+	{
+		AtomIdSet oAtomsId;
 
-    void		Rule::AddResultElement(const IRuleElement* pElement)
-    {
-        FT_ASSERT(pElement != nullptr);
+		m_oConsequent.GetAtomsId(&oAtomsId);
 
-        m_oResult.AddElement(pElement);
-    }
+		FT_ASSERT(oAtomsId.size() > 0);
+		return *oAtomsId.begin();
+	}
 
-    bool 		Rule::Evaluate() const
-    {
-        bool	bConditions = false;
+	void		Rule::AddAntecedentElement(const ILogicElement& oElement)
+	{
+		m_oAntecedent.AddElement(oElement);
+	}
 
-        bConditions = m_oCondition.Evaluate();
-
-        FT_COUT << (bConditions ? "true" : "false") << std::endl; // temporaire, pour tester
-
-        return bConditions;
-    }
-
-	Variable::Id	Rule::GetResultVariableId() const
-    {
-		return (m_oResult.GetTopVariableId());
-    }
-
+	void		Rule::AddConsequentElement(const ILogicElement& oElement)
+	{
+		m_oConsequent.AddElement(oElement);
+	}
 }

@@ -11,8 +11,7 @@ namespace ft
 {
 	// fw
 	class VariablesManager;
-	class OperatorsProvider;
-	class RulesManager;
+	class InferenceEngine;
 
 	class Application
 	{
@@ -29,8 +28,7 @@ namespace ft
 	private:
 
 		VariablesManager*			m_pVariablesManager;
-		OperatorsProvider*			m_pOperatorProvider;
-		RulesManager*				m_pRulesManager;
+		InferenceEngine*			m_pInferenceEngine;
 		std::vector<Variable::Id>	m_oPendingQueries;
 
 		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);

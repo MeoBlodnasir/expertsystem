@@ -1,27 +1,26 @@
 #pragma once
 
-#include "IRuleElement.h"
+#include "Atom.h"
 
 namespace ft
 {
 	// fw
 	class VariablesManager;
 
-	class Variable : public IRuleElement
+	class Variable
 	{
 	public:
 
-		typedef	char	Id;
+		typedef	Atom::Id	Id;
 
+		// Constructeurs publics pour les besoins de la map dans le VariablesManager
+		// mais une variable n'est pas sensée être créée par aucun objet autre que le VariablesManager
 		Variable();
 		Variable(Id iId, bool bState = false, bool bLock = false);
 		Variable(const Variable& oVar);
-		virtual ~Variable();
+		~Variable();
 
-		// implémentation interface IRuleElement
-		virtual EType	GetType() const					{ return E_VARIABLE; }
-
-		inline Id		GetId() const					{ return m_iId; }
+		inline Id	GetId() const					{ return m_iId; }
 		inline bool	GetState() const				{ return m_bState; }
 		inline bool	IsLocked() const				{ return m_bLock; }
 

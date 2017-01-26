@@ -1,11 +1,13 @@
 
 #include "Application.h"
 
+#include "Core.h"
 #include "File.h"
 #include "Lexer.h"
 #include "VariablesManager.h"
-#include "RulesManager.h"
-#include "OperatorsProvider.h"
+#include "InferenceEngine.h"
+#include "LogicOperator.h"
+#include "Proposition.h"
 #include "Parser.h"
 
 #include "Output.h" // tmp
@@ -14,8 +16,7 @@ namespace ft
 {
 	Application::Application()
 		: m_pVariablesManager(nullptr)
-		, m_pOperatorProvider(nullptr)
-		, m_pRulesManager(nullptr)
+		, m_pInferenceEngine(nullptr)
 	{
 	}
 
@@ -31,10 +32,9 @@ namespace ft
 		std::vector<Token>	oTokens;
 
 		m_pVariablesManager = new VariablesManager();
-		m_pRulesManager = new RulesManager(m_pVariablesManager);
-		m_pOperatorProvider = new OperatorsProvider();
+		m_pInferenceEngine = new InferenceEngine();
 
-		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test.txt"));
+		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/Test_Parsing_01.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 		FT_TEST_OK(ReadTokens(oTokens));
 
@@ -44,8 +44,7 @@ namespace ft
 	EErrorCode	Application::Destroy()
 	{
 		FT_SAFE_DELETE(m_pVariablesManager);
-		FT_SAFE_DELETE(m_pRulesManager);
-		FT_SAFE_DELETE(m_pOperatorProvider);
+		FT_SAFE_DELETE(m_pInferenceEngine);
 
 		return FT_OK;
 	}
@@ -54,55 +53,80 @@ namespace ft
 	{
 		// Vérifie que c'est initialisé
 		FT_ASSERT(m_pVariablesManager != nullptr);
-		FT_ASSERT(m_pRulesManager != nullptr);
-		FT_ASSERT(m_pOperatorProvider != nullptr);
-
-		Rule	oRule;
-
-		const Variable*	pA = nullptr;
-		const Variable*	pB = nullptr;
-		const Variable*	pC = nullptr;
-		const Variable*	pD = nullptr;
-
-		pA = m_pVariablesManager->CreateVariable('A', true, false);
-		pB = m_pVariablesManager->CreateVariable('B', false, false);
-		pC = m_pVariablesManager->CreateVariable('C', false, false);
-		pD = m_pVariablesManager->CreateVariable('D', false, false);
-
-		oRule.AddConditionElement(pA);
-		oRule.AddConditionElement(pA);
-		oRule.AddResultElement(pB);
-		oRule.AddConditionElement(m_pOperatorProvider->And());
-		oRule.Evaluate();	// true
+		FT_ASSERT(m_pInferenceEngine != nullptr);
 
 
-		FT_COUT << pB->GetState() << std::endl;
-		m_pRulesManager->AddRule(oRule);
-		m_pRulesManager->EvaluateRules();
-		FT_COUT << pB->GetState() << std::endl;
+		// Création de Rules
+		std::vector<Rule> oRules;
 
+		FT_COUT << "A + B => C" << std::endl;
+		oRules.push_back(Rule());
+		oRules.back().AddAntecedentElement(Atom('A'));
+		oRules.back().AddAntecedentElement(Atom('B'));
+		oRules.back().AddAntecedentElement(OperatorAND());
+		oRules.back().AddConsequentElement(Atom('C'));
 
-		oRule.AddConditionElement(pB);
-		oRule.AddConditionElement(m_pOperatorProvider->And());
-		oRule.Evaluate();	// false
+		FT_COUT << "D | E => F" << std::endl;
+		oRules.push_back(Rule());
+		oRules.back().AddAntecedentElement(Atom('D'));
+		oRules.back().AddAntecedentElement(Atom('E'));
+		oRules.back().AddAntecedentElement(OperatorOR());
+		oRules.back().AddConsequentElement(Atom('F'));
 
-		oRule.AddConditionElement(pA);
-		oRule.AddConditionElement(m_pOperatorProvider->Or());
-		oRule.Evaluate();	// true
+		FT_COUT << "C => G" << std::endl;
+		oRules.push_back(Rule());
+		oRules.back().AddAntecedentElement(Atom('C'));
+		oRules.back().AddConsequentElement(Atom('G'));
 
-		oRule.AddConditionElement(pA);
-		oRule.AddConditionElement(m_pOperatorProvider->Xor());
-		oRule.Evaluate();	// false
+		FT_COUT << "(!G + C) | F => H" << std::endl;
+		oRules.push_back(Rule());
+		oRules.back().AddAntecedentElement(Atom('G'));
+		oRules.back().AddAntecedentElement(OperatorNOT());
+		oRules.back().AddAntecedentElement(Atom('C'));
+		oRules.back().AddAntecedentElement(OperatorAND());
+		oRules.back().AddAntecedentElement(Atom('F'));
+		oRules.back().AddAntecedentElement(OperatorOR());
+		oRules.back().AddConsequentElement(Atom('H'));
 
-		oRule.AddConditionElement(pA);
-		oRule.AddConditionElement(m_pOperatorProvider->Not());
-		oRule.AddConditionElement(m_pOperatorProvider->Xor());
-		oRule.Evaluate();	// false
+		// Récupération des Atoms des Rules pour créer des Variables
+		AtomIdSet	oAtomSet;
+		for (std::vector<Rule>::const_iterator itRule = oRules.begin(), itEnd = oRules.end(); itRule != itEnd; ++itRule)
+		{
+			itRule->GetAntecedent().GetAtomsId(&oAtomSet);
+			itRule->GetConsequent().GetAtomsId(&oAtomSet);
+		}
+		for (AtomIdSet::const_iterator itId = oAtomSet.begin(), itEnd = oAtomSet.end(); itId != itEnd; ++itId)
+		{
+			m_pVariablesManager->CreateVariable(*itId);
+		}
 
-		oRule.AddConditionElement(pB);
-		oRule.AddConditionElement(m_pOperatorProvider->Not());
-		oRule.AddConditionElement(m_pOperatorProvider->Or());
-		oRule.Evaluate();	// true
+		// Déclaration de faits initiaux
+		// =AE
+		m_pVariablesManager->CreateVariable('A', true);
+		m_pVariablesManager->CreateVariable('E', true);
+		m_pVariablesManager->DebugPrint();
+
+		// Proposition d'évaluation de C
+		bool bC = oRules[0].GetAntecedent().Evaluate(m_pVariablesManager);
+		FT_COUT << "Evaluation de C : " << bC << std::endl;
+
+		// Proposition d'évaluation de F
+		bool bF = oRules[1].GetAntecedent().Evaluate(m_pVariablesManager);
+		FT_COUT << "Evaluation de F : " << bF << std::endl;
+
+		// Proposition d'évaluation de G
+		Proposition	oPropG(oRules[2].GetAntecedent());
+		oPropG.ReplaceAtom('C', oRules[0].GetAntecedent());
+		bool bG = oPropG.Evaluate(m_pVariablesManager);
+		FT_COUT << "Evaluation de G : " << bG << std::endl;
+
+		// Proposition d'évaluation de H
+		Proposition	oPropH(oRules[3].GetAntecedent());
+		oPropH.ReplaceAtom('G', oRules[2].GetAntecedent());
+		oPropH.ReplaceAtom('C', oRules[0].GetAntecedent());
+		oPropH.ReplaceAtom('F', oRules[1].GetAntecedent());
+		bool bH = oPropH.Evaluate(m_pVariablesManager);
+		FT_COUT << "Evaluation de H : " << bH << std::endl;
 
 		return FT_OK;
 	}

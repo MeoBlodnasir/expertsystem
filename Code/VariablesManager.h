@@ -14,13 +14,13 @@ namespace ft
 		VariablesManager();
 		~VariablesManager();
 
-		const Variable*	CreateVariable(Variable::Id iId, bool bCreationState = false, bool bCreationLock = false);
+		const Variable&	CreateVariable(Variable::Id iId, bool bCreationState = false, bool bCreationLock = false);
 
-		// Les accesseurs et mutateurs créent la variable requise si elle n'existe pas
-		const Variable*	GetVariable(Variable::Id iId);
-
+		const Variable&	GetVariable(Variable::Id iId) const;
 		void			SetVariableState(Variable::Id iId, bool bState);
 		void			SetVariableLock(Variable::Id iId, bool bLock);
+
+		void			DebugPrint() const;
 
 	private:
 
