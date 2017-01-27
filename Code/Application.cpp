@@ -60,10 +60,11 @@ namespace ft
 		Rule oRule;
 		oRule.AddAntecedentElement(Atom('A'));
 		oRule.AddConsequentElement(Atom('B'));
-		oRule.AddConsequentElement(OperatorAND());
 		oRule.AddConsequentElement(Atom('C'));
 		oRule.AddConsequentElement(OperatorAND());
 		oRule.AddConsequentElement(Atom('D'));
+		oRule.AddConsequentElement(OperatorAND());
+		oRule.SetBidirectionnal(true);
 		m_pRulesManager->AddRule(oRule);
 		m_pRulesManager->PrintRules();
 		m_pRulesManager->DivideRules();

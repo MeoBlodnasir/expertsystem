@@ -38,13 +38,39 @@ namespace ft
 		m_oRules.push_back(oRule);
 	}
 
-	void				RulesManager::DivideRules()
+	void				RulesManager::DivideBidirectionnalRules()
 	{
 		std::vector<Rule> oNewRules;
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); )
+
+		for (std::vector<Rule>::iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); itRule++)
+		{
+			if (itRule->IsBidirectionnal())
+			{
+				Rule oRule;
+				oRule.AddAntecedentElement(itRule->GetConsequent());
+				oRule.AddConsequentElement(itRule->GetAntecedent());
+				oNewRules.push_back(oRule);
+				itRule->SetBidirectionnal(false);
+			}
+		}
+		for (std::vector<Rule>::iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
+		{
+			m_oRules.push_back(*itNewRule);
+		}
+
+	}
+
+	void				RulesManager::DivideRules()
+	{
+		FT_COUT << m_oRules.size() << std::endl;
+		DivideBidirectionnalRules();
+		FT_COUT << m_oRules.size() << std::endl;
+		std::vector<Rule> oNewRules;
+		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
 		{
 			AtomIdSet pIdSet;
-			itRule->GetConsequent().GetAtomsId(&pIdSet);
+			auto cons = itRule->GetConsequent();
+			cons.GetAtomsId(&pIdSet);
 			if (pIdSet.size() > 1)
 			{
 				for (std::unordered_set<Atom::Id>::iterator itSet = pIdSet.begin(); itSet != pIdSet.end(); itSet++)
@@ -54,18 +80,20 @@ namespace ft
 					oRule.AddConsequentElement(Atom(*itSet));
 					oNewRules.push_back(oRule);
 				}
-					itRule = m_oRules.erase(itRule);
 
 			}
-				else
-					itRule++;
-		}
-		for (std::vector<Rule>::const_iterator itRule = oNewRules.begin(); itRule != oNewRules.end();itRule++ )
-		{
-			m_oRules.push_back(*itRule);
+			else
+				{
+					Rule oRule;
+					oRule.AddAntecedentElement(itRule->GetAntecedent());
+					oRule.AddConsequentElement(itRule->GetConsequent());
+					oNewRules.push_back(oRule);
+				}
 
 		}
+		m_oRules.clear();
 
-
+		for (std::vector<Rule>::const_iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
+			m_oRules.push_back(*itNewRule);
 	}
 }

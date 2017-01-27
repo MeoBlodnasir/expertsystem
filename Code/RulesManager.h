@@ -18,7 +18,7 @@ namespace ft
 
 
 		private:
-
+			void				DivideBidirectionnalRules();
 			std::vector<Rule>	m_oRules;
 	};
 }
