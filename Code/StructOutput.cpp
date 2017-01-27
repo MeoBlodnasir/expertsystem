@@ -31,17 +31,17 @@ namespace ft
 				const OperatorIMP*	pImp	= nullptr;
 				const OperatorBIMP*	pBimp	= nullptr;
 
-				if ((pNot = dynamic_cast<const OperatorNOT*>(*itElem)))
+				if ((pNot = dynamic_cast<const OperatorNOT*>(*itElem)) != nullptr)
 					oOs << *pNot;
-				else if ((pAnd = dynamic_cast<const OperatorAND*>(*itElem)))
+				else if ((pAnd = dynamic_cast<const OperatorAND*>(*itElem)) != nullptr)
 					oOs << *pAnd;
-				else if ((pOr = dynamic_cast<const OperatorOR*>(*itElem)))
+				else if ((pOr = dynamic_cast<const OperatorOR*>(*itElem)) != nullptr)
 					oOs << *pOr;
-				else if ((pXor = dynamic_cast<const OperatorXOR*>(*itElem)))
+				else if ((pXor = dynamic_cast<const OperatorXOR*>(*itElem)) != nullptr)
 					oOs << *pXor;
-				else if ((pImp = dynamic_cast<const OperatorIMP*>(*itElem)))
+				else if ((pImp = dynamic_cast<const OperatorIMP*>(*itElem)) != nullptr)
 					oOs << *pImp;
-				else if ((pBimp = dynamic_cast<const OperatorBIMP*>(*itElem)))
+				else if ((pBimp = dynamic_cast<const OperatorBIMP*>(*itElem)) != nullptr)
 					oOs << *pBimp;
 			}
 		}
@@ -61,37 +61,37 @@ namespace ft
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorNOT& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorNOT& /*oOp*/)
 	{
 		oOs << '!';
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorAND& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorAND& /*oOp*/)
 	{
 		oOs << '+';
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorOR& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorOR& /*oOp*/)
 	{
 		oOs << '|';
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorXOR& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorXOR& /*oOp*/)
 	{
 		oOs << '^';
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorIMP& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorIMP& /*oOp*/)
 	{
 		oOs << "=>";
 		return oOs;
 	}
 
-	std::ostream&	operator << (std::ostream& oOs, const OperatorBIMP& oOp)
+	std::ostream&	operator << (std::ostream& oOs, const OperatorBIMP& /*oOp*/)
 	{
 		oOs << "<=>";
 		return oOs;

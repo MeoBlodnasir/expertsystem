@@ -9,6 +9,7 @@ namespace ft
 {
 	// fw
 	class VariablesManager;
+	class RulesManager;
 	class InferenceEngine;
 
 	class Application
@@ -26,6 +27,7 @@ namespace ft
 	private:
 
 		VariablesManager*					m_pVariablesManager;
+		RulesManager*						m_pRulesManager;
 		InferenceEngine*					m_pInferenceEngine;
 		std::vector<Rule>					m_oRules;
 		std::vector<ILogicElement::AtomId>	m_oPendingQueries;

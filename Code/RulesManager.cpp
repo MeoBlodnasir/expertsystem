@@ -24,16 +24,7 @@ namespace ft
 	void				RulesManager::PrintRules()
 	{
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; itRule++)
-		{
-			itRule->GetAntecedent().Print();
-			if (itRule->IsBidirectionnal())
-				FT_COUT << " <=> ";
-			else
-				FT_COUT << " => ";
-			itRule->GetConsequent().Print();
-			FT_COUT << std::endl;
-		}
-
+			FT_COUT << *itRule << std::endl;
 	}
 
 	void	RulesManager::AddRule(const Rule& oRule)

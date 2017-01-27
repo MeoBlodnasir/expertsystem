@@ -5,6 +5,7 @@
 #include "File.h"
 #include "Lexer.h"
 #include "VariablesManager.h"
+#include "RulesManager.h"
 #include "InferenceEngine.h"
 #include "LogicOperator.h"
 #include "Proposition.h"
@@ -36,6 +37,7 @@ namespace ft
 		Parser::ParsingData	oParsingData;
 
 		m_pVariablesManager = new VariablesManager();
+		m_pRulesManager = new RulesManager();
 		m_pInferenceEngine = new InferenceEngine();
 
 		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/Regles_Simples_03.txt"));
@@ -66,6 +68,7 @@ namespace ft
 	EErrorCode	Application::Destroy()
 	{
 		FT_SAFE_DELETE(m_pVariablesManager);
+		FT_SAFE_DELETE(m_pRulesManager);
 		FT_SAFE_DELETE(m_pInferenceEngine);
 
 		return FT_OK;
@@ -81,6 +84,19 @@ namespace ft
 		{
 			FT_COUT << "Evaluation de " << *itQuery << " : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, m_oRules, *itQuery) << std::endl;
 		}
+
+		Rule oRule;
+		oRule.SetBidirectionnal(true);
+		oRule.AddAntecedentElement(Atom('A'));
+		oRule.AddConsequentElement(Atom('B'));
+		oRule.AddConsequentElement(OperatorAND());
+		oRule.AddConsequentElement(Atom('C'));
+		oRule.AddConsequentElement(OperatorAND());
+		oRule.AddConsequentElement(Atom('D'));
+		m_pRulesManager->AddRule(oRule);
+		m_pRulesManager->PrintRules();
+		m_pRulesManager->DivideRules();
+		m_pRulesManager->PrintRules();
 
 		return FT_OK;
 	}
