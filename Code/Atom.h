@@ -29,6 +29,7 @@ namespace ft
 
 		inline Id		GetId() const					{ return m_iId; }
 		inline void		SetId(Id iId)					{ m_iId = iId; }
+		virtual	void			Print() const override;
 
 	private:
 

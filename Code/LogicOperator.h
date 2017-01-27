@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "Types.h"
 #include "ILogicElement.h"
+#include "Output.h"
 
 namespace ft
 {
@@ -73,6 +74,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorNOT(); }
+		virtual	void			Print() const override					{ FT_COUT << "!"; }
 		// implémentation interface AUnaryOperator
 		virtual bool			Evaluate(bool b) const override				{ return !b; }
 	};
@@ -87,6 +89,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorAND(); }
+		virtual	void			Print() const override					{ FT_COUT << "&"; }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 && b2; }
 	};
@@ -101,6 +104,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorOR(); }
+		virtual	void			Print() const override					{ FT_COUT << "|"; }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 || b2; }
 	};
@@ -115,6 +119,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorXOR(); }
+		virtual	void			Print() const override					{ FT_COUT << "^"; }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 ^ b2; }
 	};
@@ -129,6 +134,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorIMP(); }
+		virtual	void			Print() const override					{ FT_COUT << "=>"; }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return (!b1) || b2; }
 	};
@@ -143,6 +149,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorBIMP(); }
+		virtual	void			Print() const override					{ FT_COUT << "<=>"; }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 == b2; }
 	};

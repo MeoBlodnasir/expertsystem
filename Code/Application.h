@@ -4,6 +4,7 @@
 #include "Variable.h"
 #include "Token.h"
 #include "Rule.h"
+#include "RulesManager.h"
 
 #include <vector>
 
@@ -29,6 +30,7 @@ namespace ft
 
 		VariablesManager*			m_pVariablesManager;
 		InferenceEngine*			m_pInferenceEngine;
+		RulesManager*				m_pRulesManager;
 		std::vector<Variable::Id>	m_oPendingQueries;
 
 		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);

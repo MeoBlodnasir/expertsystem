@@ -3,6 +3,7 @@
 
 #include "VariablesManager.h"
 #include "Core.h"
+#include "Output.h"
 
 namespace ft
 {
@@ -26,6 +27,12 @@ namespace ft
 
 	Atom::~Atom()
 	{
+	}
+
+	void Atom::Print() const
+	{
+		FT_COUT << GetId();
+
 	}
 
 	ILogicElement*	Atom::Duplicate() const
