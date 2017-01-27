@@ -105,19 +105,19 @@ namespace ft
 		m_pVariablesManager->CreateVariable('A', true);
 		m_pVariablesManager->CreateVariable('E', true);
 		m_pVariablesManager->DebugPrint();
-
+/*
 		// Proposition d'évaluation de C
-		bool bC = oRules[0].GetAntecedent().Evaluate(m_pVariablesManager);
+		bool bC = oRules[0].GetAntecedent().Evaluate(*m_pVariablesManager);
 		FT_COUT << "Evaluation de C : " << bC << std::endl;
 
 		// Proposition d'évaluation de F
-		bool bF = oRules[1].GetAntecedent().Evaluate(m_pVariablesManager);
+		bool bF = oRules[1].GetAntecedent().Evaluate(*m_pVariablesManager);
 		FT_COUT << "Evaluation de F : " << bF << std::endl;
 
 		// Proposition d'évaluation de G
 		Proposition	oPropG(oRules[2].GetAntecedent());
 		oPropG.ReplaceAtom('C', oRules[0].GetAntecedent());
-		bool bG = oPropG.Evaluate(m_pVariablesManager);
+		bool bG = oPropG.Evaluate(*m_pVariablesManager);
 		FT_COUT << "Evaluation de G : " << bG << std::endl;
 
 		// Proposition d'évaluation de H
@@ -125,9 +125,13 @@ namespace ft
 		oPropH.ReplaceAtom('G', oRules[2].GetAntecedent());
 		oPropH.ReplaceAtom('C', oRules[0].GetAntecedent());
 		oPropH.ReplaceAtom('F', oRules[1].GetAntecedent());
-		bool bH = oPropH.Evaluate(m_pVariablesManager);
+		bool bH = oPropH.Evaluate(*m_pVariablesManager);
 		FT_COUT << "Evaluation de H : " << bH << std::endl;
-
+		*/
+		FT_COUT << "Evaluation de C : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, oRules, 'C') << std::endl;
+		FT_COUT << "Evaluation de F : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, oRules, 'F') << std::endl;
+		FT_COUT << "Evaluation de G : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, oRules, 'G') << std::endl;
+		FT_COUT << "Evaluation de H : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, oRules, 'H') << std::endl;
 		return FT_OK;
 	}
 
@@ -143,7 +147,7 @@ namespace ft
 
 		Parser				oParser;
 		ETokenReadingState	eState = E_NONE;
-		
+
 		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
 		{
 			if (oParser.CheckToken(*itToken))
@@ -151,97 +155,97 @@ namespace ft
 				switch (eState)
 				{
 				case E_NONE:
+				{
+					switch (itToken->GetType())
 					{
-						switch (itToken->GetType())
-						{
-						case Token::E_EOF:
-						case Token::E_EOL:
-						case Token::E_COMMENT:					{ break; }
+					case Token::E_EOF:
+					case Token::E_EOL:
+					case Token::E_COMMENT: { break; }
 
-						case Token::E_SYM_START_FACTS:			{ eState = E_FACTS; break; }
+					case Token::E_SYM_START_FACTS: { eState = E_FACTS; break; }
 
-						case Token::E_SYM_START_QUERIES:		{ eState = E_QUERIES; break; }
+					case Token::E_SYM_START_QUERIES: { eState = E_QUERIES; break; }
 
-						case Token::E_SYM_OPEN_PAR:
-						case Token::E_OP_LOGIC_NOT:
-						case Token::E_VARIABLE:
-							{
-								// Créer une nouvelle règle
-								eState = E_RULE;
-								break;
-							}
-
-						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
-						}
+					case Token::E_SYM_OPEN_PAR:
+					case Token::E_OP_LOGIC_NOT:
+					case Token::E_VARIABLE:
+					{
+						// Créer une nouvelle règle
+						eState = E_RULE;
 						break;
 					}
+
+					default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+					}
+					break;
+				}
 
 				case E_RULE:
+				{
+					switch (itToken->GetType())
 					{
-						switch (itToken->GetType())
-						{
-						case Token::E_EOF:
-						case Token::E_EOL:
-						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+					case Token::E_EOF:
+					case Token::E_EOL:
+					case Token::E_COMMENT: { eState = E_NONE; break; }
 
-						case Token::E_SYM_OPEN_PAR:
-						case Token::E_SYM_CLOSE_PAR:
-						case Token::E_SYM_START_FACTS:
-						case Token::E_SYM_START_QUERIES:
-						case Token::E_OP_IMPLIES_IFANDONLYIF:
-						case Token::E_OP_IMPLIES:
-						case Token::E_OP_LOGIC_AND:
-						case Token::E_OP_LOGIC_OR:
-						case Token::E_OP_LOGIC_XOR:
-						case Token::E_OP_LOGIC_NOT:
-						case Token::E_VARIABLE:
-							{
-								// Ajouter l'élément à la règle en cours
-								break;
-							}
-
-						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
-						}
+					case Token::E_SYM_OPEN_PAR:
+					case Token::E_SYM_CLOSE_PAR:
+					case Token::E_SYM_START_FACTS:
+					case Token::E_SYM_START_QUERIES:
+					case Token::E_OP_IMPLIES_IFANDONLYIF:
+					case Token::E_OP_IMPLIES:
+					case Token::E_OP_LOGIC_AND:
+					case Token::E_OP_LOGIC_OR:
+					case Token::E_OP_LOGIC_XOR:
+					case Token::E_OP_LOGIC_NOT:
+					case Token::E_VARIABLE:
+					{
+						// Ajouter l'élément à la règle en cours
 						break;
 					}
+
+					default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+					}
+					break;
+				}
 
 				case E_FACTS:
+				{
+					switch (itToken->GetType())
 					{
-						switch (itToken->GetType())
-						{
-						case Token::E_EOF:
-						case Token::E_EOL:
-						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+					case Token::E_EOF:
+					case Token::E_EOL:
+					case Token::E_COMMENT: { eState = E_NONE; break; }
 
-						case Token::E_VARIABLE:
-							{
-								// Appliquer la valeur à la variable
-								break;
-							}
-
-						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
-						}
+					case Token::E_VARIABLE:
+					{
+						// Appliquer la valeur à la variable
 						break;
 					}
+
+					default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+					}
+					break;
+				}
 
 				case E_QUERIES:
+				{
+					switch (itToken->GetType())
 					{
-						switch (itToken->GetType())
-						{
-						case Token::E_EOF:
-						case Token::E_EOL:
-						case Token::E_COMMENT:					{ eState = E_NONE; break; }
+					case Token::E_EOF:
+					case Token::E_EOL:
+					case Token::E_COMMENT: { eState = E_NONE; break; }
 
-						case Token::E_VARIABLE:
-							{
-								// Vérifier ou créer dans le VariableManager avant ou pas?
-								break;
-							}
-
-						default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
-						}
+					case Token::E_VARIABLE:
+					{
+						// Vérifier ou créer dans le VariableManager avant ou pas?
 						break;
 					}
+
+					default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
+					}
+					break;
+				}
 
 				default: { FT_NOT_IMPLEMENTED("Erreur Parsing"); break; }
 				}

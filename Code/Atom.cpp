@@ -33,9 +33,9 @@ namespace ft
 		return new Atom(*this);
 	}
 
-	bool	Atom::Evaluate(const VariablesManager* pVariablesManager) const
+	bool	Atom::Evaluate(const VariablesManager& pVariablesManager) const
 	{
-		return pVariablesManager->GetVariable(m_iId).GetState();
+		return pVariablesManager.GetVariable(m_iId).GetState();
 	}
 
 	bool	Atom::SelfAssert() const

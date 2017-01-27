@@ -39,7 +39,7 @@ namespace ft
 		return new Proposition(*this);
 	}
 
-	bool	Proposition::Evaluate(const VariablesManager* pVariablesManager) const
+	bool	Proposition::Evaluate(const VariablesManager& pVariablesManager) const
 	{
 		FT_ASSERT(SelfAssert());
 

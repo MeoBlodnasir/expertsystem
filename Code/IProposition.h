@@ -28,7 +28,7 @@ namespace ft
 
 		inline virtual EType	GetType() const override	{ return E_PROPOSITION; }
 
-		virtual bool			Evaluate(const VariablesManager*) const = 0; // Ce serait bien que ça soit const le VariablesManager
+		virtual bool			Evaluate(const VariablesManager&) const = 0;
 		virtual bool			SelfAssert() const = 0;
 		virtual void			GetAtomsId(AtomIdSet* pIdSet) const = 0;
 	};
