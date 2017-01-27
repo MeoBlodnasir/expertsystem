@@ -29,5 +29,6 @@ namespace ft
 
 		virtual	EType			GetType() const = 0;
 		virtual	ILogicElement*	Duplicate() const = 0;
+		virtual	void				Print() const = 0;
 	};
 }

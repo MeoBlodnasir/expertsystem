@@ -24,6 +24,7 @@ namespace ft
 
 		void			AddElement(const ILogicElement& oElement);
 		void			ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew);
+		virtual void			Print() const override;
 
 	private:
 

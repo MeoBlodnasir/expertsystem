@@ -3,6 +3,7 @@
 
 #include "Types.h"
 #include "Core.h"
+#include "Output.h"
 #include "Atom.h"
 #include "LogicOperator.h"
 
@@ -131,4 +132,14 @@ namespace ft
 			}
 		}
 	}
+
+	void	Proposition::Print() const
+	{
+		for (std::vector<ILogicElement*>::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		{
+			(*itElem)->Print();
+		}
+
+	}
 }
+

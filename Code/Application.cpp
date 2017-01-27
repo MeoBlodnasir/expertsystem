@@ -33,6 +33,7 @@ namespace ft
 
 		m_pVariablesManager = new VariablesManager();
 		m_pInferenceEngine = new InferenceEngine();
+		m_pRulesManager = new RulesManager();
 
 		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/Test_Parsing_01.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
@@ -55,6 +56,19 @@ namespace ft
 		FT_ASSERT(m_pVariablesManager != nullptr);
 		FT_ASSERT(m_pInferenceEngine != nullptr);
 
+
+		Rule oRule;
+		oRule.AddAntecedentElement(Atom('A'));
+		oRule.AddConsequentElement(Atom('B'));
+		oRule.AddConsequentElement(Atom('C'));
+		oRule.AddConsequentElement(OperatorAND());
+		oRule.AddConsequentElement(Atom('D'));
+		oRule.AddConsequentElement(OperatorAND());
+		oRule.SetBidirectionnal(true);
+		m_pRulesManager->AddRule(oRule);
+		m_pRulesManager->PrintRules();
+		m_pRulesManager->DivideRules();
+		m_pRulesManager->PrintRules();
 
 		// Création de Rules
 		std::vector<Rule> oRules;
