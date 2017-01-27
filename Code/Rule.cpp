@@ -10,11 +10,13 @@
 namespace ft
 {
 	Rule::Rule()
+		: bIsBidirectionnal(false)
 	{
 	}
 
 	Rule::Rule(const Rule& oRule)
-		: m_oAntecedent(oRule.m_oAntecedent)
+		: bIsBidirectionnal(oRule.bIsBidirectionnal)
+		, m_oAntecedent(oRule.m_oAntecedent)
 		, m_oConsequent(oRule.m_oConsequent)
 	{
 	}

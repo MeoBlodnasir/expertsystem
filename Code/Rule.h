@@ -10,6 +10,8 @@ namespace ft
 	{
 	public:
 
+		bool	bIsBidirectionnal;
+
 		Rule();
 		Rule(const Rule& oRule);
 		~Rule();
