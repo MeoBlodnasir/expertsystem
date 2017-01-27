@@ -1,6 +1,7 @@
 
 #include "InferenceEngine.h"
 
+#include "Types.h"
 #include "Core.h"
 #include "VariablesManager.h"
 #include "Output.h"
@@ -51,7 +52,7 @@ namespace ft
 					for (std::vector<const Proposition*>::const_iterator itProposition = oPropositions.begin(), itPropositionEnd = oPropositions.end(); itProposition != itPropositionEnd; ++itProposition)
 						SubGoalPropostion.AddElement(**itProposition);
 
-					for (int i = 1; i < oPropositions.size(); i++)
+					for (uint32 i = 1; i < oPropositions.size(); ++i)
 						SubGoalPropostion.AddElement(OperatorOR());
 					MasterProposition.ReplaceAtom(*itAtomId, SubGoalPropostion);
 					isFinished = false;
