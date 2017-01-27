@@ -10,7 +10,6 @@ namespace ft
 	{
 	public:
 
-		bool	bIsBidirectionnal;
 
 		Rule();
 		Rule(const Rule& oRule);
@@ -23,9 +22,13 @@ namespace ft
 		void		AddAntecedentElement(const ILogicElement& oElement);
 		void		AddConsequentElement(const ILogicElement& oElement);
 
+		inline void		SetBidirectionnal(bool bValue)			{ m_bIsBidirectionnal = bValue; }
+		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
+
 	private:
 
 		Proposition		m_oAntecedent;
 		Proposition		m_oConsequent;
+		bool			m_bIsBidirectionnal;
 	};
 }
