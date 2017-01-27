@@ -23,13 +23,12 @@ namespace ft
 				virtual	ILogicElement*	Duplicate() const override;
 
 		// implémentation interface IProposition
-		virtual bool	Evaluate(const VariablesManager& pVariablesManager) const override;
+		virtual bool	Evaluate(const VariablesManager& oVariablesManager) const override;
 		virtual bool	SelfAssert() const override;
 		virtual void	GetAtomsId(std::unordered_set<Id>* pIdSet) const override;
 
 		inline Id		GetId() const					{ return m_iId; }
 		inline void		SetId(Id iId)					{ m_iId = iId; }
-		virtual	void			Print() const override;
 
 	private:
 

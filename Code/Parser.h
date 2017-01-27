@@ -1,17 +1,48 @@
 #pragma once
 
 #include "Types.h"
+#include "Rule.h"
+#include "Token.h"
+#include "ILogicElement.h"
+
+#include <stack>
+#include <vector>
 
 namespace ft
 {
 	//fw
-	class Token;
+	class VariablesManager;
 
 	class Parser
 	{
 	public:
 
-		enum EStateFlag
+		struct ParsingData
+		{
+			std::vector<Rule>*					pRules;
+			VariablesManager*					pFacts;
+			std::vector<ILogicElement::AtomId>*	pQueries;
+
+			ParsingData() : pRules(nullptr), pFacts(nullptr), pQueries(nullptr)	{}
+		};
+
+		Parser();
+		~Parser();
+
+		void		ResetParser();
+		EErrorCode	ReadTokens(ParsingData* pData, const std::vector<Token>& oTokens);
+
+	private:
+
+		enum ETokenReadingState
+		{
+			E_UNDEFINED = -1,
+			E_RULE,
+			E_FACTS,
+			E_QUERIES
+		};
+
+		enum ECheckTokenStateFlag
 		{
 			E_NONE					= 0,
 			E_WAITFOR_ENTRY			= (1 << 0),
@@ -25,15 +56,29 @@ namespace ft
 			E_WAITONLY_VARIABLE		= (1 << 8)
 		};
 
-		Parser();
-		~Parser();
+		enum ERuleBuildingState
+		{
+			E_ANTECEDENT,
+			E_CONSEQUENT
+		};
 
-		void	Reset();
+		// Etats généraux
+		ETokenReadingState			m_eReadingState;
+		// Etats de CheckToken
+		int32						m_iCheckTokenStateFlags;
+		int32						m_iCheckTokenParenthesisLevel;
+		// Etats de RuleBuilding
+		std::stack<const Token*>	m_oPendingElems;
+		ERuleBuildingState			m_eRuleBuildingState;
+
+		void	ResetCheckTokenStates();
 		bool	CheckToken(const Token& oToken);
 
-	private:
+		void	ResetBuildRuleStates();
+		void	BuildRule(Rule* pRule, const Token& oToken);
 
-		int32	m_iStateFlags;
-		int32	m_iParenthesisLevel;
+		void	AddElementToRule(Rule* pRule, const ILogicElement& oElement);
+		void	ForceAddElementToRuleFromToken(Rule* pRule, const Token& oToken);
+		void	UnstackPendingElements(Rule* pRule);
 	};
 }

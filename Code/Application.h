@@ -1,10 +1,7 @@
 #pragma once
 
 #include "ErrorCode.h"
-#include "Variable.h"
-#include "Token.h"
 #include "Rule.h"
-#include "RulesManager.h"
 
 #include <vector>
 
@@ -28,11 +25,9 @@ namespace ft
 
 	private:
 
-		VariablesManager*			m_pVariablesManager;
-		InferenceEngine*			m_pInferenceEngine;
-		RulesManager*				m_pRulesManager;
-		std::vector<Variable::Id>	m_oPendingQueries;
-
-		EErrorCode	ReadTokens(const std::vector<Token>& oTokens);
+		VariablesManager*					m_pVariablesManager;
+		InferenceEngine*					m_pInferenceEngine;
+		std::vector<Rule>					m_oRules;
+		std::vector<ILogicElement::AtomId>	m_oPendingQueries;
 	};
 }

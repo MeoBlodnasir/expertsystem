@@ -31,6 +31,5 @@ namespace ft
 		virtual bool			Evaluate(const VariablesManager&) const = 0;
 		virtual bool			SelfAssert() const = 0;
 		virtual void			GetAtomsId(AtomIdSet* pIdSet) const = 0;
-		virtual void			Print() const = 0;
 	};
 }

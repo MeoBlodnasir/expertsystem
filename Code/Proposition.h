@@ -24,10 +24,11 @@ namespace ft
 
 		void			AddElement(const ILogicElement& oElement);
 		void			ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew);
-		virtual void			Print() const override;
 
 	private:
 
 		std::vector<ILogicElement*>	m_oElements;
+
+		friend std::ostream& operator << (std::ostream& oOs, const Proposition& oProposition);
 	};
 }

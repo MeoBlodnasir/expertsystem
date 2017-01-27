@@ -13,15 +13,15 @@ namespace ft
 	{
 	}
 
-	const Variable&	VariablesManager::CreateVariable(Variable::Id iId, bool bCreationState /*= false*/, bool bCreationLock /*= false*/)
+	const Variable&	VariablesManager::CreateVariable(Variable::Id iId, bool bCreationState /*= false*/)
 	{
-		m_oVariables[iId] = Variable(iId, bCreationState, bCreationLock);
+		m_oVariables[iId] = Variable(iId, bCreationState);
 		return m_oVariables.at(iId);
 	}
 
-	const Variable&	VariablesManager::GetVariable(Variable::Id iId) const
+	const Variable*	VariablesManager::GetVariable(Variable::Id iId) const
 	{
-		return m_oVariables.at(iId);
+		return m_oVariables.count(iId) > 0 ? &m_oVariables.at(iId) : nullptr;
 	}
 
 	void			VariablesManager::SetVariableState(Variable::Id iId, bool bState)
@@ -31,13 +31,6 @@ namespace ft
 		m_oVariables[iId].m_bState = bState;
 	}
 	
-	void			VariablesManager::SetVariableLock(Variable::Id iId, bool bLock)
-	{
-		if (m_oVariables.count(iId) == 0)
-			CreateVariable(iId);
-		m_oVariables[iId].m_bLock = bLock;
-	}
-
 	void			VariablesManager::DebugPrint() const
 	{
 		FT_COUT << m_oVariables.size() << " variables" << std::endl;

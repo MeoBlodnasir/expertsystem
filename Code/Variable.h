@@ -16,19 +16,17 @@ namespace ft
 		// Constructeurs publics pour les besoins de la map dans le VariablesManager
 		// mais une variable n'est pas sensée être créée par aucun objet autre que le VariablesManager
 		Variable();
-		Variable(Id iId, bool bState = false, bool bLock = false);
+		Variable(Id iId, bool bState = false);
 		Variable(const Variable& oVar);
 		~Variable();
 
 		inline Id	GetId() const					{ return m_iId; }
 		inline bool	GetState() const				{ return m_bState; }
-		inline bool	IsLocked() const				{ return m_bLock; }
 
 	private:
 		friend class VariablesManager;
 
 		Id		m_iId;
 		bool	m_bState;
-		bool	m_bLock;
 	};
 }

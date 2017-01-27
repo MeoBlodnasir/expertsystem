@@ -3,7 +3,6 @@
 
 #include "VariablesManager.h"
 #include "Core.h"
-#include "Output.h"
 
 namespace ft
 {
@@ -29,20 +28,14 @@ namespace ft
 	{
 	}
 
-	void Atom::Print() const
-	{
-		FT_COUT << GetId();
-
-	}
-
 	ILogicElement*	Atom::Duplicate() const
 	{
 		return new Atom(*this);
 	}
 
-	bool	Atom::Evaluate(const VariablesManager& pVariablesManager) const
+	bool	Atom::Evaluate(const VariablesManager& oVariablesManager) const
 	{
-		return pVariablesManager.GetVariable(m_iId).GetState();
+		return oVariablesManager.GetVariable(m_iId)->GetState();
 	}
 
 	bool	Atom::SelfAssert() const

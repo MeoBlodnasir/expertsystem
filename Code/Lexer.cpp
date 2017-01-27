@@ -82,8 +82,8 @@ namespace ft
 				}
 			}
 
-			// Si l'entrée n'est pas un mot clé, créer une variable (uniquement alphanumérique)
-			while (IsLetter(*c) || IsDigit(*c))
+			// Si l'entrée n'est pas un mot clé, créer une variable (uniquement alphabétique à un caractère)
+			if (IsLetter(*c))
 				++c;
 			if (c != csInput)
 				pToken->SetupToken(Token::E_VARIABLE, std::string(csInput, c - csInput));
