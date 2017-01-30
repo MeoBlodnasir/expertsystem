@@ -10,7 +10,6 @@
 #include "LogicOperator.h"
 #include "Proposition.h"
 #include "Parser.h"
-#include "UserInputManager.h"
 
 #include "Output.h" // tmp
 
@@ -39,12 +38,6 @@ namespace ft
 
 		FT_TEST_OK(ReadInputFiles(ac, av));
 
-		m_xVariablesManager->DebugPrint();
-		m_xRulesManager->PrintRules();
-		FT_COUT << "REQUETES: ";
-		for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
-			FT_COUT << *itQuery;
-		FT_COUT << std::endl;
 
 		return FT_OK;
 	}
@@ -210,6 +203,8 @@ namespace ft
 	EErrorCode	Application::EvaluatePendingQueries()
 	{
 		bool	bEvaluation;
+		m_pRulesManager->CheckRules();
+		m_pRulesManager->DivideRules();
 
 		if (m_oPendingQueries.size() > 0)
 		{
@@ -224,3 +219,4 @@ namespace ft
 		return FT_OK;
 	}
 }
+

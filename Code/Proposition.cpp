@@ -149,4 +149,49 @@ namespace ft
 			}
 		}
 	}
+
+	bool	Proposition::XorPresent()
+	{
+		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		{
+			if ((*itElem)->GetType() == E_OPERATOR)
+			{
+				if (auto oOperator  = dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
+					return true;
+			}
+		}
+	}
+	bool	Proposition::AndPresent()
+	{
+		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		{
+			if ((*itElem)->GetType() == E_OPERATOR)
+			{
+				if (auto oOperator  = dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
+					return true;
+			}
+		}
+	}
+	bool	Proposition::OrPresent()
+	{
+		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		{
+			if ((*itElem)->GetType() == E_OPERATOR)
+			{
+				if (auto oOperator  = dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
+					return true;
+			}
+		}
+	}
+	bool	Proposition::NotPresent()
+	{
+		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		{
+			if ((*itElem)->GetType() == E_OPERATOR)
+			{
+				if (auto oOperator  = dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
+					return true;
+			}
+		}
+	}
 }

@@ -26,6 +26,7 @@ namespace ft
 		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
 
 		bool			CheckComponentsValidity() const;
+		bool			CheckIntegrity() const;
 
 	private:
 

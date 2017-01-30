@@ -6,6 +6,7 @@
 #include "VariablesManager.h"
 #include "Output.h"
 #include "LogicOperator.h"
+#include "ILogicElement.h"
 
 namespace ft
 {
@@ -30,11 +31,11 @@ namespace ft
 		return oPropositions;
 	}
 
-
-	bool						InferenceEngine::ProcessQuery(const VariablesManager& oVariablesManager, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery)
+	std::string						InferenceEngine::ProcessQuery(const VariablesManager& oVariablesManager, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery)
 	{
 		bool isFinished = false;
 		Proposition MasterProposition;
+		std::map<ILogicElement::AtomId, Proposition> mReplacements;
 		MasterProposition.AddElement(Atom(iQuery));
 
 		while (!isFinished)
@@ -54,12 +55,18 @@ namespace ft
 
 					for (uint32 i = 1; i < oPropositions.size(); ++i)
 						SubGoalPropostion.AddElement(OperatorOR());
-					MasterProposition.ReplaceAtom(*itAtomId, SubGoalPropostion);
-					isFinished = false;
+					if (mReplacements.find(*itAtomId) == mReplacements.end())
+					{
+						MasterProposition.ReplaceAtom(*itAtomId, SubGoalPropostion);
+						mReplacements[*itAtomId] = SubGoalPropostion;
+						isFinished = false;
+					}
+					else
+						return "Query is dependant of a loop in rules";
 				}
 			}
 		}
 
-		return MasterProposition.Evaluate(oVariablesManager);
+		return MasterProposition.Evaluate(oVariablesManager) ? "true" : "false";
 	}
 }

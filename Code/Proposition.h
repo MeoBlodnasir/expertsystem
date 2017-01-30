@@ -25,6 +25,10 @@ namespace ft
 
 		void			AddElement(const ILogicElement& oElement);
 		void			ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew);
+		bool			XorPresent();
+		bool			AndPresent();
+		bool			OrPresent();
+		bool			NotPresent();
 
 	private:
 

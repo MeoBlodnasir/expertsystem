@@ -49,4 +49,18 @@ namespace ft
 	{
 		return m_oAntecedent.CheckValidity() && m_oConsequent.CheckValidity();
 	}
+
+	bool		Rule::CheckIntegrity() const
+	{
+		AtomIdSet oAntecedentAtomsId;
+		AtomIdSet oConsequentAtomsId;
+		GetAntecedent().GetAtomsId(&oAntecedentAtomsId);
+		GetConsequent().GetAtomsId(&oConsequentAtomsId);
+		int iOriginalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
+		oAntecedentAtomsId.insert(oConsequentAtomsId.begin(), oConsequentAtomsId.end());
+		int iFinalSize = oAntecedentAtomsId.size();
+		if (iOriginalSize != iFinalSize)
+			return false;
+		return true;
+	}
 }
