@@ -31,8 +31,9 @@ namespace ft
 	{
 		// N'ajoute la règle que si elle est valide.
 		bool bIsValid = oRule.CheckComponentsValidity();
+		bool bIntegrity = oRule.CheckIntegrity();
 
-		if (bIsValid)
+		if (bIsValid && bIntegrity)
 			m_oRules.push_back(oRule);
 
 		return bIsValid;
