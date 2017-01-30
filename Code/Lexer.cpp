@@ -11,6 +11,11 @@ namespace ft
 	{
 		static const std::string s_sCommentEntry = "#";
 
+		static const std::string s_sCommandsKeyWord[Token::E_CMD_COUNT - (Token::E_CMD_OFFSET+1)] =
+		{
+			"quit"
+		};
+
 		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT - (Token::E_SYM_OFFSET+1)] =
 		{
 			"(",
@@ -23,21 +28,38 @@ namespace ft
 		{
 			"<=>",
 			"=>",
+			"!",
 			"+",
 			"|",
-			"^",
-			"!"
+			"^"
 		};
+
+		static bool	ReadCommand(Token* pToken, const std::string& sLine)
+		{
+			FT_ASSERT(pToken != nullptr);
+
+			for (uint32 i = 0, iCount = sizeof(s_sCommandsKeyWord) / sizeof(std::string); i < iCount; ++i)
+			{
+				if (sLine == s_sCommandsKeyWord[i])
+				{
+					pToken->SetupToken((Token::EType)(Token::E_CMD_OFFSET+1 + i), sLine);
+					return true;
+				}
+			}
+			return false;
+		}
 
 		static bool	IsKeyWord(const char* csInput, const std::string& sKeyWord)
 		{
 			bool bIsKeyWord = true;
-			for (uint32 i = 0; bIsKeyWord & (i < sKeyWord.size()); ++i)
+
+			for (uint32 i = 0; bIsKeyWord && (i < sKeyWord.size()); ++i)
 				bIsKeyWord &= csInput[i] == sKeyWord[i];
+
 			return bIsKeyWord;
 		}
 
-		EErrorCode	ReadToken(Token* pToken, uint32* pOffset, const char* csInput)
+		static EErrorCode	ReadElement(Token* pToken, uint32* pOffset, const char* csInput)
 		{
 			FT_ASSERT(pToken != nullptr);
 			FT_ASSERT(pOffset != nullptr);
@@ -95,40 +117,36 @@ KeywordFound:
 			return c == csInput ? FT_FAIL : FT_OK;
 		}
 
-		EErrorCode	ReadInput(std::vector<Token>* pTokens, const char* csInput)
+		EErrorCode	Lexer::ReadLine(OutData* pLexingData, const std::string& sLine)
 		{
-			FT_ASSERT(pTokens != nullptr);
-			FT_ASSERT(csInput != nullptr);
+			FT_ASSERT(pLexingData != nullptr);
 
-			const char*	c = csInput;
+			OutData&	oOutData = *pLexingData;
+			const char*	c = sLine.c_str();
 			Token		oToken;
 			uint32		iOffset;
 
-			while (*c != '\0')
+			if (ReadCommand(&oToken, sLine))
+				oOutData.oTokens.push_back(oToken);
+			else
 			{
-				while (IsWhiteSpace(*c))
-					++c;
+				while (*c != '\0')
+				{
+					while (IsWhiteSpace(*c))
+						++c;
 
-				if (*c == '\n')
-				{
-					oToken.SetupToken(Token::E_EOL);
-					pTokens->push_back(oToken);
-					++c;
-				}
-
-				if (ReadToken(&oToken, &iOffset, c) == FT_OK)
-				{
-					pTokens->push_back(oToken);
-					c += iOffset;
-				}
-				else
-				{
-					++c;
+					if (ReadElement(&oToken, &iOffset, c) == FT_OK)
+					{
+						oOutData.oTokens.push_back(oToken);
+						c += iOffset;
+					}
+					else
+						++c;
 				}
 			}
 
-			oToken.SetupToken(Token::E_EOF);
-			pTokens->push_back(oToken);
+			oToken.SetupToken(Token::E_EOL);
+			oOutData.oTokens.push_back(oToken);
 
 			return FT_OK;
 		}

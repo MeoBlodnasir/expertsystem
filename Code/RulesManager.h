@@ -1,11 +1,12 @@
 #pragma once
 
+#include "StrongPointer.h"
 #include "ErrorCode.h"
 #include "Rule.h"
 
 namespace ft
 {
-	class RulesManager
+	class RulesManager : public CountableSPtr
 	{
 		public:
 
@@ -14,6 +15,7 @@ namespace ft
 
 			const std::vector<Rule>&	GetRules();
 			bool						AddRule(const Rule& oRule);
+			bool						AddRules(const std::vector<Rule>& oRules);
 			void						DivideRules();
 			void						PrintRules();
 

@@ -9,6 +9,11 @@ namespace ft
 {
 	namespace Lexer
 	{
-		EErrorCode	ReadInput(std::vector<Token>* pTokens, const char* csInput);
+		struct OutData
+		{
+			std::vector<Token>	oTokens;
+		};
+
+		EErrorCode	ReadLine(OutData* pLexingData, const std::string& sLine);
 	};
 }

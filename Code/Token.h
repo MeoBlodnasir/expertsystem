@@ -16,8 +16,16 @@ namespace ft
 			E_NONE = -1,	// Invalide
 			E_EOF = 0,		// EndOfFile
 			E_EOL,			// EndOfLine
+
+			// Commentaires
 			E_COMMENT,
 
+			// Commandes
+			E_CMD_OFFSET,
+			E_CMD_QUIT,
+			E_CMD_COUNT,
+
+			// Composants de règles
 			// L'ordre est lié à celui de la définition dans Lexer.cpp
 			// => pas une bonne idée, voir pour faire mieux
 			E_SYM_OFFSET,
@@ -30,12 +38,13 @@ namespace ft
 			E_OP_OFFSET,
 			E_OP_IMPLIES_IFANDONLYIF,
 			E_OP_IMPLIES,
+			E_OP_LOGIC_NOT,
 			E_OP_LOGIC_AND,
 			E_OP_LOGIC_OR,
 			E_OP_LOGIC_XOR,
-			E_OP_LOGIC_NOT,
 			E_OP_COUNT,
 
+			// Variables
 			E_VARIABLE,
 		};
 

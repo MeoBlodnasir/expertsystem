@@ -1,5 +1,6 @@
 #pragma once
 
+#include "StrongPointer.h"
 #include "Rule.h"
 
 #include <vector>
@@ -9,7 +10,7 @@ namespace ft
 	// fw
 	class VariablesManager;
 
-	class InferenceEngine
+	class InferenceEngine : public CountableSPtr
 	{
 	public:
 

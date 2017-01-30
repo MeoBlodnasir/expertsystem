@@ -23,6 +23,7 @@ namespace ft
 
 	void				RulesManager::PrintRules()
 	{
+		FT_COUT << "RULES MANAGER" << std::endl;
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; itRule++)
 			FT_COUT << *itRule << std::endl;
 	}
@@ -36,6 +37,22 @@ namespace ft
 			m_oRules.push_back(oRule);
 
 		return bIsValid;
+	}
+
+	bool	RulesManager::AddRules(const std::vector<Rule>& oRules)
+	{
+		bool	bRet = true;
+
+		for (std::vector<Rule>::const_iterator itRule = oRules.begin(), itEnd = oRules.end(); itRule != itEnd; ++itRule)
+		{
+			if (!AddRule(*itRule))
+			{
+				FT_NOT_IMPLEMENTED("Cas d'erreur d'ajout de regle");
+				bRet = false;
+			}
+		}
+
+		return bRet;
 	}
 
 	void				RulesManager::DivideBidirectionnalRules()

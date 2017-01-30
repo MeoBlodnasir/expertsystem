@@ -33,6 +33,7 @@ namespace ft
 	
 	void			VariablesManager::DebugPrint() const
 	{
+		FT_COUT << "VARIABLES MANAGER" << std::endl;
 		FT_COUT << m_oVariables.size() << " variables" << std::endl;
 
 		for (std::map<Variable::Id, Variable>::const_iterator itVar = m_oVariables.begin(), itEnd = m_oVariables.end();

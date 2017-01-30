@@ -1,6 +1,8 @@
 #pragma once
 
+#include "Types.h"
 #include "ErrorCode.h"
+#include "StrongPointer.h"
 #include "Rule.h"
 
 #include <vector>
@@ -19,16 +21,29 @@ namespace ft
 		Application();
 		~Application();
 
-		EErrorCode	Init(int ac, char **av);
+		EErrorCode	Init(const int32 ac, const char* const* av);
 		EErrorCode	Destroy();
 
 		EErrorCode	Run();
 
 	private:
 
-		VariablesManager*					m_pVariablesManager;
-		RulesManager*						m_pRulesManager;
-		InferenceEngine*					m_pInferenceEngine;
-		std::vector<ILogicElement::AtomId>	m_oPendingQueries;
+		enum ECommand
+		{
+			E_NONE = 0,
+			E_QUIT
+		};
+
+		ECommand				m_ePendingCommand;
+		SPtr<VariablesManager>	m_xVariablesManager;
+		SPtr<RulesManager>		m_xRulesManager;
+		SPtr<InferenceEngine>	m_xInferenceEngine;
+		AtomIdSet				m_oPendingQueries;
+
+		EErrorCode	ProcessInputLine(const std::string& sLine);
+		EErrorCode	ReadInputFiles(const int32 ac, const char* const* av);
+		EErrorCode	AskUserInput();
+
+		EErrorCode	EvaluatePendingQueries();
 	};
 }
