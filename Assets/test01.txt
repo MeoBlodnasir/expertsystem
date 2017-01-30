@@ -1,0 +1,13 @@
+A + B => C
+D + E => A
+F => D
+G => E
+H + I => B
+J + K => H
+L + M => J
+N + O => K
+P + Q => I
+
+=PQNOLMFG
+
+?C

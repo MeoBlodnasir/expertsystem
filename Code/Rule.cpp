@@ -58,7 +58,7 @@ namespace ft
 		GetConsequent().GetAtomsId(&oConsequentAtomsId);
 		int iOriginalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
 		oAntecedentAtomsId.insert(oConsequentAtomsId.begin(), oConsequentAtomsId.end());
-		int iFinalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
+		int iFinalSize = oAntecedentAtomsId.size();
 		if (iOriginalSize != iFinalSize)
 			return false;
 		return true;
