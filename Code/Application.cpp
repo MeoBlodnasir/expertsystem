@@ -19,7 +19,7 @@ namespace ft
 {
 	Application::Application()
 		: m_pVariablesManager(nullptr)
-		, m_pInferenceEngine(nullptr)
+		  , m_pInferenceEngine(nullptr)
 	{
 	}
 
@@ -40,7 +40,7 @@ namespace ft
 		m_pRulesManager = new RulesManager();
 		m_pInferenceEngine = new InferenceEngine();
 
-		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/Regles_Simples_03.txt"));
+		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test06.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 
 		oParsingData.pRules = m_pRulesManager;
@@ -79,25 +79,14 @@ namespace ft
 		// Vérifie que c'est initialisé
 		FT_ASSERT(m_pVariablesManager != nullptr);
 		FT_ASSERT(m_pInferenceEngine != nullptr);
+		m_pRulesManager->DivideRules();
 
 		for (std::vector<ILogicElement::AtomId>::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
 		{
 			FT_COUT << "Evaluation de " << *itQuery << " : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, m_pRulesManager->GetRules(), *itQuery) << std::endl;
 		}
 
-		Rule oRule;
-		oRule.SetBidirectionnal(true);
-		oRule.AddAntecedentElement(Atom('A'));
-		oRule.AddConsequentElement(Atom('B'));
-		oRule.AddConsequentElement(OperatorAND());
-		oRule.AddConsequentElement(Atom('C'));
-		oRule.AddConsequentElement(OperatorAND());
-		oRule.AddConsequentElement(Atom('D'));
-		m_pRulesManager->AddRule(oRule);
-		m_pRulesManager->PrintRules();
-		m_pRulesManager->DivideRules();
-		m_pRulesManager->PrintRules();
-
 		return FT_OK;
 	}
 }
+
