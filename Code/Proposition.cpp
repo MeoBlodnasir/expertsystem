@@ -79,7 +79,8 @@ namespace ft
 
 	bool	Proposition::CheckValidity() const
 	{
-		std::stack<bool> oResultStack;
+		// Simulation d'évaluation
+		int32	iElementsCount = 0;
 
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
@@ -87,16 +88,16 @@ namespace ft
 			{
 				if (!dynamic_cast<const IProposition*>(itElem->Get())->CheckValidity())
 					return false;
-				oResultStack.push(true);
+				++iElementsCount;
 			}
 			else if ((*itElem)->GetType() == ILogicElement::E_OPERATOR)
 			{
 				const uint32 iOperandCount = dynamic_cast<const ALogicOperator*>(itElem->Get())->iOperandCount;
 
-				if (iOperandCount == 1 && oResultStack.size() > 0)
+				if (iOperandCount == 1 && iElementsCount > 0)
 					continue;
-				else if (iOperandCount == 2 && oResultStack.size() > 1)
-					oResultStack.pop();
+				else if (iOperandCount == 2 && iElementsCount > 1)
+					--iElementsCount;
 				else
 					return false;
 			}
@@ -104,7 +105,7 @@ namespace ft
 				return false;
 		}
 
-		return oResultStack.size() == 1;
+		return iElementsCount == 1;
 	}
 
 	void	Proposition::GetAtomsId(AtomIdSet* pIdSet) const
