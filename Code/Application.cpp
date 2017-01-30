@@ -38,7 +38,6 @@ namespace ft
 
 		FT_TEST_OK(ReadInputFiles(ac, av));
 
-
 		return FT_OK;
 	}
 
@@ -91,10 +90,16 @@ namespace ft
 
 			while (std::getline(oSStream, sLine))
 			{
-				if (!ProcessInputLine(sLine))
-					break;
+				if (ProcessInputLine(sLine) != FT_OK)
+				{
+					FT_NOT_IMPLEMENTED("Erreur entree fichier");
+					continue;
+				}
 			}
 		//}
+
+		// debug
+		PrintCurrentState();
 
 		return FT_OK;
 	}
@@ -118,17 +123,7 @@ namespace ft
 			}
 
 			// debug
-			{
-				FT_COUT << "###################################" << std::endl;
-				m_xVariablesManager->DebugPrint();
-				m_xRulesManager->PrintRules();
-				FT_COUT << "REQUETES: ";
-				for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
-					FT_COUT << *itQuery;
-				FT_COUT << std::endl;
-				FT_COUT << "###################################" << std::endl;
-			}
-			//
+			PrintCurrentState();
 
 			EvaluatePendingQueries();
 		}
@@ -158,6 +153,8 @@ namespace ft
 					FT_NOT_IMPLEMENTED("Cas d'erreur d'ajout de regles");
 				}
 				m_xVariablesManager->DeclareVariables(oParsingData.oAtoms.begin(), oParsingData.oAtoms.end());
+				m_xRulesManager->CheckRules();
+				m_xRulesManager->DivideRules();
 				break;
 			}
 
@@ -202,21 +199,36 @@ namespace ft
 
 	EErrorCode	Application::EvaluatePendingQueries()
 	{
-		bool	bEvaluation;
-		m_pRulesManager->CheckRules();
-		m_pRulesManager->DivideRules();
+		FT_ASSERT(m_xVariablesManager != nullptr);
+		FT_ASSERT(m_xRulesManager != nullptr);
+		FT_ASSERT(m_xInferenceEngine != nullptr);
 
 		if (m_oPendingQueries.size() > 0)
 		{
 			for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
 			{
-				bEvaluation = m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, m_xRulesManager->GetRules(), *itQuery);
-				FT_COUT << "Evaluation de " << *itQuery << " : " << bEvaluation << std::endl;
+				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, m_xRulesManager->GetRules(), *itQuery) << std::endl;
 			}
 			m_oPendingQueries.clear();
 		}
 
 		return FT_OK;
+	}
+
+	void	Application::PrintCurrentState() const
+	{
+		FT_ASSERT(m_xVariablesManager != nullptr);
+		FT_ASSERT(m_xRulesManager != nullptr);
+		FT_ASSERT(m_xInferenceEngine != nullptr);
+
+		FT_COUT << "###################################" << std::endl;
+		m_xVariablesManager->DebugPrint();
+		m_xRulesManager->PrintRules();
+		FT_COUT << "REQUETES: ";
+		for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
+			FT_COUT << *itQuery;
+		FT_COUT << std::endl;
+		FT_COUT << "###################################" << std::endl;
 	}
 }
 

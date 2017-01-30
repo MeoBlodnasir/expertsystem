@@ -113,8 +113,8 @@ namespace ft
 	{
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
 		{
-			Proposition oConsequent = itRule->GetConsequent();
-			Proposition oAntecedent= itRule->GetAntecedent();
+			const Proposition& oConsequent = itRule->GetConsequent();
+			const Proposition& oAntecedent = itRule->GetAntecedent();
 			if (oConsequent.XorPresent() || oConsequent.OrPresent() || oConsequent.NotPresent())
 			{
 				FT_COUT << "Xor, Or or Not present in Consequent of a rule" << std::endl;
@@ -125,8 +125,7 @@ namespace ft
 				FT_COUT << "Xor, Or or Not present in Antecedent of a bidirectional rule" << std::endl;
 				return false;
 			}
-
 		}
-
+		return true;
 	}
 }

@@ -45,5 +45,7 @@ namespace ft
 		EErrorCode	AskUserInput();
 
 		EErrorCode	EvaluatePendingQueries();
+
+		void		PrintCurrentState() const;
 	};
 }

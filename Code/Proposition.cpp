@@ -150,48 +150,43 @@ namespace ft
 		}
 	}
 
-	bool	Proposition::XorPresent()
+	bool	Proposition::XorPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if ((*itElem)->GetType() == E_OPERATOR)
-			{
-				if (auto oOperator  = dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
-					return true;
-			}
+			if (auto oOperator = dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
+				return true;
 		}
+		return false;
 	}
-	bool	Proposition::AndPresent()
+
+	bool	Proposition::AndPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if ((*itElem)->GetType() == E_OPERATOR)
-			{
-				if (auto oOperator  = dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
-					return true;
-			}
+			if (auto oOperator  = dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
+				return true;
 		}
+		return false;
 	}
-	bool	Proposition::OrPresent()
+
+	bool	Proposition::OrPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if ((*itElem)->GetType() == E_OPERATOR)
-			{
-				if (auto oOperator  = dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
-					return true;
-			}
+			if (auto oOperator  = dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
+				return true;
 		}
+		return false;
 	}
-	bool	Proposition::NotPresent()
+
+	bool	Proposition::NotPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if ((*itElem)->GetType() == E_OPERATOR)
-			{
-				if (auto oOperator  = dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
-					return true;
-			}
+			if (auto oOperator  = dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
+				return true;
 		}
+		return false;
 	}
 }
