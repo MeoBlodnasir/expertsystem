@@ -31,7 +31,7 @@ namespace ft
 		return oPropositions;
 	}
 
-	bool						InferenceEngine::ProcessQuery(const VariablesManager& oVariablesManager, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery)
+	std::string						InferenceEngine::ProcessQuery(const VariablesManager& oVariablesManager, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery)
 	{
 		bool isFinished = false;
 		Proposition MasterProposition;
@@ -61,10 +61,12 @@ namespace ft
 						mReplacements[*itAtomId] = SubGoalPropostion;
 						isFinished = false;
 					}
+					else
+						return "Query is dependant of a loop in rules";
 				}
 			}
 		}
 
-		return MasterProposition.Evaluate(oVariablesManager);
+		return MasterProposition.Evaluate(oVariablesManager) ? "true" : "false";
 	}
 }

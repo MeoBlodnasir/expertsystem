@@ -14,6 +14,7 @@ namespace ft
 
 			const std::vector<Rule>&	GetRules();
 			bool						AddRule(const Rule& oRule);
+			bool						CheckRules();
 			void						DivideRules();
 			void						PrintRules();
 

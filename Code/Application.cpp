@@ -40,7 +40,7 @@ namespace ft
 		m_pRulesManager = new RulesManager();
 		m_pInferenceEngine = new InferenceEngine();
 
-		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/test06.txt"));
+		FT_TEST_OK(File::GetContent(&sFileContent, av[1]));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 
 		oParsingData.pRules = m_pRulesManager;
@@ -79,6 +79,7 @@ namespace ft
 		// Vérifie que c'est initialisé
 		FT_ASSERT(m_pVariablesManager != nullptr);
 		FT_ASSERT(m_pInferenceEngine != nullptr);
+		m_pRulesManager->CheckRules();
 		m_pRulesManager->DivideRules();
 
 		for (std::vector<ILogicElement::AtomId>::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)

@@ -58,7 +58,7 @@ namespace ft
 			m_oRules.push_back(*itNewRule);
 
 	}
-
+	
 	void				RulesManager::DivideRules()
 	{
 		DivideBidirectionnalRules();
@@ -76,7 +76,6 @@ namespace ft
 					oRule.AddConsequentElement(Atom(*itSet));
 					oNewRules.push_back(oRule);
 				}
-
 			}
 			else
 			{
@@ -90,5 +89,27 @@ namespace ft
 		m_oRules.clear();
 		for (std::vector<Rule>::const_iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
 			m_oRules.push_back(*itNewRule);
+	}
+
+
+	bool	RulesManager::CheckRules()
+	{
+		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
+		{
+			Proposition oConsequent = itRule->GetConsequent();
+			Proposition oAntecedent= itRule->GetAntecedent();
+			if (oConsequent.XorPresent() || oConsequent.OrPresent() || oConsequent.NotPresent())
+			{
+				FT_COUT << "Xor, Or or Not present in Consequent of a rule" << std::endl;
+				return false;
+			}
+			if (itRule->IsBidirectionnal() && (oAntecedent.XorPresent() || oAntecedent.OrPresent() || oAntecedent.NotPresent()))
+			{
+				FT_COUT << "Xor, Or or Not present in Antecedent of a bidirectional rule" << std::endl;
+				return false;
+			}
+
+		}
+
 	}
 }

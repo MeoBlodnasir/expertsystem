@@ -16,7 +16,7 @@ namespace ft
 		InferenceEngine();
 		~InferenceEngine();
 
-		bool	ProcessQuery(const VariablesManager& oFacts, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery);
+		std::string	ProcessQuery(const VariablesManager& oFacts, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery);
 
 	private:
 
