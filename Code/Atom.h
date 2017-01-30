@@ -24,8 +24,8 @@ namespace ft
 
 		// implémentation interface IProposition
 		virtual bool	Evaluate(const VariablesManager& oVariablesManager) const override;
-		virtual bool	SelfAssert() const override;
-		virtual void	GetAtomsId(std::unordered_set<Id>* pIdSet) const override;
+		virtual bool	CheckValidity() const override;
+		virtual void	GetAtomsId(AtomIdSet* pIdSet) const override;
 
 		inline Id		GetId() const					{ return m_iId; }
 		inline void		SetId(Id iId)					{ m_iId = iId; }

@@ -12,6 +12,7 @@ namespace ft
 {
 	//fw
 	class VariablesManager;
+	class RulesManager;
 
 	class Parser
 	{
@@ -19,7 +20,7 @@ namespace ft
 
 		struct ParsingData
 		{
-			std::vector<Rule>*					pRules;
+			RulesManager*						pRules;
 			VariablesManager*					pFacts;
 			std::vector<ILogicElement::AtomId>*	pQueries;
 

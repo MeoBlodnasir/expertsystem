@@ -4,7 +4,7 @@
 
 namespace ft
 {
-	// Une Rule est définie par: Antécédent => Conséquence
+	// Une Rule est définie par: Antécédent [<]=> Conséquence
 
 	class Rule
 	{
@@ -24,6 +24,8 @@ namespace ft
 
 		inline void		SetBidirectionnal(bool bValue)			{ m_bIsBidirectionnal = bValue; }
 		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
+
+		bool			CheckComponentsValidity() const;
 
 	private:
 

@@ -16,7 +16,7 @@ namespace ft
 	}
 
 
-	std::vector<Rule>	RulesManager::GetRules() 
+	const std::vector<Rule>&	RulesManager::GetRules() 
 	{
 		return m_oRules;
 	}
@@ -27,9 +27,15 @@ namespace ft
 			FT_COUT << *itRule << std::endl;
 	}
 
-	void	RulesManager::AddRule(const Rule& oRule)
+	bool	RulesManager::AddRule(const Rule& oRule)
 	{
-		m_oRules.push_back(oRule);
+		// N'ajoute la règle que si elle est valide.
+		bool bIsValid = oRule.CheckComponentsValidity();
+
+		if (bIsValid)
+			m_oRules.push_back(oRule);
+
+		return bIsValid;
 	}
 
 	void				RulesManager::DivideBidirectionnalRules()

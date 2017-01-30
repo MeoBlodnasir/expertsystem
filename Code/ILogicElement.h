@@ -1,5 +1,7 @@
 #pragma once
 
+#include "StrongPointer.h"
+
 namespace ft
 {
 	//////////////////////////////
@@ -9,7 +11,7 @@ namespace ft
 	// Element de base d'une Proposition
 	// les classes Operator et Proposition en héritent
 
-	class ILogicElement
+	class ILogicElement : public CountableSPtr
 	{
 	public:
 

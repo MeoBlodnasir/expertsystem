@@ -6,6 +6,7 @@
 #include "Rule.h"
 #include "Atom.h"
 #include "LogicOperator.h"
+#include "RulesManager.h"
 #include "VariablesManager.h"
 #include "Output.h"
 
@@ -51,6 +52,7 @@ namespace ft
 		FT_ASSERT(pData->pQueries != nullptr);
 
 		ParsingData&		oData = *pData;
+		Rule				oCurrentRule;
 		
 		m_eReadingState = E_UNDEFINED;
 
@@ -77,9 +79,10 @@ namespace ft
 						case Token::E_VARIABLE:
 							{
 								// Créer une nouvelle règle
-								oData.pRules->push_back(Rule());
+								oCurrentRule = Rule();
+								//oData.pRules->push_back(Rule());
 								ResetBuildRuleStates();
-								BuildRule(&pData->pRules->back(), *itToken);
+								BuildRule(&oCurrentRule, *itToken);
 								if (itToken->GetType() == Token::E_VARIABLE)
 								{
 									if (!oData.pFacts->GetVariable(itToken->GetDesc()[0]))
@@ -103,7 +106,14 @@ namespace ft
 						case Token::E_COMMENT:
 							{
 								// Dépile les éléments encore empilés
-								BuildRule(&oData.pRules->back(), *itToken);
+								BuildRule(&oCurrentRule, *itToken);
+								// Ajouter au RulesManager
+								bool bIsRuleValid = oData.pRules->AddRule(oCurrentRule);
+								FT_ASSERT(bIsRuleValid);
+								if (!bIsRuleValid)
+								{
+									FT_NOT_IMPLEMENTED("Parsing regle invalide");
+								}
 								m_eReadingState = E_UNDEFINED;
 								break;
 							}
@@ -119,7 +129,7 @@ namespace ft
 						case Token::E_VARIABLE:
 							{
 								// Ajouter l'élément à la règle en cours
-								BuildRule(&oData.pRules->back(), *itToken);
+								BuildRule(&oCurrentRule, *itToken);
 								if (itToken->GetType() == Token::E_VARIABLE)
 								{
 									if (!oData.pFacts->GetVariable(itToken->GetDesc()[0]))

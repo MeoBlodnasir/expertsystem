@@ -29,7 +29,7 @@ namespace ft
 		inline virtual EType	GetType() const override	{ return E_PROPOSITION; }
 
 		virtual bool			Evaluate(const VariablesManager&) const = 0;
-		virtual bool			SelfAssert() const = 0;
+		virtual bool			CheckValidity() const = 0;
 		virtual void			GetAtomsId(AtomIdSet* pIdSet) const = 0;
 	};
 }

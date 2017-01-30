@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IProposition.h"
+#include "StrongPointer.h"
 
 #include <vector>
 
@@ -19,7 +20,7 @@ namespace ft
 
 		// Implémentation de l'interface IProposition
 		virtual bool	Evaluate(const VariablesManager& pVariablesManager) const override;
-		virtual bool	SelfAssert() const override;
+		virtual bool	CheckValidity() const override;
 		virtual void	GetAtomsId(AtomIdSet* pIdSet) const override;
 
 		void			AddElement(const ILogicElement& oElement);
@@ -27,7 +28,7 @@ namespace ft
 
 	private:
 
-		std::vector<ILogicElement*>	m_oElements;
+		std::vector< SPtr<ILogicElement> >	m_oElements;
 
 		friend std::ostream& operator << (std::ostream& oOs, const Proposition& oProposition);
 	};

@@ -16,12 +16,12 @@ namespace ft
 
 	std::ostream&	operator << (std::ostream& oOs, const Proposition& oProposition)
 	{
-		for (std::vector<ILogicElement*>::const_iterator itElem = oProposition.m_oElements.begin(), itEnd = oProposition.m_oElements.end(); itElem != itEnd; ++itElem)
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = oProposition.m_oElements.begin(), itEnd = oProposition.m_oElements.end(); itElem != itEnd; ++itElem)
 		{
 			if ((*itElem)->GetType() == ILogicElement::E_ATOM)
-				oOs << *dynamic_cast<const Atom*>(*itElem);
+				oOs << *dynamic_cast<const Atom*>(itElem->Get());
 			else if ((*itElem)->GetType() == ILogicElement::E_PROPOSITION)
-				oOs << *dynamic_cast<const Proposition*>(*itElem);
+				oOs << *dynamic_cast<const Proposition*>(itElem->Get());
 			else if ((*itElem)->GetType() == ILogicElement::E_OPERATOR)
 			{
 				const OperatorNOT*	pNot	= nullptr;
@@ -31,17 +31,17 @@ namespace ft
 				const OperatorIMP*	pImp	= nullptr;
 				const OperatorBIMP*	pBimp	= nullptr;
 
-				if ((pNot = dynamic_cast<const OperatorNOT*>(*itElem)) != nullptr)
+				if ((pNot = dynamic_cast<const OperatorNOT*>(itElem->Get())) != nullptr)
 					oOs << *pNot;
-				else if ((pAnd = dynamic_cast<const OperatorAND*>(*itElem)) != nullptr)
+				else if ((pAnd = dynamic_cast<const OperatorAND*>(itElem->Get())) != nullptr)
 					oOs << *pAnd;
-				else if ((pOr = dynamic_cast<const OperatorOR*>(*itElem)) != nullptr)
+				else if ((pOr = dynamic_cast<const OperatorOR*>(itElem->Get())) != nullptr)
 					oOs << *pOr;
-				else if ((pXor = dynamic_cast<const OperatorXOR*>(*itElem)) != nullptr)
+				else if ((pXor = dynamic_cast<const OperatorXOR*>(itElem->Get())) != nullptr)
 					oOs << *pXor;
-				else if ((pImp = dynamic_cast<const OperatorIMP*>(*itElem)) != nullptr)
+				else if ((pImp = dynamic_cast<const OperatorIMP*>(itElem->Get())) != nullptr)
 					oOs << *pImp;
-				else if ((pBimp = dynamic_cast<const OperatorBIMP*>(*itElem)) != nullptr)
+				else if ((pBimp = dynamic_cast<const OperatorBIMP*>(itElem->Get())) != nullptr)
 					oOs << *pBimp;
 			}
 		}

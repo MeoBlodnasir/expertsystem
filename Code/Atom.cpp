@@ -38,12 +38,12 @@ namespace ft
 		return oVariablesManager.GetVariable(m_iId)->GetState();
 	}
 
-	bool	Atom::SelfAssert() const
+	bool	Atom::CheckValidity() const
 	{
-		return true;
+		return m_iId != 0;
 	}
 
-	void	Atom::GetAtomsId(std::unordered_set<Id>* pIdSet) const
+	void	Atom::GetAtomsId(AtomIdSet* pIdSet) const
 	{
 		FT_ASSERT(pIdSet != nullptr);
 

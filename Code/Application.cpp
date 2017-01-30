@@ -43,12 +43,12 @@ namespace ft
 		FT_TEST_OK(File::GetContent(&sFileContent, "./Assets/Regles_Simples_03.txt"));
 		FT_TEST_OK(Lexer::ReadInput(&oTokens, sFileContent.c_str()));
 
-		oParsingData.pRules = &m_oRules;
+		oParsingData.pRules = m_pRulesManager;
 		oParsingData.pFacts = m_pVariablesManager;
 		oParsingData.pQueries = &m_oPendingQueries;
 		FT_TEST_OK(oParser.ReadTokens(&oParsingData, oTokens));
 
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; ++itRule)
+		for (std::vector<Rule>::const_iterator itRule = m_pRulesManager->GetRules().begin(), itEnd = m_pRulesManager->GetRules().end(); itRule != itEnd; ++itRule)
 		{
 			FT_COUT << *itRule << std::endl;
 		}
@@ -82,7 +82,7 @@ namespace ft
 
 		for (std::vector<ILogicElement::AtomId>::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
 		{
-			FT_COUT << "Evaluation de " << *itQuery << " : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, m_oRules, *itQuery) << std::endl;
+			FT_COUT << "Evaluation de " << *itQuery << " : " << m_pInferenceEngine->ProcessQuery(*m_pVariablesManager, m_pRulesManager->GetRules(), *itQuery) << std::endl;
 		}
 
 		Rule oRule;

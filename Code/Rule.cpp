@@ -44,4 +44,9 @@ namespace ft
 	{
 		m_oConsequent.AddElement(oElement);
 	}
+
+	bool		Rule::CheckComponentsValidity() const
+	{
+		return m_oAntecedent.CheckValidity() && m_oConsequent.CheckValidity();
+	}
 }
