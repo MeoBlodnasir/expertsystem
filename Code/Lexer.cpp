@@ -117,7 +117,7 @@ KeywordFound:
 			return c == csInput ? FT_FAIL : FT_OK;
 		}
 
-		EErrorCode	Lexer::ReadLine(OutData* pLexingData, const std::string& sLine)
+		EErrorCode		ReadLine(OutData* pLexingData, const std::string& sLine)
 		{
 			FT_ASSERT(pLexingData != nullptr);
 

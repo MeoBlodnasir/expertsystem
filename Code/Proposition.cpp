@@ -154,7 +154,7 @@ namespace ft
 	{
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if (auto oOperator = dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -164,7 +164,7 @@ namespace ft
 	{
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if (auto oOperator  = dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -174,7 +174,7 @@ namespace ft
 	{
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if (auto oOperator  = dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -184,7 +184,7 @@ namespace ft
 	{
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
 		{
-			if (auto oOperator  = dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
 				return true;
 		}
 		return false;
