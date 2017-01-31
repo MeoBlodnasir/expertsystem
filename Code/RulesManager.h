@@ -13,12 +13,13 @@ namespace ft
 			RulesManager();
 			~RulesManager();
 
+			void						Reset();
+
 			const std::vector<Rule>&	GetRules();
 			bool						AddRule(const Rule& oRule);
-			bool						AddRules(const std::vector<Rule>& oRules);
-			bool						CheckRules();
+			bool						CheckRules() const;
 			void						DivideRules();
-			void						PrintRules();
+			void						PrintRules() const;
 
 		private:
 			

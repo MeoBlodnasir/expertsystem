@@ -16,12 +16,17 @@ namespace ft
 	}
 
 
+	void	RulesManager::Reset()
+	{
+		m_oRules.clear();
+	}
+
 	const std::vector<Rule>&	RulesManager::GetRules() 
 	{
 		return m_oRules;
 	}
 
-	void				RulesManager::PrintRules()
+	void				RulesManager::PrintRules() const
 	{
 		FT_COUT << "RULES MANAGER" << std::endl;
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; itRule++)
@@ -38,22 +43,6 @@ namespace ft
 			m_oRules.push_back(oRule);
 
 		return bIsValid;
-	}
-
-	bool	RulesManager::AddRules(const std::vector<Rule>& oRules)
-	{
-		bool	bRet = true;
-
-		for (std::vector<Rule>::const_iterator itRule = oRules.begin(), itEnd = oRules.end(); itRule != itEnd; ++itRule)
-		{
-			if (!AddRule(*itRule))
-			{
-				FT_NOT_IMPLEMENTED("Cas d'erreur d'ajout de regle");
-				bRet = false;
-			}
-		}
-
-		return bRet;
 	}
 
 	void				RulesManager::DivideBidirectionnalRules()
@@ -96,10 +85,7 @@ namespace ft
 			}
 			else
 			{
-				Rule oRule;
-				oRule.AddAntecedentElement(itRule->GetAntecedent());
-				oRule.AddConsequentElement(itRule->GetConsequent());
-				oNewRules.push_back(oRule);
+				oNewRules.push_back(*itRule);
 			}
 
 		}
@@ -109,7 +95,7 @@ namespace ft
 	}
 
 
-	bool	RulesManager::CheckRules()
+	bool	RulesManager::CheckRules() const
 	{
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
 		{

@@ -13,6 +13,11 @@ namespace ft
 	{
 	}
 
+	void	VariablesManager::Reset()
+	{
+		m_oVariables.clear();
+	}
+
 	const Variable&	VariablesManager::CreateVariable(Variable::Id iId, bool bCreationState /*= false*/)
 	{
 		m_oVariables[iId] = Variable(iId, bCreationState);
