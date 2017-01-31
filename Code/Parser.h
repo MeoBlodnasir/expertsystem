@@ -31,14 +31,14 @@ namespace ft
 
 			EType				eDataType;
 			Token::EType		eCommandType;
-			std::vector<Rule>	oRules;
+			Rule				oRule;
 			AtomIdSet			oAtoms;
 		};
 
 		Parser();
 		~Parser();
 
-		EErrorCode	ReadTokens(OutData* pData, const std::vector<Token>& oTokens);
+		EErrorCode	ReadTokens(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine);
 
 	private:
 
@@ -50,15 +50,17 @@ namespace ft
 
 		ERuleBuildingState		m_eRuleState;
 
-		EErrorCode	ReadRule(OutData* pData, const std::vector<Token>& oTokens);
+		EErrorCode	ReadRule(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine);
 		void		AddElementToRule(Rule* pRule, const ILogicElement& oElement);
 		void		AddTokenToRule(Rule* pRule, const Token& oToken);
 		void		UnstackPendingElements(std::stack<const Token*>* pPendingTokens, Rule* pRule);
 
-		EErrorCode	ReadFacts(OutData* pData, const std::vector<Token>& oTokens);
+		EErrorCode	ReadFacts(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine);
 
-		EErrorCode	ReadQueries(OutData* pData, const std::vector<Token>& oTokens);
+		EErrorCode	ReadQueries(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine);
 
-		EErrorCode	ReadCommand(OutData* pData, const std::vector<Token>& oTokens);
+		EErrorCode	ReadCommand(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine);
+
+		void		PrintUnexpectedTokenError(const std::string& sLine, const std::string& oTokenDesc) const;
 	};
 }

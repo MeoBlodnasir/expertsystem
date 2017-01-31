@@ -2,6 +2,8 @@
 
 #include "StrongPointer.h"
 
+#include <string>
+
 namespace ft
 {
 	//////////////////////////////
@@ -30,6 +32,7 @@ namespace ft
 		virtual ~ILogicElement()			{}
 
 		virtual	EType			GetType() const = 0;
+		virtual	std::string		GetDesc() const = 0;
 		virtual	ILogicElement*	Duplicate() const = 0;
 	};
 }

@@ -3,6 +3,7 @@
 
 #include "Atom.h"
 #include "LogicOperator.h"
+#include "Output.h"
 
 namespace ft
 {
@@ -15,7 +16,7 @@ namespace ft
 	{
 	}
 
-	EErrorCode	Parser::ReadTokens(OutData* pData, const std::vector<Token>& oTokens)
+	EErrorCode	Parser::ReadTokens(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine)
 	{
 		FT_ASSERT(pData != nullptr);
 
@@ -34,13 +35,15 @@ namespace ft
 
 			case Token::E_SYM_START_FACTS:
 				{
-					FT_TEST_OK(ReadFacts(pData, oTokens));
+					if (ReadFacts(pData, oTokens, sLine) != FT_OK)
+						return FT_FAIL;
 					break;
 				}
 
 			case Token::E_SYM_START_QUERIES:
 				{
-					FT_TEST_OK(ReadQueries(pData, oTokens));
+					if (ReadQueries(pData, oTokens, sLine) != FT_OK)
+						return FT_FAIL;
 					break;
 				}
 
@@ -48,20 +51,23 @@ namespace ft
 			case Token::E_OP_LOGIC_NOT:
 			case Token::E_VARIABLE:
 				{
-					FT_TEST_OK(ReadRule(pData, oTokens));
+					if (ReadRule(pData, oTokens, sLine) != FT_OK)
+						return FT_FAIL;
 					break;
 				}
 
 			case Token::E_CMD_QUIT:
 				{
-					FT_TEST_OK(ReadCommand(pData, oTokens));
+					if (ReadCommand(pData, oTokens, sLine) != FT_OK)
+						return FT_FAIL;
 					break;
 				}
 
 			default:
 				{
-					FT_NOT_IMPLEMENTED("Token de début de ligne invalide");
-					break;
+					FT_CERR << "Erreur ligne: " << sLine << std::endl;
+					FT_CERR << "Token courant inconnu: " << oToken.GetDesc() << std::endl;
+					return FT_FAIL;
 				}
 			}
 		}
@@ -75,6 +81,8 @@ namespace ft
 			pRule->AddAntecedentElement(oElement);
 		else if (m_eRuleState == E_CONSEQUENT)
 			pRule->AddConsequentElement(oElement);
+
+		pRule->sLitteralExpression += oElement.GetDesc();
 	}
 
 	void		Parser::AddTokenToRule(Rule* pRule, const Token& oToken)
@@ -83,15 +91,15 @@ namespace ft
 
 		switch (oToken.GetType())
 		{
-		case Token::E_OP_LOGIC_NOT:	{ AddElementToRule(pRule, OperatorNOT());				break; }
-		case Token::E_OP_LOGIC_AND:	{ AddElementToRule(pRule, OperatorAND());				break; }
-		case Token::E_OP_LOGIC_OR:	{ AddElementToRule(pRule, OperatorOR());				break; }
-		case Token::E_OP_LOGIC_XOR:	{ AddElementToRule(pRule, OperatorXOR());				break; }
-		case Token::E_VARIABLE:		{ AddElementToRule(pRule, Atom(oToken.GetDesc()[0]));	break; }
+		case Token::E_OP_LOGIC_NOT:	{ AddElementToRule(pRule, OperatorNOT()); break; }
+		case Token::E_OP_LOGIC_AND:	{ AddElementToRule(pRule, OperatorAND()); break; }
+		case Token::E_OP_LOGIC_OR:	{ AddElementToRule(pRule, OperatorOR());  break; }
+		case Token::E_OP_LOGIC_XOR:	{ AddElementToRule(pRule, OperatorXOR()); break; }
+		case Token::E_VARIABLE:		{ AddElementToRule(pRule, Atom(oToken.GetDesc()[0])); break; }
 
 		default:
 			{
-				FT_NOT_IMPLEMENTED("Erreur AddTokenToRule");
+				FT_FAILED_ASSERTION("Attendu Token operateur ou variable");
 				break;
 			}
 		}
@@ -109,7 +117,7 @@ namespace ft
 		}
 	}
 
-	EErrorCode	Parser::ReadRule(OutData* pData, const std::vector<Token>& oTokens)
+	EErrorCode	Parser::ReadRule(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine)
 	{
 		enum EWaitingStateFlag
 		{
@@ -126,12 +134,12 @@ namespace ft
 		FT_ASSERT(pData != nullptr);
 
 		OutData&					oData = *pData;
-		Rule						oRule;
 		std::stack<const Token*>	oPendingTokens;
 		int32						iWaitingStateFlags = E_WAITFOR_VARIABLE;
 		int32						iParenthesisLevel = 0;
 		
 		oData.eDataType = OutData::E_RULE;
+		oData.oRule = Rule();
 		m_eRuleState = E_ANTECEDENT;
 		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
 		{
@@ -145,12 +153,12 @@ namespace ft
 						|| iParenthesisLevel > 0
 						|| m_eRuleState != E_CONSEQUENT)
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, "fin de ligne");
 						return FT_FAIL;
 					}
-					iWaitingStateFlags = E_NONE;
+					iWaitingStateFlags = E_WAITFOR_EOL_EOF;
 
-					UnstackPendingElements(&oPendingTokens, &oRule);
+					UnstackPendingElements(&oPendingTokens, &oData.oRule);
 					break;
 				}
 
@@ -158,7 +166,7 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					++iParenthesisLevel;
@@ -172,14 +180,14 @@ namespace ft
 						|| !(iWaitingStateFlags & E_WAITFOR_CLOSE_PAR)
 						|| iParenthesisLevel == 0)
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					--iParenthesisLevel;
 
 					while (oPendingTokens.top()->GetType() != Token::E_SYM_OPEN_PAR)
 					{
-						AddTokenToRule(&oRule, *oPendingTokens.top());
+						AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 						oPendingTokens.pop();
 						FT_ASSERT(!oPendingTokens.empty());
 					}
@@ -194,13 +202,21 @@ namespace ft
 						|| !(iWaitingStateFlags & E_WAITFOR_IMPLY)
 						|| iParenthesisLevel > 0)
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
 
-					UnstackPendingElements(&oPendingTokens, &oRule);
-					oRule.SetBidirectionnal(itToken->GetType() == Token::E_OP_IMPLIES_IFANDONLYIF);
+					UnstackPendingElements(&oPendingTokens, &oData.oRule);
+					if (itToken->GetType() == Token::E_OP_IMPLIES_IFANDONLYIF)
+					{
+						oData.oRule.SetBidirectionnal(true);
+						oData.oRule.sLitteralExpression += OperatorBIMP().GetDesc();
+					}
+					else
+					{
+						oData.oRule.sLitteralExpression += OperatorIMP().GetDesc();
+					}
 					m_eRuleState = E_CONSEQUENT;
 					break;
 				}
@@ -209,7 +225,7 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
@@ -218,7 +234,7 @@ namespace ft
 					{
 						if (oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT)
 						{
-							AddTokenToRule(&oRule, *oPendingTokens.top());
+							AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 							oPendingTokens.pop();
 						}
 					}
@@ -232,7 +248,7 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_OPERATOR))
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
@@ -245,7 +261,7 @@ namespace ft
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND))
 							{
-								AddTokenToRule(&oRule, *oPendingTokens.top());
+								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
 							}
 						}
@@ -256,7 +272,7 @@ namespace ft
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_OR))
 							{
-								AddTokenToRule(&oRule, *oPendingTokens.top());
+								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
 							}
 						}
@@ -268,7 +284,7 @@ namespace ft
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_OR
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_XOR))
 							{
-								AddTokenToRule(&oRule, *oPendingTokens.top());
+								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
 							}
 						}
@@ -281,30 +297,28 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						FT_NOT_IMPLEMENTED("Erreur Rule Token");
+						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_EOL_EOF | E_WAITFOR_OPERATOR | E_WAITFOR_IMPLY | E_WAITFOR_CLOSE_PAR;
 
-					AddTokenToRule(&oRule, *itToken);
+					AddTokenToRule(&oData.oRule, *itToken);
 					oData.oAtoms.insert(itToken->GetDesc()[0]);
 					break;
 				}
 
 			default:
 				{
-					FT_NOT_IMPLEMENTED("Erreur Rule Token");
+					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 					break;
 				}
 			}
 		}
 
-		oData.oRules.push_back(oRule);
-
 		return FT_OK;
 	}
 
-	EErrorCode	Parser::ReadFacts(OutData* pData, const std::vector<Token>& oTokens)
+	EErrorCode	Parser::ReadFacts(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine)
 	{
 		FT_ASSERT(pData != nullptr);
 
@@ -327,7 +341,7 @@ namespace ft
 
 			default:
 				{
-					FT_NOT_IMPLEMENTED("Erreur ReadFacts");
+					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 					break;
 				}
 			}
@@ -336,7 +350,7 @@ namespace ft
 		return FT_OK;
 	}
 
-	EErrorCode	Parser::ReadQueries(OutData* pData, const std::vector<Token>& oTokens)
+	EErrorCode	Parser::ReadQueries(OutData* pData, const std::vector<Token>& oTokens, const std::string& sLine)
 	{
 		FT_ASSERT(pData != nullptr);
 
@@ -359,7 +373,7 @@ namespace ft
 
 			default:
 				{
-					FT_NOT_IMPLEMENTED("Erreur ReadQueries");
+					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
 					break;
 				}
 			}
@@ -368,7 +382,7 @@ namespace ft
 		return FT_OK;
 	}
 
-	EErrorCode	Parser::ReadCommand(OutData* pData, const std::vector<Token>& oTokens)
+	EErrorCode	Parser::ReadCommand(OutData* pData, const std::vector<Token>& oTokens, const std::string& /*sLine*/)
 	{
 		FT_ASSERT(pData != nullptr);
 
@@ -377,5 +391,11 @@ namespace ft
 		oData.eCommandType = oTokens[0].GetType();
 
 		return FT_OK;
+	}
+
+	void	Parser::PrintUnexpectedTokenError(const std::string& sLine, const std::string& oTokenDesc) const
+	{
+		FT_CERR << "Erreur ligne: " << sLine << std::endl;
+		FT_CERR << "Erreur de syntaxe: Token " << oTokenDesc << " inattendu" << std::endl;
 	}
 }

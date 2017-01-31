@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "Types.h"
 #include "StringUtils.h"
+#include "Output.h"
 
 namespace ft
 {
@@ -125,6 +126,7 @@ KeywordFound:
 			const char*	c = sLine.c_str();
 			Token		oToken;
 			uint32		iOffset;
+			EErrorCode	eRet = FT_OK;
 
 			if (ReadCommand(&oToken, sLine))
 				oOutData.oTokens.push_back(oToken);
@@ -141,14 +143,22 @@ KeywordFound:
 						c += iOffset;
 					}
 					else
-						++c;
+					{
+						iOffset = 0;
+						while (!IsWhiteSpace(c[iOffset]) && c[iOffset] != '\0')
+							++iOffset;
+						FT_CERR << "Erreur ligne: " << sLine << std::endl;
+						FT_CERR << "Entrée inconnue ignorée: " << std::string(c, iOffset) << std::endl;
+						eRet = FT_FAIL;
+						c += iOffset;
+					}
 				}
 			}
 
 			oToken.SetupToken(Token::E_EOL);
 			oOutData.oTokens.push_back(oToken);
 
-			return FT_OK;
+			return eRet;
 		}
 	}
 }

@@ -15,7 +15,8 @@ namespace ft
 	}
 
 	Rule::Rule(const Rule& oRule)
-		: m_oAntecedent(oRule.m_oAntecedent)
+		: sLitteralExpression(oRule.sLitteralExpression)
+		, m_oAntecedent(oRule.m_oAntecedent)
 		, m_oConsequent(oRule.m_oConsequent)
 		, m_bIsBidirectionnal(oRule.m_bIsBidirectionnal)
 	{

@@ -16,6 +16,7 @@ namespace ft
 		virtual ~Proposition() override;
 
 		// Implémentation de l'interface ILogicElement
+		virtual	std::string		GetDesc() const override;
 		virtual ILogicElement*	Duplicate() const override;
 
 		// Implémentation de l'interface IProposition
@@ -34,7 +35,5 @@ namespace ft
 	private:
 
 		std::vector< SPtr<ILogicElement> >	m_oElements;
-
-		friend std::ostream& operator << (std::ostream& oOs, const Proposition& oProposition);
 	};
 }

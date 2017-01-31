@@ -20,6 +20,7 @@ namespace ft
 
 		// implémentation interface ILogicElement
 		inline	virtual EType			GetType() const override	{ return E_ATOM; }
+				virtual	std::string		GetDesc() const override	{ return std::string(1, m_iId); }
 				virtual	ILogicElement*	Duplicate() const override;
 
 		// implémentation interface IProposition

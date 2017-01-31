@@ -57,8 +57,6 @@ namespace ft
 		FT_ASSERT(m_xRulesManager != nullptr);
 		FT_ASSERT(m_xInferenceEngine != nullptr);
 
-		EvaluatePendingQueries();
-
 		FT_TEST_OK(AskUserInput());
 
 		return FT_OK;
@@ -75,15 +73,16 @@ namespace ft
 		std::string			sLine;
 		const char*			csFilePath;
 
-		//for (int32 i = 1; i < ac; ++i)
-		//{
-		//	csFilePath = av[i];
-			csFilePath = "./Assets/Regles_Simples_03.txt"; (void)ac; (void)av;
+		for (int32 i = 1; i < ac; ++i)
+		{
+			csFilePath = av[i];
+			//csFilePath = "./Assets/test08.txt"; (void)ac; (void)av;
+			FT_COUT << "Fichier " << csFilePath << std::endl;
 			oIFStream.open(csFilePath);
 			if (oIFStream.rdstate() & std::ifstream::failbit)
 			{
 				FT_CERR << "Echec dans l'ouverture du fichier " << csFilePath << std::endl;
-				return FT_FAIL;
+				continue;
 			}
 			oSStream << oIFStream.rdbuf();
 			oIFStream.close();
@@ -91,15 +90,18 @@ namespace ft
 			while (std::getline(oSStream, sLine))
 			{
 				if (ProcessInputLine(sLine) != FT_OK)
-				{
-					FT_NOT_IMPLEMENTED("Erreur entree fichier");
 					continue;
-				}
 			}
-		//}
 
-		// debug
-		PrintCurrentState();
+			// debug
+			PrintCurrentState();
+
+			EvaluatePendingQueries();
+			
+			// Reinitialiser les structures VariablesManager et RulesManager entre les fichiers
+			m_xVariablesManager->Reset();
+			m_xRulesManager->Reset();
+		}
 
 		return FT_OK;
 	}
@@ -117,10 +119,7 @@ namespace ft
 			std::cout << "AKINATOR T'ECOUTE MON ENFANT:" << std::endl;
 			std::getline(std::cin, sLine);
 			if (ProcessInputLine(sLine) != FT_OK)
-			{
-				FT_NOT_IMPLEMENTED("Erreur entree utilisateur");
 				continue;
-			}
 
 			// debug
 			PrintCurrentState();
@@ -141,17 +140,17 @@ namespace ft
 		Parser			oParser;
 		Parser::OutData	oParsingData;
 
-		FT_TEST_OK(Lexer::ReadLine(&oLexingData, sLine));
-		FT_TEST_OK(oParser.ReadTokens(&oParsingData, oLexingData.oTokens));
+		if (Lexer::ReadLine(&oLexingData, sLine) != FT_OK)
+			return FT_FAIL;
+		if (oParser.ReadTokens(&oParsingData, oLexingData.oTokens, sLine) != FT_OK)
+			return FT_FAIL;
 
 		switch (oParsingData.eDataType)
 		{
 		case Parser::OutData::E_RULE:
 			{
-				if (!m_xRulesManager->AddRules(oParsingData.oRules))
-				{
-					FT_NOT_IMPLEMENTED("Cas d'erreur d'ajout de regles");
-				}
+				if (!m_xRulesManager->AddRule(oParsingData.oRule))
+					return FT_FAIL;
 				m_xVariablesManager->DeclareVariables(oParsingData.oAtoms.begin(), oParsingData.oAtoms.end());
 				m_xRulesManager->CheckRules();
 				m_xRulesManager->DivideRules();
@@ -183,8 +182,8 @@ namespace ft
 
 				default:
 					{
-						FT_NOT_IMPLEMENTED("Commande inconnue")
-						break;
+						FT_CERR << "Commande inconnue: " << oLexingData.oTokens[0].GetDesc() << std::endl;
+						return FT_FAIL;
 					}
 				}
 				break;

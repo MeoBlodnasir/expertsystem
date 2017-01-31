@@ -72,6 +72,7 @@ namespace ft
 		virtual ~OperatorNOT() override		{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "!"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorNOT(); }
 		// implémentation interface AUnaryOperator
 		virtual bool			Evaluate(bool b) const override				{ return !b; }
@@ -86,6 +87,7 @@ namespace ft
 		virtual ~OperatorAND() override		{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "+"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorAND(); }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 && b2; }
@@ -100,6 +102,7 @@ namespace ft
 		virtual ~OperatorOR() override		{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "|"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorOR(); }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 || b2; }
@@ -114,6 +117,7 @@ namespace ft
 		virtual ~OperatorXOR() override		{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "^"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorXOR(); }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 ^ b2; }
@@ -128,6 +132,7 @@ namespace ft
 		virtual ~OperatorIMP() override		{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "=>"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorIMP(); }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return (!b1) || b2; }
@@ -142,6 +147,7 @@ namespace ft
 		virtual ~OperatorBIMP() override	{}
 
 		// implémentation interface ILogicElement
+		virtual	std::string		GetDesc() const override					{ return "<=>"; }
 		virtual	ILogicElement*	Duplicate() const override					{ return new OperatorBIMP(); }
 		// implémentation interface ABinaryOperator
 		virtual bool			Evaluate(bool b1, bool b2) const override	{ return b1 == b2; }

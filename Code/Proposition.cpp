@@ -29,6 +29,14 @@ namespace ft
 	{
 	}
 
+	std::string		Proposition::GetDesc() const 
+	{
+		std::string sDesc;
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+			sDesc += (*itElem)->GetDesc();
+		return sDesc;
+	}
+
 	ILogicElement*	Proposition::Duplicate() const
 	{
 		return new Proposition(*this);
@@ -62,14 +70,10 @@ namespace ft
 					oResultStack.top() = dynamic_cast<const ABinaryOperator*>(itElem->Get())->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (1, 2) ou (2, 1)
 				}
 				else
-				{
-					FT_NOT_IMPLEMENTED("erreur");
-				}
+					FT_FAILED_ASSERTION("Operateur inconnu");
 			}
 			else
-			{
-				FT_NOT_IMPLEMENTED("erreur");
-			}
+				FT_FAILED_ASSERTION("Type d'element inconnu");
 		}
 
 		FT_ASSERT(oResultStack.size() == 1);

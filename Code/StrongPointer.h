@@ -10,7 +10,7 @@
 
 namespace ft
 {
-	FT_TODO("Deplacer la fonction Swap ailleurs")
+	//FT_TODO("Deplacer la fonction Swap ailleurs")
 	template <typename T>
 	static inline void	Swap(T* const p1, T* const p2)
 	{
