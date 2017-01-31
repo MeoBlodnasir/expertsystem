@@ -64,6 +64,11 @@ namespace ft
 	//////////////////////////////
 
 	// Non
+	// --------
+	//	A	!A
+	// --------
+	//	T	F
+	//	F	T
 	class OperatorNOT : public AUnaryOperator
 	{
 	public:
@@ -79,6 +84,13 @@ namespace ft
 	};
 
 	// Et
+	// -------------
+	//	A	B	A+B
+	// -------------
+	//	T	T	 T
+	//	T	F	 F
+	//	F	T	 F
+	//	F	F	 F
 	class OperatorAND : public ABinaryOperator
 	{
 	public:
@@ -94,6 +106,13 @@ namespace ft
 	};
 
 	// Ou
+	// -------------
+	//	A	B	A|B
+	// -------------
+	//	T	T	 T
+	//	T	F	 T
+	//	F	T	 T
+	//	F	F	 F
 	class OperatorOR : public ABinaryOperator
 	{
 	public:
@@ -109,6 +128,13 @@ namespace ft
 	};
 
 	// Ou exclusif
+	// -------------
+	//	A	B	A^B
+	// -------------
+	//	T	T	 F
+	//	T	F	 T
+	//	F	T	 T
+	//	F	F	 F
 	class OperatorXOR : public ABinaryOperator
 	{
 	public:
@@ -124,6 +150,13 @@ namespace ft
 	};
 
 	// Implique
+	// --------------
+	//	A	B	A=>B
+	// --------------
+	//	T	T	 T
+	//	T	F	 F
+	//	F	T	 T
+	//	F	F	 T
 	class OperatorIMP : public ABinaryOperator
 	{
 	public:
@@ -139,6 +172,13 @@ namespace ft
 	};
 
 	// Equivalence (bidirectionnal implication)
+	// ---------------
+	//	A	B	A<=>B
+	// ---------------
+	//	T	T	  T
+	//	T	F	  F
+	//	F	T	  F
+	//	F	F	  T
 	class OperatorBIMP : public ABinaryOperator
 	{
 	public:
