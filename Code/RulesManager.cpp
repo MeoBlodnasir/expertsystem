@@ -21,12 +21,7 @@ namespace ft
 		m_oRules.clear();
 	}
 
-	const std::vector<Rule>&	RulesManager::GetRules() 
-	{
-		return m_oRules;
-	}
-
-	void				RulesManager::PrintRules() const
+	void	RulesManager::PrintRules() const
 	{
 		FT_COUT << "RULES MANAGER" << std::endl;
 		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; itRule++)
@@ -45,7 +40,7 @@ namespace ft
 		return bIsValid;
 	}
 
-	void				RulesManager::DivideBidirectionnalRules()
+	void	RulesManager::DivideBidirectionnalRules()
 	{
 		std::vector<Rule> oNewRules;
 
@@ -65,11 +60,11 @@ namespace ft
 
 	}
 	
-	void				RulesManager::DivideRules()
+	void	RulesManager::DivideRules()
 	{
 		DivideBidirectionnalRules();
 		std::vector<Rule> oNewRules;
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
+		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); )
 		{
 			AtomIdSet pIdSet;
 			itRule->GetConsequent().GetAtomsId(&pIdSet);
@@ -82,14 +77,11 @@ namespace ft
 					oRule.AddConsequentElement(Atom(*itSet));
 					oNewRules.push_back(oRule);
 				}
+				itRule = m_oRules.erase(itRule);
 			}
 			else
-			{
-				oNewRules.push_back(*itRule);
-			}
-
+				++itRule;
 		}
-		m_oRules.clear();
 		for (std::vector<Rule>::const_iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
 			m_oRules.push_back(*itNewRule);
 	}

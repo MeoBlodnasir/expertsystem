@@ -13,18 +13,18 @@ namespace ft
 			RulesManager();
 			~RulesManager();
 
-			void						Reset();
+			inline const std::vector<Rule>&	GetRules() const	{ return m_oRules; }
 
-			const std::vector<Rule>&	GetRules();
-			bool						AddRule(const Rule& oRule);
-			bool						CheckRules() const;
-			void						DivideRules();
-			void						PrintRules() const;
+			void	Reset();
+			bool	AddRule(const Rule& oRule);
+			bool	CheckRules() const;
+			void	DivideRules();
+			void	PrintRules() const;
 
 		private:
 			
 			std::vector<Rule>	m_oRules;
 
-			void				DivideBidirectionnalRules();
+			void	DivideBidirectionnalRules();
 	};
 }
