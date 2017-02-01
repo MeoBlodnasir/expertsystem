@@ -1,0 +1,48 @@
+a+b		=>	c
+d+c		=>	e
+e+b|e	=>	g
+e+g		=>	a
+c+b		=>	h
+a|f		=>	h + g
+
+=b
+?ah
+
+#	?a
+#		e+g=f
+#		?e
+#			d+c=f
+#			?d
+#				d=f
+#			?c
+#				a+b=f
+#				?a
+#					STOP: a=f
+#				?b
+#					b=v
+#		?g
+#			e+b|e=f
+#			?e
+#				d+c=f
+#				?d
+#					d=f
+#				?c
+#					a+b=f
+#					?a
+#						STOP: a=f
+#					?b
+#						b=v
+#			?b
+#				b=v
+#	
+#	?e
+#		d+c
+#		?d
+#			d
+#		?c
+#			a+b
+#			?a
+#				e+g
+#				?e
+#					STOP: e
+#				?g

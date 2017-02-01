@@ -9,6 +9,8 @@
 #include "ILogicElement.h"
 #include "RulesManager.h"
 
+#include <algorithm>
+
 namespace ft
 {
 	InferenceEngine::InferenceEngine()
@@ -71,7 +73,7 @@ namespace ft
 		return MasterProposition.Evaluate(oVariablesManager) ? "true" : "false";
 	}
 
-	ConstantAtom	Rec(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery)
+	ConstantAtom	GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>& oQueries, ILogicElement::AtomId iQuery)
 	{
 		//	1)	on cherche les règles qui impliquent goal
 		//	2)	si on trouve de(s) règle(s)
@@ -82,40 +84,53 @@ namespace ft
 		//		sinon ça fait des sous goals
 		//			on prend la valeur initiale
 
-		const Rule*	pConsequentRule = nullptr;
+		ConstantAtom				oRetAtom(oFacts.GetVariable(iQuery)->GetState());
+		std::vector<const Rule*>	oConsequentRules;
 
+		oQueries.push_back(iQuery);
 		//	1)	on cherche les règles qui impliquent goal
 		for (const Rule& itRule : oRules.GetRules())
 		{
 			if (itRule.GetConsequentFirstAtomId() == iQuery)
-			{
-				pConsequentRule = &itRule;
-				break;
-			}
+				oConsequentRules.push_back(&itRule);
 		}
 
 		//	2)	si on trouve de(s) règle(s)
-		if (pConsequentRule != nullptr)
+		if (oConsequentRules.size() > 0)
 		{
-			AtomIdSet	oAtomSet;
-			Proposition	oProposition(pConsequentRule->GetAntecedent());
+			for (const Rule* itRule : oConsequentRules)
+			{
+				AtomIdSet	oAtomSet;
+				Proposition	oProposition(itRule->GetAntecedent());
 
-			pConsequentRule->GetAntecedent().GetAtomsId(&oAtomSet);
-			for (const ILogicElement::AtomId& itAtomId : oAtomSet)
-			{
-				oProposition.ReplaceAtom(itAtomId, Rec(oFacts, oRules, itAtomId));
-			}
-			if (oProposition.Evaluate(oFacts))
-			{
-				return ConstantAtom(true);
+				itRule->GetAntecedent().GetAtomsId(&oAtomSet);
+				for (const ILogicElement::AtomId& itAtomId : oAtomSet)
+				{
+					if (std::find(oQueries.begin(), oQueries.end(), itAtomId) == oQueries.end())
+					{
+						oProposition.ReplaceAtom(itAtomId, GoalEvaluation(oFacts, oRules, oQueries, itAtomId));
+					}
+					else
+					{
+						oProposition.ReplaceAtom(itAtomId, ConstantAtom(oFacts.GetVariable(itAtomId)->GetState()));
+					}
+				}
+				if (oProposition.Evaluate(oFacts))
+				{
+					oRetAtom = ConstantAtom(true);
+					break;
+				}
 			}
 		}
 
-		return ConstantAtom(oFacts.GetVariable(iQuery)->GetState());
+		oQueries.pop_back();
+		return oRetAtom;
 	}
 
 	bool	InferenceEngine::NewProcessQuery(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery)
 	{
-		return Rec(oFacts, oRules, iQuery).GetState();
+		std::vector<ILogicElement::AtomId> oQueries;
+		
+		return GoalEvaluation(oFacts, oRules, oQueries, iQuery).GetState();
 	}
 }
