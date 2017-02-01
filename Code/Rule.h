@@ -10,8 +10,6 @@ namespace ft
 	{
 	public:
 
-		std::string		sLitteralExpression;
-
 		Rule();
 		Rule(const Rule& oRule);
 		~Rule();

@@ -12,9 +12,7 @@ namespace ft
 {
 	std::ostream&	operator << (std::ostream& oOs, const Rule& oRule)
 	{
-		oOs << "L:  " << oRule.sLitteralExpression << "     ";
-
-		oOs << "P:  " << oRule.m_oAntecedent.GetDesc() << ' ';
+		oOs << oRule.m_oAntecedent.GetDesc() << ' ';
 		if (oRule.m_bIsBidirectionnal)
 			oOs << OperatorBIMP().GetDesc();
 		else

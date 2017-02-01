@@ -137,20 +137,23 @@ KeywordFound:
 					while (IsWhiteSpace(*c))
 						++c;
 
-					if (ReadElement(&oToken, &iOffset, c) == FT_OK)
+					if (*c != '\0')
 					{
-						oOutData.oTokens.push_back(oToken);
-						c += iOffset;
-					}
-					else
-					{
-						iOffset = 0;
-						while (!IsWhiteSpace(c[iOffset]) && c[iOffset] != '\0')
-							++iOffset;
-						FT_CERR << "Erreur ligne: " << sLine << std::endl;
-						FT_CERR << "Entrée inconnue ignorée: " << std::string(c, iOffset) << std::endl;
-						eRet = FT_FAIL;
-						c += iOffset;
+						if (ReadElement(&oToken, &iOffset, c) == FT_OK)
+						{
+							oOutData.oTokens.push_back(oToken);
+							c += iOffset;
+						}
+						else
+						{
+							iOffset = 0;
+							while (!IsWhiteSpace(c[iOffset]) && c[iOffset] != '\0')
+								++iOffset;
+							FT_CERR << "Erreur ligne: " << sLine << std::endl;
+							FT_CERR << "Entree inconnue ignoree: " << std::string(c, iOffset) << std::endl;
+							eRet = FT_FAIL;
+							c += iOffset;
+						}
 					}
 				}
 			}

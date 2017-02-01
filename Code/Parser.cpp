@@ -81,8 +81,6 @@ namespace ft
 			pRule->AddAntecedentElement(oElement);
 		else if (m_eRuleState == E_CONSEQUENT)
 			pRule->AddConsequentElement(oElement);
-
-		pRule->sLitteralExpression += oElement.GetDesc();
 	}
 
 	void		Parser::AddTokenToRule(Rule* pRule, const Token& oToken)
@@ -209,14 +207,8 @@ namespace ft
 
 					UnstackPendingElements(&oPendingTokens, &oData.oRule);
 					if (itToken->GetType() == Token::E_OP_IMPLIES_IFANDONLYIF)
-					{
 						oData.oRule.SetBidirectionnal(true);
-						oData.oRule.sLitteralExpression += OperatorBIMP().GetDesc();
-					}
-					else
-					{
-						oData.oRule.sLitteralExpression += OperatorIMP().GetDesc();
-					}
+
 					m_eRuleState = E_CONSEQUENT;
 					break;
 				}
