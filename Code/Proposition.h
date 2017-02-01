@@ -7,12 +7,16 @@
 
 namespace ft
 {
+	// fw
+	class Atom;
+
 	class Proposition : public IProposition
 	{
 	public:
 
 		Proposition();
 		Proposition(const Proposition& oProposition);
+		Proposition(const Atom& oAtom);
 		virtual ~Proposition() override;
 
 		// Implémentation de l'interface ILogicElement

@@ -116,7 +116,7 @@ namespace ft
 
 		while (m_ePendingCommand != E_QUIT)
 		{
-			std::cout << "AKINATOR T'ECOUTE MON ENFANT:" << std::endl;
+			std::cout << "ENGIN T'ECOUTE MON ENFANT:" << std::endl;
 			std::getline(std::cin, sLine);
 			if (ProcessInputLine(sLine) != FT_OK)
 				continue;
@@ -153,7 +153,6 @@ namespace ft
 					return FT_FAIL;
 				m_xVariablesManager->DeclareVariables(oParsingData.oAtoms.begin(), oParsingData.oAtoms.end());
 				m_xRulesManager->CheckRules();
-				m_xRulesManager->DivideRules();
 				break;
 			}
 

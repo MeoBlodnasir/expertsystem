@@ -20,6 +20,9 @@ namespace ft
 		inline const Proposition&	GetAntecedent() const		{ return m_oAntecedent; }
 		ILogicElement::AtomId		GetConsequentFirstAtomId() const;
 
+		void			SetAntecedentProposition(const Proposition& oProposition)	{ m_oAntecedent = oProposition; }
+		void			SetConsequentProposition(const Proposition& oProposition)	{ m_oConsequent = oProposition; }
+
 		void			AddAntecedentElement(const ILogicElement& oElement);
 		void			AddConsequentElement(const ILogicElement& oElement);
 
@@ -27,7 +30,6 @@ namespace ft
 		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
 
 		bool			CheckComponentsValidity() const;
-		bool			CheckIntegrity() const;
 
 	private:
 

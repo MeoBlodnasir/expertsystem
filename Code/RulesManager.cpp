@@ -32,55 +32,44 @@ namespace ft
 	{
 		// N'ajoute la règle que si elle est valide.
 		bool bIsValid = oRule.CheckComponentsValidity();
-		bool bIntegrity = oRule.CheckIntegrity();
 
-		if (bIsValid/* && bIntegrity*/)
+		if (bIsValid)
+		{
+			DivideBidirectionnalRule(oRule);
 			m_oRules.push_back(oRule);
+			DivideRule(m_oRules.end() - 1);
+		}
 
 		return bIsValid;
 	}
 
-	void	RulesManager::DivideBidirectionnalRules()
+	void	RulesManager::DivideBidirectionnalRule(const Rule& oRule)
 	{
-		std::vector<Rule> oNewRules;
-
-		for (std::vector<Rule>::iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); itRule++)
+		if (oRule.IsBidirectionnal())
 		{
-			if (itRule->IsBidirectionnal())
-			{
-				Rule oRule;
-				oRule.AddAntecedentElement(itRule->GetConsequent());
-				oRule.AddConsequentElement(itRule->GetAntecedent());
-				oNewRules.push_back(oRule);
-				itRule->SetBidirectionnal(false);
-			}
+			Rule oNewRule(oRule);
+			oNewRule.SetAntecedentProposition(oRule.GetConsequent());
+			oNewRule.SetConsequentProposition(oRule.GetAntecedent());
+			m_oRules.push_back(oNewRule);
 		}
-		for (std::vector<Rule>::iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
-			m_oRules.push_back(*itNewRule);
-
 	}
 	
-	void	RulesManager::DivideRules()
+	void	RulesManager::DivideRule(std::vector<Rule>::const_iterator itRule)
 	{
-		DivideBidirectionnalRules();
-		std::vector<Rule> oNewRules;
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); )
+		std::vector<Rule>	oNewRules;
+		AtomIdSet			pIdSet;
+
+		itRule->GetConsequent().GetAtomsId(&pIdSet);
+		if (pIdSet.size() > 1)
 		{
-			AtomIdSet pIdSet;
-			itRule->GetConsequent().GetAtomsId(&pIdSet);
-			if (pIdSet.size() > 1)
+			for (std::unordered_set<Atom::Id>::iterator itSet = pIdSet.begin(); itSet != pIdSet.end(); itSet++)
 			{
-				for (std::unordered_set<Atom::Id>::iterator itSet = pIdSet.begin(); itSet != pIdSet.end(); itSet++)
-				{
-					Rule oRule;
-					oRule.AddAntecedentElement(itRule->GetAntecedent());
-					oRule.AddConsequentElement(Atom(*itSet));
-					oNewRules.push_back(oRule);
-				}
-				itRule = m_oRules.erase(itRule);
+				Rule oNewRule(*itRule);
+				oNewRule.SetAntecedentProposition(itRule->GetAntecedent());
+				oNewRule.SetConsequentProposition(Proposition(Atom(*itSet)));
+				oNewRules.push_back(oNewRule);
 			}
-			else
-				++itRule;
+			m_oRules.erase(itRule);
 		}
 		for (std::vector<Rule>::const_iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
 			m_oRules.push_back(*itNewRule);

@@ -5,44 +5,34 @@ e+g		=>	a
 c+b		=>	h
 a|f		=>	h + g
 
-=b
-?ah
+i+k		<=>	j
+
+=ik
+?j
 
 #	?a
-#		e+g=f
+#		e+g
 #		?e
-#			d+c=f
+#			d+c
 #			?d
-#				d=f
+#				d
 #			?c
-#				a+b=f
+#				a+b
 #				?a
-#					STOP: a=f
+#					STOP: a
 #				?b
-#					b=v
+#					b
 #		?g
-#			e+b|e=f
+#			e+b|e
 #			?e
-#				d+c=f
+#				d+c
 #				?d
-#					d=f
+#					d
 #				?c
-#					a+b=f
+#					a+b
 #					?a
-#						STOP: a=f
+#						STOP: a
 #					?b
-#						b=v
+#						b
 #			?b
-#				b=v
-#	
-#	?e
-#		d+c
-#		?d
-#			d
-#		?c
-#			a+b
-#			?a
-#				e+g
-#				?e
-#					STOP: e
-#				?g
+#				b

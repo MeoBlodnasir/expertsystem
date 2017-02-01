@@ -73,57 +73,55 @@ namespace ft
 		return MasterProposition.Evaluate(oVariablesManager) ? "true" : "false";
 	}
 
-	ConstantAtom	GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>& oQueries, ILogicElement::AtomId iQuery)
+	ConstantAtom	GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>* pQueries, ILogicElement::AtomId iQuery)
 	{
-		//	1)	on cherche les règles qui impliquent goal
-		//	2)	si on trouve de(s) règle(s)
-		//			pour chaque sous goal on cherche des règles qui impliquent le sous goal (1)
-		//			on évalue l'antécédent
-		//			si l'antécédent est vrai, on prend vrai
-		//			si l'antécédent est faux, on prend la valeur initiale
-		//		sinon ça fait des sous goals
-		//			on prend la valeur initiale
+		ConstantAtom	oRetAtom(oFacts.GetVariable(iQuery)->GetState());
+		bool			bConsequentRuleFound = false;
+		pQueries->push_back(iQuery);
+		FT_COUT << std::string(pQueries->size() - 1, '\t') << "? " << iQuery << std::endl;
 
-		ConstantAtom				oRetAtom(oFacts.GetVariable(iQuery)->GetState());
-		std::vector<const Rule*>	oConsequentRules;
-
-		oQueries.push_back(iQuery);
-		//	1)	on cherche les règles qui impliquent goal
 		for (const Rule& itRule : oRules.GetRules())
 		{
 			if (itRule.GetConsequentFirstAtomId() == iQuery)
-				oConsequentRules.push_back(&itRule);
-		}
-
-		//	2)	si on trouve de(s) règle(s)
-		if (oConsequentRules.size() > 0)
-		{
-			for (const Rule* itRule : oConsequentRules)
 			{
+				bool		bIsDetermined = false;
+				bool		bEvaluation = false;
 				AtomIdSet	oAtomSet;
-				Proposition	oProposition(itRule->GetAntecedent());
+				Proposition	oProposition(itRule.GetAntecedent());
 
-				itRule->GetAntecedent().GetAtomsId(&oAtomSet);
+				FT_COUT << std::string(pQueries->size(), '\t')  << "? (" << itRule.GetAntecedent().GetDesc() << ')' << std::endl;
+				bConsequentRuleFound = true;
+				itRule.GetAntecedent().GetAtomsId(&oAtomSet);
 				for (const ILogicElement::AtomId& itAtomId : oAtomSet)
 				{
-					if (std::find(oQueries.begin(), oQueries.end(), itAtomId) == oQueries.end())
+					if (std::find(pQueries->begin(), pQueries->end(), itAtomId) == pQueries->end())
 					{
-						oProposition.ReplaceAtom(itAtomId, GoalEvaluation(oFacts, oRules, oQueries, itAtomId));
+						oProposition.ReplaceAtom(itAtomId, GoalEvaluation(oFacts, oRules, pQueries, itAtomId));
 					}
 					else
 					{
+						FT_COUT << std::string(pQueries->size(), '\t') << "? " << itAtomId << std::endl;
+						FT_COUT << std::string(pQueries->size() + 1, '\t') << "STOP: " << itAtomId << " = " << oFacts.GetVariable(itAtomId)->GetState() << std::endl;
 						oProposition.ReplaceAtom(itAtomId, ConstantAtom(oFacts.GetVariable(itAtomId)->GetState()));
 					}
 				}
-				if (oProposition.Evaluate(oFacts))
+				bIsDetermined = itRule.IsBidirectionnal();
+				bEvaluation = oProposition.Evaluate(oFacts);
+				FT_COUT << std::string(pQueries->size(), '\t') << '(' << itRule.GetAntecedent().GetDesc() << ')' << " = " << bEvaluation << std::endl;
+				if (bEvaluation || bIsDetermined)
 				{
-					oRetAtom = ConstantAtom(true);
+					oRetAtom = ConstantAtom(bEvaluation);
 					break;
 				}
 			}
 		}
 
-		oQueries.pop_back();
+		if (!bConsequentRuleFound)
+		{
+			FT_COUT << std::string(pQueries->size(), '\t') << iQuery << " = " << oFacts.GetVariable(iQuery)->GetState() << std::endl;
+		}
+
+		pQueries->pop_back();
 		return oRetAtom;
 	}
 
@@ -131,6 +129,6 @@ namespace ft
 	{
 		std::vector<ILogicElement::AtomId> oQueries;
 		
-		return GoalEvaluation(oFacts, oRules, oQueries, iQuery).GetState();
+		return GoalEvaluation(oFacts, oRules, &oQueries, iQuery).GetState();
 	}
 }

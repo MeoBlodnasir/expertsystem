@@ -18,7 +18,6 @@ namespace ft
 			void	Reset();
 			bool	AddRule(const Rule& oRule);
 			bool	CheckRules() const;
-			void	DivideRules();
 			void	PrintRules() const;
 
 		private:
@@ -26,5 +25,7 @@ namespace ft
 			std::vector<Rule>	m_oRules;
 
 			void	DivideBidirectionnalRules();
+			void	DivideBidirectionnalRule(const Rule& oRule);
+			void	DivideRule(std::vector<Rule>::const_iterator itRule);
 	};
 }

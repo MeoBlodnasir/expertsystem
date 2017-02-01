@@ -48,18 +48,4 @@ namespace ft
 	{
 		return m_oAntecedent.CheckValidity() && m_oConsequent.CheckValidity();
 	}
-
-	bool		Rule::CheckIntegrity() const
-	{
-		// Vérifie que la règle ne fait pas référence à un même Atom des deux côtés de son implication
-		AtomIdSet oAntecedentAtomsId;
-		AtomIdSet oConsequentAtomsId;
-		m_oAntecedent.GetAtomsId(&oAntecedentAtomsId);
-		m_oConsequent.GetAtomsId(&oConsequentAtomsId);
-		uint32 iOriginalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
-		oAntecedentAtomsId.insert(oConsequentAtomsId.begin(), oConsequentAtomsId.end());
-		uint32 iFinalSize = oAntecedentAtomsId.size();
-
-		return iOriginalSize == iFinalSize;
-	}
 }

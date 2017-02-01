@@ -25,6 +25,12 @@ namespace ft
 		}
 	}
 
+	Proposition::Proposition(const Atom& oAtom)
+		: IProposition()
+	{
+		m_oElements.push_back(oAtom.Duplicate());
+	}
+
 	Proposition::~Proposition()
 	{
 	}
