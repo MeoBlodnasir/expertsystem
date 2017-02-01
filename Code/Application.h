@@ -30,19 +30,30 @@ namespace ft
 
 		enum ECommand
 		{
-			E_NONE = 0,
-			E_QUIT
+			E_CMD_NONE = 0,
+			E_CMD_VERBOSE,
+			E_CMD_PRINT,
+			E_CMD_FLUSH,
+			E_CMD_QUIT
+		};
+
+		enum EOption
+		{
+			E_OPT_NONE		= 0,
+			E_OPT_VERBOSE	= (1 << 0)
 		};
 
 		ECommand				m_ePendingCommand;
+		uint32					m_iOptions;
 		SPtr<VariablesManager>	m_xVariablesManager;
 		SPtr<RulesManager>		m_xRulesManager;
 		SPtr<InferenceEngine>	m_xInferenceEngine;
 		AtomIdSet				m_oPendingQueries;
 
-		EErrorCode	ProcessInputLine(const std::string& sLine);
 		EErrorCode	ReadInputFiles(const int32 ac, const char* const* av);
 		EErrorCode	AskUserInput();
+		EErrorCode	ProcessInputLine(const std::string& sLine);
+		void		ProcessCommand();
 
 		EErrorCode	EvaluatePendingQueries();
 

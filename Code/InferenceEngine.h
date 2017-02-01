@@ -2,6 +2,7 @@
 
 #include "StrongPointer.h"
 #include "Rule.h"
+#include "Atom.h"
 
 #include <vector>
 
@@ -18,13 +19,17 @@ namespace ft
 		InferenceEngine();
 		~InferenceEngine();
 
-		std::string	ProcessQuery(const VariablesManager& oFacts, const std::vector<Rule>& oRules, ILogicElement::AtomId iQuery);
+		inline void		SetVerbose(bool bVerbose)		{ m_bVerbose = bVerbose; }
 
-		bool		NewProcessQuery(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery);
+		bool			ProcessQuery(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery) const;
 
 	private:
 
+		bool	m_bVerbose;
+
 		InferenceEngine(const InferenceEngine&);
 		InferenceEngine& operator = (const InferenceEngine&);
+	
+		ConstantAtom	GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>* pQueries, ILogicElement::AtomId iQuery) const;
 	};
 }

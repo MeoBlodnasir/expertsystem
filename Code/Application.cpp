@@ -20,7 +20,9 @@
 namespace ft
 {
 	Application::Application()
-		: m_xVariablesManager(nullptr)
+		: m_ePendingCommand(E_CMD_NONE)
+		, m_iOptions(E_OPT_NONE)
+		, m_xVariablesManager(nullptr)
 		, m_xRulesManager(nullptr)
 		, m_xInferenceEngine(nullptr)
 	{
@@ -93,14 +95,12 @@ namespace ft
 					continue;
 			}
 
-			// debug
-			PrintCurrentState();
-
 			EvaluatePendingQueries();
 			
 			// Reinitialiser les structures VariablesManager et RulesManager entre les fichiers
 			m_xVariablesManager->Reset();
 			m_xRulesManager->Reset();
+			m_oPendingQueries.clear();
 		}
 
 		return FT_OK;
@@ -114,15 +114,12 @@ namespace ft
 
 		std::string	sLine;
 
-		while (m_ePendingCommand != E_QUIT)
+		while (m_ePendingCommand != E_CMD_QUIT)
 		{
 			std::cout << "ENGIN T'ECOUTE MON ENFANT:" << std::endl;
 			std::getline(std::cin, sLine);
 			if (ProcessInputLine(sLine) != FT_OK)
 				continue;
-
-			// debug
-			PrintCurrentState();
 
 			EvaluatePendingQueries();
 		}
@@ -173,11 +170,10 @@ namespace ft
 			{
 				switch (oParsingData.eCommandType)
 				{
-				case Token::E_CMD_QUIT:
-					{
-						m_ePendingCommand = E_QUIT;
-						break;
-					}
+				case Token::E_CMD_VERBOSE:	{ m_ePendingCommand = E_CMD_VERBOSE;	break; }
+				case Token::E_CMD_PRINT:	{ m_ePendingCommand = E_CMD_PRINT;		break; }
+				case Token::E_CMD_FLUSH:	{ m_ePendingCommand = E_CMD_FLUSH;		break; }
+				case Token::E_CMD_QUIT:		{ m_ePendingCommand = E_CMD_QUIT;		break; }
 
 				default:
 					{
@@ -192,7 +188,43 @@ namespace ft
 			break;
 		}
 
+		ProcessCommand();
+
 		return FT_OK;
+	}
+
+	void	Application::ProcessCommand()
+	{
+		FT_ASSERT(m_xVariablesManager != nullptr);
+		FT_ASSERT(m_xRulesManager != nullptr);
+		FT_ASSERT(m_xInferenceEngine != nullptr);
+
+		switch (m_ePendingCommand)
+		{
+		case E_CMD_VERBOSE:
+			{
+				m_iOptions ^= E_OPT_VERBOSE;
+				m_xInferenceEngine->SetVerbose(m_iOptions & E_OPT_VERBOSE);
+				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
+		case E_CMD_PRINT:
+			{
+				PrintCurrentState();
+				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
+		case E_CMD_FLUSH:
+			{
+				m_xVariablesManager->Reset();
+				m_xRulesManager->Reset();
+				m_oPendingQueries.clear();
+				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
+		default:
+			break;
+		}
 	}
 
 	EErrorCode	Application::EvaluatePendingQueries()
@@ -205,8 +237,7 @@ namespace ft
 		{
 			for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
 			{
-				//FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, m_xRulesManager->GetRules(), *itQuery) << std::endl;
-				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->NewProcessQuery(*m_xVariablesManager, *m_xRulesManager, *itQuery) << std::endl;
+				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, *m_xRulesManager, *itQuery) << std::endl;
 			}
 			m_oPendingQueries.clear();
 		}
@@ -223,9 +254,6 @@ namespace ft
 		FT_COUT << "###################################" << std::endl;
 		m_xVariablesManager->DebugPrint();
 		m_xRulesManager->PrintRules();
-		FT_COUT << "REQUETES: ";
-		for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
-			FT_COUT << *itQuery;
 		FT_COUT << std::endl;
 		FT_COUT << "###################################" << std::endl;
 	}

@@ -22,6 +22,9 @@ namespace ft
 
 			// Commandes
 			E_CMD_OFFSET,
+			E_CMD_VERBOSE,
+			E_CMD_PRINT,
+			E_CMD_FLUSH,
 			E_CMD_QUIT,
 			E_CMD_COUNT,
 

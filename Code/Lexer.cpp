@@ -14,7 +14,10 @@ namespace ft
 
 		static const std::string s_sCommandsKeyWord[Token::E_CMD_COUNT - (Token::E_CMD_OFFSET+1)] =
 		{
-			"quit"
+			"verbose",
+			"print",
+			"flush",
+			"quit",
 		};
 
 		static const std::string s_sSymbolsKeyWord[Token::E_SYM_COUNT - (Token::E_SYM_OFFSET+1)] =
