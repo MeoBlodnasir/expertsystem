@@ -206,7 +206,8 @@ namespace ft
 		{
 			for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
 			{
-				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, m_xRulesManager->GetRules(), *itQuery) << std::endl;
+				//FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, m_xRulesManager->GetRules(), *itQuery) << std::endl;
+				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->NewProcessQuery(*m_xVariablesManager, *m_xRulesManager, *itQuery) << std::endl;
 			}
 			m_oPendingQueries.clear();
 		}

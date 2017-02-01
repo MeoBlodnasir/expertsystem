@@ -26,12 +26,10 @@ namespace ft
 	{
 	}
 
-	ILogicElement::AtomId	Rule::GetConsequentAtomId() const
+	ILogicElement::AtomId	Rule::GetConsequentFirstAtomId() const
 	{
 		AtomIdSet oAtomsId;
-
 		m_oConsequent.GetAtomsId(&oAtomsId);
-
 		FT_ASSERT(oAtomsId.size() > 0);
 		return *oAtomsId.begin();
 	}
@@ -53,15 +51,15 @@ namespace ft
 
 	bool		Rule::CheckIntegrity() const
 	{
+		// Vérifie que la règle ne fait pas référence à un même Atom des deux côtés de son implication
 		AtomIdSet oAntecedentAtomsId;
 		AtomIdSet oConsequentAtomsId;
-		GetAntecedent().GetAtomsId(&oAntecedentAtomsId);
-		GetConsequent().GetAtomsId(&oConsequentAtomsId);
-		int iOriginalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
+		m_oAntecedent.GetAtomsId(&oAntecedentAtomsId);
+		m_oConsequent.GetAtomsId(&oConsequentAtomsId);
+		uint32 iOriginalSize = oAntecedentAtomsId.size() + oConsequentAtomsId.size();
 		oAntecedentAtomsId.insert(oConsequentAtomsId.begin(), oConsequentAtomsId.end());
-		int iFinalSize = oAntecedentAtomsId.size();
-		if (iOriginalSize != iFinalSize)
-			return false;
-		return true;
+		uint32 iFinalSize = oAntecedentAtomsId.size();
+
+		return iOriginalSize == iFinalSize;
 	}
 }

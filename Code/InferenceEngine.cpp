@@ -7,6 +7,7 @@
 #include "Output.h"
 #include "LogicOperator.h"
 #include "ILogicElement.h"
+#include "RulesManager.h"
 
 namespace ft
 {
@@ -23,7 +24,7 @@ namespace ft
 		std::vector<const Proposition*> oPropositions;
 		for (std::vector<Rule>::const_iterator itRule = oRules.begin(), itEnd = oRules.end(); itRule != itEnd; ++itRule)
 		{
-			if (itRule->GetConsequentAtomId() == oId)
+			if (itRule->GetConsequentFirstAtomId() == oId)
 			{
 				oPropositions.push_back(&(itRule->GetAntecedent()));
 			}
@@ -68,5 +69,53 @@ namespace ft
 		}
 
 		return MasterProposition.Evaluate(oVariablesManager) ? "true" : "false";
+	}
+
+	ConstantAtom	Rec(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery)
+	{
+		//	1)	on cherche les règles qui impliquent goal
+		//	2)	si on trouve de(s) règle(s)
+		//			pour chaque sous goal on cherche des règles qui impliquent le sous goal (1)
+		//			on évalue l'antécédent
+		//			si l'antécédent est vrai, on prend vrai
+		//			si l'antécédent est faux, on prend la valeur initiale
+		//		sinon ça fait des sous goals
+		//			on prend la valeur initiale
+
+		const Rule*	pConsequentRule = nullptr;
+
+		//	1)	on cherche les règles qui impliquent goal
+		for (const Rule& itRule : oRules.GetRules())
+		{
+			if (itRule.GetConsequentFirstAtomId() == iQuery)
+			{
+				pConsequentRule = &itRule;
+				break;
+			}
+		}
+
+		//	2)	si on trouve de(s) règle(s)
+		if (pConsequentRule != nullptr)
+		{
+			AtomIdSet	oAtomSet;
+			Proposition	oProposition(pConsequentRule->GetAntecedent());
+
+			pConsequentRule->GetAntecedent().GetAtomsId(&oAtomSet);
+			for (const ILogicElement::AtomId& itAtomId : oAtomSet)
+			{
+				oProposition.ReplaceAtom(itAtomId, Rec(oFacts, oRules, itAtomId));
+			}
+			if (oProposition.Evaluate(oFacts))
+			{
+				return ConstantAtom(true);
+			}
+		}
+
+		return ConstantAtom(oFacts.GetVariable(iQuery)->GetState());
+	}
+
+	bool	InferenceEngine::NewProcessQuery(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery)
+	{
+		return Rec(oFacts, oRules, iQuery).GetState();
 	}
 }

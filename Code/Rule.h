@@ -18,7 +18,7 @@ namespace ft
 
 		inline const Proposition&	GetConsequent() const		{ return m_oConsequent; }
 		inline const Proposition&	GetAntecedent() const		{ return m_oAntecedent; }
-		ILogicElement::AtomId		GetConsequentAtomId() const;
+		ILogicElement::AtomId		GetConsequentFirstAtomId() const;
 
 		void			AddAntecedentElement(const ILogicElement& oElement);
 		void			AddConsequentElement(const ILogicElement& oElement);

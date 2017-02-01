@@ -34,7 +34,7 @@ namespace ft
 		bool bIsValid = oRule.CheckComponentsValidity();
 		bool bIntegrity = oRule.CheckIntegrity();
 
-		if (bIsValid && bIntegrity)
+		if (bIsValid/* && bIntegrity*/)
 			m_oRules.push_back(oRule);
 
 		return bIsValid;

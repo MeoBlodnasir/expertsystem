@@ -36,26 +36,21 @@ namespace ft
 		Id	m_iId;
 	};
 
-	template <bool bValue, Atom::Id iDesc>
 	class ConstantAtom : public Atom
 	{
 	public:
 
-		ConstantAtom() : Atom(iDesc)			{}
-		ConstantAtom(Id) : Atom(iDesc)			{}
-		ConstantAtom(const Atom&) : Atom(iDesc)	{}
-		virtual ~ConstantAtom();
+		ConstantAtom(bool bState = false) : Atom('*'), m_bState(bState)					{}
+		ConstantAtom(Id /*iId*/, bool bState = false) : Atom('*'), m_bState(bState)		{}
+		ConstantAtom(const ConstantAtom& oAtom) : Atom('*'), m_bState(oAtom.m_bState)	{}
+		virtual ~ConstantAtom()															{}
 
-		inline virtual bool	Evaluate(const VariablesManager&) const override	{ return bValue; }
+		inline virtual	ILogicElement*	Duplicate() const override							{ return new ConstantAtom(*this); }
+		inline virtual	bool			Evaluate(const VariablesManager&) const override	{ return GetState(); }
+		inline			bool			GetState() const									{ return m_bState; }
 
-		inline virtual void	SetId(Id) override	{}
-	};
+	private:
 
-	class AtomTrue : public ConstantAtom<true, '*'>
-	{
-	};
-
-	class AtomFalse : public ConstantAtom<false, '-'>
-	{
+		bool	m_bState;
 	};
 }
