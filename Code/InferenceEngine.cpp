@@ -102,6 +102,8 @@ namespace ft
 			return ConstantAtom(false);
 		case E_TRUE:
 			return ConstantAtom(true);
+		default:
+			break;
 		}
 
 		return ConstantAtom(oFacts.GetVariable(iQuery)->GetState());

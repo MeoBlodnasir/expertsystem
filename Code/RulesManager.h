@@ -27,7 +27,7 @@ namespace ft
 			std::map< ILogicElement::AtomId, std::vector<Rule> >	m_oRules;
 
 			void	DivideBidirectionnalRule(const Rule& oRule);
-			void	DivideRule(std::vector<Rule>::const_iterator itRule, ILogicElement::AtomId iVectorKey);
+			void	DivideRule(std::vector<Rule>::iterator itRule, ILogicElement::AtomId iVectorKey);
 			bool	CheckContradictions(ILogicElement::AtomId iVectorKey) const;
 	};
 }

@@ -87,7 +87,7 @@ namespace ft
 		}
 	}
 	
-	void	RulesManager::DivideRule(std::vector<Rule>::const_iterator itRule, ILogicElement::AtomId iVectorKey)
+	void	RulesManager::DivideRule(std::vector<Rule>::iterator itRule, ILogicElement::AtomId iVectorKey)
 	{
 		std::vector<Rule>	oNewRules;
 		uint32				iConsequentAtomCount = 0;
@@ -116,7 +116,7 @@ namespace ft
 
 		if (iConsequentAtomCount > 1)
 		{
-			ILogicElement::AtomId	iConsequentFirstAtomId;
+			ILogicElement::AtomId iConsequentFirstAtomId;
 
 			m_oRules[iVectorKey].erase(itRule);
 			for (const Rule& itNewRule : oNewRules)
