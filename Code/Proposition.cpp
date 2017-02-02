@@ -85,10 +85,14 @@ namespace ft
 					oResultStack.top() = dynamic_cast<const ABinaryOperator*>(xElem.Get())->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (1, 2) ou (2, 1)
 				}
 				else
+				{
 					FT_FAILED_ASSERTION("Operateur inconnu");
+				}
 			}
 			else
+			{
 				FT_FAILED_ASSERTION("Type d'element inconnu");
+			}
 		}
 
 		FT_ASSERT(oResultStack.size() == 1);

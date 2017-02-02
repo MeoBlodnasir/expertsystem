@@ -208,27 +208,27 @@ namespace ft
 			{
 				m_iOptions ^= E_OPT_VERBOSE;
 				m_xInferenceEngine->SetVerbose(m_iOptions & E_OPT_VERBOSE);
-				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+
 		case E_CMD_PRINT:
 			{
 				PrintCurrentState();
-				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+
 		case E_CMD_RESET_VARIABLES:
 			{
 				m_xVariablesManager->Reset();
-				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+
 		case E_CMD_FLUSH:
 			{
 				Flush();
-				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+
 		case E_CMD_HELP:
 			{
 				FT_COUT << "Commandes:" << std::endl;
@@ -242,13 +242,14 @@ namespace ft
 				FT_COUT << "  =[a]                      : Initialise les variables donnees a VRAI" << std::endl;
 				FT_COUT << "  ?[a]                      : Demande au programme d'evaluer les variables donnees" << std::endl;
 				FT_COUT << "  [a!+|^()] [[<]=>] [a!+()] : Ajoute une regle" << std::endl;
-
-				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+
 		default:
 			break;
 		}
+
+		m_ePendingCommand = E_CMD_NONE;
 	}
 
 	void	Application::Flush()
