@@ -4,7 +4,7 @@ namespace ft
 {
 	inline bool	IsWhiteSpace(char c)
 	{
-		return c == ' ' || c == '\t';
+		return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 	}
 
 	inline bool	IsDigit(char c)

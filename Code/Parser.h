@@ -33,6 +33,8 @@ namespace ft
 			Token::EType		eCommandType;
 			Rule				oRule;
 			AtomIdSet			oAtoms;
+
+			OutData() : eDataType(E_NONE), eCommandType(Token::E_NONE) {}
 		};
 
 		Parser();

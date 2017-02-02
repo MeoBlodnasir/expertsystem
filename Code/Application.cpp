@@ -83,6 +83,7 @@ namespace ft
 				FT_CERR << "Echec dans l'ouverture du fichier " << csFilePath << std::endl;
 				continue;
 			}
+			oSStream.clear();
 			oSStream << oIFStream.rdbuf();
 			oIFStream.close();
 
@@ -91,7 +92,6 @@ namespace ft
 				if (ProcessInputLine(sLine) != FT_OK)
 					continue;
 			}
-			oSStream.clear();
 
 			EvaluatePendingQueries();
 			Flush();
@@ -108,7 +108,7 @@ namespace ft
 
 		std::string	sLine;
 
-		std::cout << "Engin d'inference (\"help\" - \"quit\"):" << std::endl;
+		std::cout << "\nEngin d'inference (\"help\" - \"quit\"):" << std::endl;
 
 		while (m_ePendingCommand != E_CMD_QUIT)
 		{
@@ -140,6 +140,12 @@ namespace ft
 
 		switch (oParsingData.eDataType)
 		{
+		case Parser::OutData::E_NONE:
+			{
+				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
+
 		case Parser::OutData::E_RULE:
 			{
 				if (!m_xRulesManager->AddRule(oParsingData.oRule))
@@ -226,16 +232,18 @@ namespace ft
 		case E_CMD_HELP:
 			{
 				FT_COUT << "Commandes:" << std::endl;
-				FT_COUT << "  verbose                   : Affiche les étapes d'évaluation" << std::endl;
-				FT_COUT << "  print                     : Affiche les variables et règles courantes" << std::endl;
-				FT_COUT << "  reset_variables           : Initialise toutes les variables à FAUX" << std::endl;
-				FT_COUT << "  flush                     : Supprime les variables et les règles courantes" << std::endl;
+				FT_COUT << "  verbose                   : Affiche les etapes d'evaluation" << std::endl;
+				FT_COUT << "  print                     : Affiche les variables et regles courantes" << std::endl;
+				FT_COUT << "  reset_variables           : Initialise toutes les variables a FAUX" << std::endl;
+				FT_COUT << "  flush                     : Supprime les variables et les regles courantes" << std::endl;
 				FT_COUT << "  quit                      : Termine le programme" << std::endl;
 
 				FT_COUT << "Syntaxe:" << std::endl;
-				FT_COUT << "  =[a]                      : Initialise les variables données à VRAI" << std::endl;
-				FT_COUT << "  ?[a]                      : Demande au programme d'évaluer les variables données" << std::endl;
-				FT_COUT << "  [a!+|^()] [[<]=>] [a!+()] : Ajoute une règle" << std::endl;
+				FT_COUT << "  =[a]                      : Initialise les variables donnees a VRAI" << std::endl;
+				FT_COUT << "  ?[a]                      : Demande au programme d'evaluer les variables donnees" << std::endl;
+				FT_COUT << "  [a!+|^()] [[<]=>] [a!+()] : Ajoute une regle" << std::endl;
+
+				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
 		default:

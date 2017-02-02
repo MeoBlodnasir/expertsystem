@@ -8,3 +8,5 @@ F => H
 =AB
 
 ?GH
+
+print
