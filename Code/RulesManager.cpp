@@ -16,6 +16,15 @@ namespace ft
 	{
 	}
 
+	bool	RulesManager::DoesExistRuleThatImplies(ILogicElement::AtomId iId) const
+	{
+		return m_oRules.count(iId) > 0;
+	}
+
+	const std::vector<Rule>&	RulesManager::GetRulesThatImply(ILogicElement::AtomId iId) const
+	{
+		return m_oRules.at(iId);
+	}
 
 	void	RulesManager::Flush()
 	{
@@ -25,8 +34,11 @@ namespace ft
 	void	RulesManager::PrintRules() const
 	{
 		FT_COUT << "REGLES" << std::endl;
-		for (const Rule& itRule : m_oRules)
-			FT_COUT << itRule << std::endl;
+		for (const std::pair< ILogicElement::AtomId, std::vector<Rule> >& itRules : m_oRules)
+		{
+			for (const Rule& itRule : itRules.second)
+				FT_COUT << itRule << std::endl;
+		}
 	}
 
 	bool	RulesManager::AddRule(const Rule& oRule)
@@ -36,9 +48,12 @@ namespace ft
 		{
 			if (!oRule.CheckUnacceptedConditions())
 			{
+				ILogicElement::AtomId	iConsequentFirstAtomId;
+
 				DivideBidirectionnalRule(oRule);
-				m_oRules.push_back(oRule);
-				DivideRule(m_oRules.end() - 1);
+				iConsequentFirstAtomId = oRule.GetConsequentFirstAtomId();
+				m_oRules[iConsequentFirstAtomId].push_back(oRule);
+				DivideRule(m_oRules[iConsequentFirstAtomId].end() - 1, iConsequentFirstAtomId);
 
 				// Vérifier les contradictions entre règles
 				// ex: a=>b		a=>!b
@@ -62,15 +77,17 @@ namespace ft
 	{
 		if (oRule.IsBidirectionnal())
 		{
-			Rule oNewRule(oRule);
+			Rule					oNewRule(oRule);
+			ILogicElement::AtomId	iConsequentFirstAtomId;
 			oNewRule.SetAntecedentProposition(oRule.GetConsequent());
 			oNewRule.SetConsequentProposition(oRule.GetAntecedent());
-			m_oRules.push_back(oNewRule);
-			DivideRule(m_oRules.end() - 1);
+			iConsequentFirstAtomId = oNewRule.GetConsequentFirstAtomId();
+			m_oRules[iConsequentFirstAtomId].push_back(oNewRule);
+			DivideRule(m_oRules[iConsequentFirstAtomId].end() - 1, iConsequentFirstAtomId);
 		}
 	}
 	
-	void	RulesManager::DivideRule(std::vector<Rule>::const_iterator itRule)
+	void	RulesManager::DivideRule(std::vector<Rule>::const_iterator itRule, ILogicElement::AtomId iVectorKey)
 	{
 		std::vector<Rule>	oNewRules;
 		uint32				iConsequentAtomCount = 0;
@@ -99,9 +116,14 @@ namespace ft
 
 		if (iConsequentAtomCount > 1)
 		{
-			m_oRules.erase(itRule);
+			ILogicElement::AtomId	iConsequentFirstAtomId;
+
+			m_oRules[iVectorKey].erase(itRule);
 			for (const Rule& itNewRule : oNewRules)
-				m_oRules.push_back(itNewRule);
+			{
+				iConsequentFirstAtomId = itNewRule.GetConsequentFirstAtomId();
+				m_oRules[iConsequentFirstAtomId].push_back(itNewRule);
+			}
 		}
 	}
 }

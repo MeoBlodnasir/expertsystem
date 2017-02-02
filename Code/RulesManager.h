@@ -4,6 +4,8 @@
 #include "ErrorCode.h"
 #include "Rule.h"
 
+#include <map>
+
 namespace ft
 {
 	class RulesManager : public CountableSPtr
@@ -13,7 +15,8 @@ namespace ft
 			RulesManager();
 			~RulesManager();
 
-			inline const std::vector<Rule>&	GetRules() const	{ return m_oRules; }
+			bool						DoesExistRuleThatImplies(ILogicElement::AtomId iId) const;
+			const std::vector<Rule>&	GetRulesThatImply(ILogicElement::AtomId iId) const;
 
 			void	Flush();
 			bool	AddRule(const Rule& oRule);
@@ -21,9 +24,10 @@ namespace ft
 
 		private:
 			
-			std::vector<Rule>	m_oRules;
+			std::map< ILogicElement::AtomId, std::vector<Rule> >	m_oRules;
 
 			void	DivideBidirectionnalRule(const Rule& oRule);
-			void	DivideRule(std::vector<Rule>::const_iterator itRule);
+			void	DivideRule(std::vector<Rule>::const_iterator itRule, ILogicElement::AtomId iVectorKey);
+			bool	CheckContradictions(ILogicElement::AtomId iVectorKey) const;
 	};
 }

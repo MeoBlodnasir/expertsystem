@@ -39,9 +39,9 @@ namespace ft
 		if (m_bVerbose)
 			FT_COUT << std::string(pQueries->size() - 1, '\t') << "? " << iQuery << std::endl;
 
-		for (const Rule& itRule : oRules.GetRules())
+		if (oRules.DoesExistRuleThatImplies(iQuery))
 		{
-			if (itRule.GetConsequentFirstAtomId() == iQuery)
+			for (const Rule& itRule : oRules.GetRulesThatImply(iQuery))
 			{
 				bool		bIsDetermined = false;
 				bool		bEvaluation = false;
@@ -49,7 +49,7 @@ namespace ft
 				Proposition	oProposition(itRule.GetAntecedent());
 
 				if (m_bVerbose)
-					FT_COUT << std::string(pQueries->size(), '\t')  << "? (" << itRule.GetAntecedent().GetDesc() << ')' << std::endl;
+					FT_COUT << std::string(pQueries->size(), '\t')  << "? (" << itRule << ')' << std::endl;
 				bConsequentRuleFound = true;
 				itRule.GetAntecedent().GetAtomsId(&oAtomSet);
 				for (const ILogicElement::AtomId& itAtomId : oAtomSet)
