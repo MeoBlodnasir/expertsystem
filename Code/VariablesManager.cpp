@@ -13,9 +13,17 @@ namespace ft
 	{
 	}
 
-	void	VariablesManager::Reset()
+	void	VariablesManager::Flush()
 	{
 		m_oVariables.clear();
+	}
+
+	void	VariablesManager::Reset()
+	{
+		for (std::map<Variable::Id, Variable>::iterator itVar = m_oVariables.begin(), itEnd = m_oVariables.end(); itVar != itEnd; ++itVar)
+		{
+			itVar->second.m_bState = false;
+		}
 	}
 
 	const Variable&	VariablesManager::CreateVariable(Variable::Id iId, bool bCreationState /*= false*/)

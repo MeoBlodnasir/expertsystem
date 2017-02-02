@@ -58,7 +58,9 @@ namespace ft
 
 			case Token::E_CMD_VERBOSE:
 			case Token::E_CMD_PRINT:
+			case Token::E_CMD_RESET_VARIABLES:
 			case Token::E_CMD_FLUSH:
+			case Token::E_CMD_HELP:
 			case Token::E_CMD_QUIT:
 				{
 					if (ReadCommand(pData, oTokens, sLine) != FT_OK)

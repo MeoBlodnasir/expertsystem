@@ -108,9 +108,11 @@ namespace ft
 
 		std::string	sLine;
 
+		std::cout << "Engin d'inference (\"help\" - \"quit\"):" << std::endl;
+
 		while (m_ePendingCommand != E_CMD_QUIT)
 		{
-			std::cout << "ENGIN T'ECOUTE MON ENFANT:" << std::endl;
+			std::cout << "> ";
 			std::getline(std::cin, sLine);
 			if (ProcessInputLine(sLine) != FT_OK)
 				continue;
@@ -163,10 +165,12 @@ namespace ft
 			{
 				switch (oParsingData.eCommandType)
 				{
-				case Token::E_CMD_VERBOSE:	{ m_ePendingCommand = E_CMD_VERBOSE;	break; }
-				case Token::E_CMD_PRINT:	{ m_ePendingCommand = E_CMD_PRINT;		break; }
-				case Token::E_CMD_FLUSH:	{ m_ePendingCommand = E_CMD_FLUSH;		break; }
-				case Token::E_CMD_QUIT:		{ m_ePendingCommand = E_CMD_QUIT;		break; }
+				case Token::E_CMD_VERBOSE:			{ m_ePendingCommand = E_CMD_VERBOSE;			break; }
+				case Token::E_CMD_PRINT:			{ m_ePendingCommand = E_CMD_PRINT;				break; }
+				case Token::E_CMD_RESET_VARIABLES:	{ m_ePendingCommand = E_CMD_RESET_VARIABLES;	break; }
+				case Token::E_CMD_FLUSH:			{ m_ePendingCommand = E_CMD_FLUSH;				break; }
+				case Token::E_CMD_HELP:				{ m_ePendingCommand = E_CMD_HELP;				break; }
+				case Token::E_CMD_QUIT:				{ m_ePendingCommand = E_CMD_QUIT;				break; }
 
 				default:
 					{
@@ -207,10 +211,31 @@ namespace ft
 				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
+		case E_CMD_RESET_VARIABLES:
+			{
+				m_xVariablesManager->Reset();
+				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
 		case E_CMD_FLUSH:
 			{
 				Flush();
 				m_ePendingCommand = E_CMD_NONE;
+				break;
+			}
+		case E_CMD_HELP:
+			{
+				FT_COUT << "Commandes:" << std::endl;
+				FT_COUT << "  verbose                   : Affiche les étapes d'évaluation" << std::endl;
+				FT_COUT << "  print                     : Affiche les variables et règles courantes" << std::endl;
+				FT_COUT << "  reset_variables           : Initialise toutes les variables à FAUX" << std::endl;
+				FT_COUT << "  flush                     : Supprime les variables et les règles courantes" << std::endl;
+				FT_COUT << "  quit                      : Termine le programme" << std::endl;
+
+				FT_COUT << "Syntaxe:" << std::endl;
+				FT_COUT << "  =[a]                      : Initialise les variables données à VRAI" << std::endl;
+				FT_COUT << "  ?[a]                      : Demande au programme d'évaluer les variables données" << std::endl;
+				FT_COUT << "  [a!+|^()] [[<]=>] [a!+()] : Ajoute une règle" << std::endl;
 				break;
 			}
 		default:
@@ -223,8 +248,8 @@ namespace ft
 		FT_ASSERT(m_xVariablesManager != nullptr);
 		FT_ASSERT(m_xRulesManager != nullptr);
 
-		m_xVariablesManager->Reset();
-		m_xRulesManager->Reset();
+		m_xVariablesManager->Flush();
+		m_xRulesManager->Flush();
 		m_oPendingQueries.clear();
 	}
 
@@ -240,8 +265,15 @@ namespace ft
 		{
 			for (ILogicElement::AtomId itQuery : m_oPendingQueries)
 			{
-				bEvaluation = m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, *m_xRulesManager, itQuery);
-				FT_COUT << "Evaluation de " << itQuery << " : " << (bEvaluation ? "VRAI" : "FAUX") << std::endl;
+				try
+				{
+					bEvaluation = m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, *m_xRulesManager, itQuery);
+					FT_COUT << "Evaluation de " << itQuery << " : " << (bEvaluation ? "VRAI" : "FAUX") << std::endl;
+				}
+				catch (InferenceEngine::ContradictionException&)
+				{
+					FT_COUT << "Contradiction dans les résultats au moment de l'évaluation" << std::endl;
+				}
 			}
 			m_oPendingQueries.clear();
 		}

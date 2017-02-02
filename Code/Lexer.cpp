@@ -16,7 +16,9 @@ namespace ft
 		{
 			"verbose",
 			"print",
+			"reset_variables",
 			"flush",
+			"help",
 			"quit",
 		};
 

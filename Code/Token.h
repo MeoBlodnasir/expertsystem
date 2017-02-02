@@ -24,7 +24,9 @@ namespace ft
 			E_CMD_OFFSET,
 			E_CMD_VERBOSE,
 			E_CMD_PRINT,
+			E_CMD_RESET_VARIABLES,
 			E_CMD_FLUSH,
+			E_CMD_HELP,
 			E_CMD_QUIT,
 			E_CMD_COUNT,
 

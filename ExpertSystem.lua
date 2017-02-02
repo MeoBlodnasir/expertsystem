@@ -41,7 +41,7 @@ function DefineProject(ProjectName, ProjectDir, ProjectKind)
 			flags			{"Symbols"}
 		configuration {"Release"}
 			targetname		(ProjectName)
-			flags			{"Optimize", "ExtraWarnings", "FatalWarnings"} -- Wextra Werror
+			flags			{"ExtraWarnings", "FatalWarnings"} -- Wextra Werror
 		
 		configuration {}
 end

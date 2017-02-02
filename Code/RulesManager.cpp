@@ -17,7 +17,7 @@ namespace ft
 	}
 
 
-	void	RulesManager::Reset()
+	void	RulesManager::Flush()
 	{
 		m_oRules.clear();
 	}

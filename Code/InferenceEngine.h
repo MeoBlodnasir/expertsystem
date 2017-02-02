@@ -5,6 +5,7 @@
 #include "Atom.h"
 
 #include <vector>
+#include <exception>
 
 namespace ft
 {
@@ -15,6 +16,8 @@ namespace ft
 	class InferenceEngine : public CountableSPtr
 	{
 	public:
+
+		class ContradictionException : public std::exception {};
 
 		InferenceEngine();
 		~InferenceEngine();

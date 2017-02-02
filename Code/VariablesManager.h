@@ -15,6 +15,7 @@ namespace ft
 		VariablesManager();
 		~VariablesManager();
 
+		void			Flush();
 		void			Reset();
 
 		const Variable&	CreateVariable(Variable::Id iId, bool bCreationState = false);

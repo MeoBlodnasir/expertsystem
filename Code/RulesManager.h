@@ -15,7 +15,7 @@ namespace ft
 
 			inline const std::vector<Rule>&	GetRules() const	{ return m_oRules; }
 
-			void	Reset();
+			void	Flush();
 			bool	AddRule(const Rule& oRule);
 			void	PrintRules() const;
 

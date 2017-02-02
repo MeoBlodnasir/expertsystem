@@ -25,7 +25,14 @@ namespace ft
 
 	ConstantAtom	InferenceEngine::GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>* pQueries, ILogicElement::AtomId iQuery) const
 	{
-		ConstantAtom	oRetAtom(oFacts.GetVariable(iQuery)->GetState());
+		enum EResultValue
+		{
+			E_UNDEF = -1,
+			E_FALSE = 0,
+			E_TRUE
+		};
+
+		EResultValue	eResult = E_UNDEF;
 		bool			bConsequentRuleFound = false;
 
 		pQueries->push_back(iQuery);
@@ -69,12 +76,14 @@ namespace ft
 				{
 					const std::vector< SPtr<ILogicElement> >& oConsequentElements = itRule.GetConsequent().GetElements();
 					bool bIsInverted = (oConsequentElements.size() > 1) && (dynamic_cast<const OperatorNOT*>(oConsequentElements[1].Get()) != nullptr);
-					oRetAtom = ConstantAtom(bIsInverted ? !bEvaluation : bEvaluation);
-
-					// Maintenant que le NOT est pris en compte,
-					// que faire quand plusieurs règles se contedisent à l'exécution?
-
-					break;
+					EResultValue eLocalResult = (bIsInverted ? !bEvaluation : bEvaluation) ? E_TRUE : E_FALSE;
+					if (eResult == E_UNDEF)
+						eResult = eLocalResult;
+					else
+					{
+						if (eResult != eLocalResult)
+							throw ContradictionException();
+					}
 				}
 			}
 		}
@@ -86,13 +95,22 @@ namespace ft
 		}
 
 		pQueries->pop_back();
-		return oRetAtom;
+
+		switch (eResult)
+		{
+		case E_FALSE:
+			return ConstantAtom(false);
+		case E_TRUE:
+			return ConstantAtom(true);
+		}
+
+		return ConstantAtom(oFacts.GetVariable(iQuery)->GetState());
 	}
 
 	bool	InferenceEngine::ProcessQuery(const VariablesManager& oFacts, const RulesManager& oRules, ILogicElement::AtomId iQuery) const
 	{
 		std::vector<ILogicElement::AtomId> oQueries;
-		
+
 		return GoalEvaluation(oFacts, oRules, &oQueries, iQuery).GetState();
 	}
 }
