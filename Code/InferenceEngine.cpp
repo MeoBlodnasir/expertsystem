@@ -25,8 +25,8 @@ namespace ft
 
 	ConstantAtom	InferenceEngine::GoalEvaluation(const VariablesManager& oFacts, const RulesManager& oRules, std::vector<ILogicElement::AtomId>* pQueries, ILogicElement::AtomId iQuery) const
 	{
-		ConstantAtom		oRetAtom(oFacts.GetVariable(iQuery)->GetState());
-		bool				bConsequentRuleFound = false;
+		ConstantAtom	oRetAtom(oFacts.GetVariable(iQuery)->GetState());
+		bool			bConsequentRuleFound = false;
 
 		pQueries->push_back(iQuery);
 		if (m_bVerbose)
@@ -67,7 +67,13 @@ namespace ft
 					FT_COUT << std::string(pQueries->size(), '\t') << '(' << itRule.GetAntecedent().GetDesc() << ')' << " = " << bEvaluation << std::endl;
 				if (bEvaluation || bIsDetermined)
 				{
-					oRetAtom = ConstantAtom(bEvaluation);
+					const std::vector< SPtr<ILogicElement> >& oConsequentElements = itRule.GetConsequent().GetElements();
+					bool bIsInverted = (oConsequentElements.size() > 1) && (dynamic_cast<const OperatorNOT*>(oConsequentElements[1].Get()) != nullptr);
+					oRetAtom = ConstantAtom(bIsInverted ? !bEvaluation : bEvaluation);
+
+					// Maintenant que le NOT est pris en compte,
+					// que faire quand plusieurs règles se contedisent à l'exécution?
+
 					break;
 				}
 			}

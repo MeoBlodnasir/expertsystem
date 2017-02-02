@@ -23,7 +23,6 @@ namespace ft
 			
 			std::vector<Rule>	m_oRules;
 
-			void	DivideBidirectionnalRules();
 			void	DivideBidirectionnalRule(const Rule& oRule);
 			void	DivideRule(std::vector<Rule>::const_iterator itRule);
 	};

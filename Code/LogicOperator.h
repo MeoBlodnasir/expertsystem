@@ -24,10 +24,7 @@ namespace ft
 		inline ALogicOperator&	operator = (const ALogicOperator&)	{ return *this; }
 
 		// implémentation interface ILogicElement
-		inline virtual EType			GetType() const override	{ return E_OPERATOR; }
-
-		template <typename T>
-		inline bool	operator == (const T&)							{ return false; }
+		inline virtual EType	GetType() const override			{ return E_OPERATOR; }
 	};
 
 	// Template opérateur
@@ -83,9 +80,9 @@ namespace ft
 		inline virtual	std::string		GetDesc() const override				{ return "!"; }
 		inline virtual	ILogicElement*	Duplicate() const override				{ return new OperatorNOT(); }
 		// implémentation interface AUnaryOperator
-		inline virtual	bool				Evaluate(bool b) const override		{ return !b; }
+		inline virtual	bool			Evaluate(bool b) const override			{ return !b; }
 
-		inline bool	operator == (const OperatorNOT&)							{ return true; }
+		inline			bool			operator == (const OperatorNOT&) const	{ return true; }
 	};
 
 	// Et
@@ -109,7 +106,7 @@ namespace ft
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 && b2; }
 
-		inline bool	operator == (const OperatorAND&)								{ return true; }
+		inline			bool			operator == (const OperatorAND&) const		{ return true; }
 	};
 
 	// Ou
@@ -133,7 +130,7 @@ namespace ft
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 || b2; }
 
-		inline bool	operator == (const OperatorOR&)									{ return true; }
+		inline			bool			operator == (const OperatorOR&) const		{ return true; }
 	};
 
 	// Ou exclusif
@@ -157,7 +154,7 @@ namespace ft
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 ^ b2; }
 
-		inline bool	operator == (const OperatorXOR&)								{ return true; }
+		inline			bool			operator == (const OperatorXOR&) const		{ return true; }
 	};
 
 	// Implique
@@ -181,7 +178,7 @@ namespace ft
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return (!b1) || b2; }
 
-		inline bool	operator == (const OperatorIMP&)								{ return true; }
+		inline			bool			operator == (const OperatorIMP&) const		{ return true; }
 	};
 
 	// Equivalence (bidirectionnal implication)
@@ -205,6 +202,6 @@ namespace ft
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 == b2; }
 
-		inline bool	operator == (const OperatorBIMP&)								{ return true; }
+		inline			bool			operator == (const OperatorBIMP&) const		{ return true; }
 	};
 }

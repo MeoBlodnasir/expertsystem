@@ -27,10 +27,9 @@ namespace ft
 
 	ILogicElement::AtomId	Rule::GetConsequentFirstAtomId() const
 	{
-		AtomIdSet oAtomsId;
-		m_oConsequent.GetAtomsId(&oAtomsId);
-		FT_ASSERT(oAtomsId.size() > 0);
-		return *oAtomsId.begin();
+		FT_ASSERT(m_oConsequent.GetElements().size() > 0);
+		FT_ASSERT(m_oConsequent.GetElements()[0]->GetType() == ILogicElement::E_ATOM);
+		return dynamic_cast<const Atom*>(m_oConsequent.GetElements()[0].Get())->GetId();
 	}
 
 	void		Rule::AddAntecedentElement(const ILogicElement& oElement)
@@ -50,7 +49,17 @@ namespace ft
 
 	bool		Rule::CheckUnacceptedConditions() const
 	{
-		return (m_oConsequent.XorPresent() || m_oConsequent.OrPresent() || m_oConsequent.NotPresent())
-			|| (m_bIsBidirectionnal && (m_oAntecedent.XorPresent() || m_oAntecedent.OrPresent() || m_oAntecedent.NotPresent()));
+		return
+			(	m_oConsequent.IsXorPresent()
+			||	m_oConsequent.IsOrPresent()
+			|| (m_oConsequent.IsNotPresent() && !m_oConsequent.IsConsequentAcceptedNot())
+			)
+			||
+			(m_bIsBidirectionnal &&
+				(	m_oAntecedent.IsXorPresent()
+				||	m_oAntecedent.IsOrPresent()
+				|| (m_oAntecedent.IsNotPresent() && !m_oAntecedent.IsConsequentAcceptedNot())
+				)
+			);
 	}
 }

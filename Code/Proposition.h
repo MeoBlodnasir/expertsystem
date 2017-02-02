@@ -28,13 +28,18 @@ namespace ft
 		virtual bool	CheckValidity() const override;
 		virtual void	GetAtomsId(AtomIdSet* pIdSet) const override;
 
+		bool			operator == (const Proposition& oProposition) const;
+
 		void			AddElement(const ILogicElement& oElement);
 		void			ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew);
 
-		bool			XorPresent() const;
-		bool			AndPresent() const;
-		bool			OrPresent() const;
-		bool			NotPresent() const;
+		inline const std::vector< SPtr<ILogicElement> >&	GetElements() const		{ return m_oElements; }
+
+		bool			IsXorPresent() const;
+		bool			IsAndPresent() const;
+		bool			IsOrPresent() const;
+		bool			IsNotPresent() const;
+		bool			IsConsequentAcceptedNot() const;
 
 	private:
 

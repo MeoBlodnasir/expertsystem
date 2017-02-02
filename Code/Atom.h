@@ -19,8 +19,8 @@ namespace ft
 		virtual ~Atom();
 
 		// implémentation interface ILogicElement
-		inline	virtual EType			GetType() const override	{ return E_ATOM; }
-				virtual	std::string		GetDesc() const override	{ return std::string(1, m_iId); }
+		inline	virtual EType			GetType() const override		{ return E_ATOM; }
+				virtual	std::string		GetDesc() const override		{ return std::string(1, m_iId); }
 				virtual	ILogicElement*	Duplicate() const override;
 
 		// implémentation interface IProposition
@@ -28,8 +28,10 @@ namespace ft
 				virtual bool	CheckValidity() const override;
 				virtual void	GetAtomsId(AtomIdSet* pIdSet) const override;
 
-		inline	Id				GetId() const						{ return m_iId; }
-		inline	virtual void	SetId(Id iId)						{ m_iId = iId; }
+		inline	Id				GetId() const							{ return m_iId; }
+		inline	virtual void	SetId(Id iId)							{ m_iId = iId; }
+
+		inline			bool	operator == (const Atom& oAtom) const	{ return m_iId == oAtom.m_iId; }
 
 	protected:
 

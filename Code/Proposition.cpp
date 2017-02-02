@@ -47,6 +47,16 @@ namespace ft
 		return new Proposition(*this);
 	}
 
+	bool	Proposition::operator == (const Proposition& oProposition) const
+	{
+		bool bEquivalent = m_oElements.size() == oProposition.m_oElements.size();
+
+		for (uint32 i = 0, iCount = m_oElements.size(); bEquivalent && i < iCount; ++i)
+			bEquivalent &= m_oElements[i] == oProposition.m_oElements[i];
+
+		return bEquivalent;
+	}
+
 	bool	Proposition::Evaluate(const VariablesManager& pVariablesManager) const
 	{
 		FT_ASSERT(CheckValidity());
@@ -159,7 +169,7 @@ namespace ft
 		}
 	}
 
-	bool	Proposition::XorPresent() const
+	bool	Proposition::IsXorPresent() const
 	{
 		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
@@ -169,7 +179,7 @@ namespace ft
 		return false;
 	}
 
-	bool	Proposition::AndPresent() const
+	bool	Proposition::IsAndPresent() const
 	{
 		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
@@ -179,7 +189,7 @@ namespace ft
 		return false;
 	}
 
-	bool	Proposition::OrPresent() const
+	bool	Proposition::IsOrPresent() const
 	{
 		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
@@ -189,7 +199,7 @@ namespace ft
 		return false;
 	}
 
-	bool	Proposition::NotPresent() const
+	bool	Proposition::IsNotPresent() const
 	{
 		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
@@ -197,5 +207,25 @@ namespace ft
 				return true;
 		}
 		return false;
+	}
+
+	bool	Proposition::IsConsequentAcceptedNot() const
+	{
+		// Vrai si l'opérateur Not s'applique directement à un Atom, ou si aucun opérateur Not n'est trouvé.
+		// exemple: (A!) ou (A!B!+) ((!A) ou (!A + !B) en postfixe)
+		// Sinon le cas n'est pas géré
+		// exemple: (AB+!) ((!(A + B)) en postfixe)
+
+		bool						bRet = true;
+		const SPtr<ILogicElement>*	pPrecedent = nullptr;
+
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
+		{
+			if (dynamic_cast<const OperatorNOT*>(xElem.Get()) != nullptr)
+				bRet &= (*pPrecedent)->GetType() == E_ATOM;
+			pPrecedent = &xElem;
+		}
+
+		return bRet;
 	}
 }

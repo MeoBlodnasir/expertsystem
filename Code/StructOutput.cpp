@@ -1,12 +1,8 @@
 
 #include "StructOutput.h"
 
-#include "Atom.h"
-#include "Proposition.h"
 #include "Rule.h"
 #include "LogicOperator.h"
-
-#include <string>
 
 namespace ft
 {

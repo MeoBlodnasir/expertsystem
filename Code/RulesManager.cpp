@@ -4,6 +4,7 @@
 #include "Output.h"
 #include "Atom.h"
 #include "ILogicElement.h"
+#include "LogicOperator.h"
 
 namespace ft
 {
@@ -38,6 +39,10 @@ namespace ft
 				DivideBidirectionnalRule(oRule);
 				m_oRules.push_back(oRule);
 				DivideRule(m_oRules.end() - 1);
+
+				// Vérifier les contradictions entre règles
+				// ex: a=>b		a=>!b
+
 				return true;
 			}
 			else
@@ -61,27 +66,42 @@ namespace ft
 			oNewRule.SetAntecedentProposition(oRule.GetConsequent());
 			oNewRule.SetConsequentProposition(oRule.GetAntecedent());
 			m_oRules.push_back(oNewRule);
+			DivideRule(m_oRules.end() - 1);
 		}
 	}
 	
 	void	RulesManager::DivideRule(std::vector<Rule>::const_iterator itRule)
 	{
 		std::vector<Rule>	oNewRules;
-		AtomIdSet			pIdSet;
+		uint32				iConsequentAtomCount = 0;
 
-		itRule->GetConsequent().GetAtomsId(&pIdSet);
-		if (pIdSet.size() > 1)
+		const std::vector< SPtr<ILogicElement> >& oConsequentElements = itRule->GetConsequent().GetElements();
+
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itConsequentElement = oConsequentElements.begin(), itEnd = oConsequentElements.end();
+			itConsequentElement != itEnd; ++itConsequentElement)
 		{
-			for (Atom::Id iId : pIdSet)
+			if ((*itConsequentElement)->GetType() == ILogicElement::E_ATOM)
 			{
 				Rule oNewRule(*itRule);
-				oNewRule.SetAntecedentProposition(itRule->GetAntecedent());
-				oNewRule.SetConsequentProposition(Proposition(Atom(iId)));
+				oNewRule.SetConsequentProposition(Proposition(*dynamic_cast<const Atom*>(itConsequentElement->Get())));
+				if (itConsequentElement + 1 != itEnd)
+				{
+					if (dynamic_cast<const OperatorNOT*>((itConsequentElement + 1)->Get()) != nullptr)
+					{
+						oNewRule.AddConsequentElement(OperatorNOT());
+						++itConsequentElement;
+					}
+				}
 				oNewRules.push_back(oNewRule);
+				++iConsequentAtomCount;
 			}
-			m_oRules.erase(itRule);
 		}
-		for (const Rule& itNewRule : oNewRules)
-			m_oRules.push_back(itNewRule);
+
+		if (iConsequentAtomCount > 1)
+		{
+			m_oRules.erase(itRule);
+			for (const Rule& itNewRule : oNewRules)
+				m_oRules.push_back(itNewRule);
+		}
 	}
 }
