@@ -18,7 +18,8 @@
 namespace ft
 {
 	Application::Application()
-		: m_ePendingCommand(E_CMD_NONE)
+		: m_bQuitApplication(false)
+		, m_ePendingCommand(E_CMD_NONE)
 		, m_iOptions(E_OPT_NONE)
 		, m_xVariablesManager(nullptr)
 		, m_xRulesManager(nullptr)
@@ -110,10 +111,12 @@ namespace ft
 
 		std::cout << "\nEngin d'inference (\"help\" - \"quit\"):" << std::endl;
 
-		while (m_ePendingCommand != E_CMD_QUIT)
+		while (!m_bQuitApplication)
 		{
 			std::cout << "> ";
 			std::getline(std::cin, sLine);
+			if (std::cin.rdstate() & std::ifstream::failbit)
+				break;
 			if (ProcessInputLine(sLine) != FT_OK)
 				continue;
 
@@ -242,6 +245,12 @@ namespace ft
 				FT_COUT << "  =[a]                      : Initialise les variables donnees a VRAI" << std::endl;
 				FT_COUT << "  ?[a]                      : Demande au programme d'evaluer les variables donnees" << std::endl;
 				FT_COUT << "  [a!+|^()] [[<]=>] [a!+()] : Ajoute une regle" << std::endl;
+				break;
+			}
+
+		case E_CMD_QUIT:
+			{
+				m_bQuitApplication = true;
 				break;
 			}
 

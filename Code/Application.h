@@ -45,6 +45,7 @@ namespace ft
 			E_OPT_VERBOSE	= (1 << 0)
 		};
 
+		bool					m_bQuitApplication;
 		ECommand				m_ePendingCommand;
 		uint32					m_iOptions;
 		SPtr<VariablesManager>	m_xVariablesManager;
