@@ -54,6 +54,7 @@ namespace ft
 		EErrorCode	AskUserInput();
 		EErrorCode	ProcessInputLine(const std::string& sLine);
 		void		ProcessCommand();
+		void		Flush();
 
 		EErrorCode	EvaluatePendingQueries();
 

@@ -96,11 +96,7 @@ namespace ft
 			}
 
 			EvaluatePendingQueries();
-			
-			// Reinitialiser les structures VariablesManager et RulesManager entre les fichiers
-			m_xVariablesManager->Reset();
-			m_xRulesManager->Reset();
-			m_oPendingQueries.clear();
+			Flush();
 		}
 
 		return FT_OK;
@@ -149,7 +145,6 @@ namespace ft
 				if (!m_xRulesManager->AddRule(oParsingData.oRule))
 					return FT_FAIL;
 				m_xVariablesManager->DeclareVariables(oParsingData.oAtoms.begin(), oParsingData.oAtoms.end());
-				m_xRulesManager->CheckRules();
 				break;
 			}
 
@@ -216,9 +211,7 @@ namespace ft
 			}
 		case E_CMD_FLUSH:
 			{
-				m_xVariablesManager->Reset();
-				m_xRulesManager->Reset();
-				m_oPendingQueries.clear();
+				Flush();
 				m_ePendingCommand = E_CMD_NONE;
 				break;
 			}
@@ -227,17 +220,30 @@ namespace ft
 		}
 	}
 
+	void	Application::Flush()
+	{
+		FT_ASSERT(m_xVariablesManager != nullptr);
+		FT_ASSERT(m_xRulesManager != nullptr);
+
+		m_xVariablesManager->Reset();
+		m_xRulesManager->Reset();
+		m_oPendingQueries.clear();
+	}
+
 	EErrorCode	Application::EvaluatePendingQueries()
 	{
 		FT_ASSERT(m_xVariablesManager != nullptr);
 		FT_ASSERT(m_xRulesManager != nullptr);
 		FT_ASSERT(m_xInferenceEngine != nullptr);
 
+		bool	bEvaluation;
+
 		if (m_oPendingQueries.size() > 0)
 		{
-			for (AtomIdSet::const_iterator itQuery = m_oPendingQueries.begin(), itEnd = m_oPendingQueries.end(); itQuery != itEnd; ++itQuery)
+			for (ILogicElement::AtomId itQuery : m_oPendingQueries)
 			{
-				FT_COUT << "Evaluation de " << *itQuery << " : " << m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, *m_xRulesManager, *itQuery) << std::endl;
+				bEvaluation = m_xInferenceEngine->ProcessQuery(*m_xVariablesManager, *m_xRulesManager, itQuery);
+				FT_COUT << "Evaluation de " << itQuery << " : " << (bEvaluation ? "VRAI" : "FAUX") << std::endl;
 			}
 			m_oPendingQueries.clear();
 		}
@@ -252,7 +258,7 @@ namespace ft
 		FT_ASSERT(m_xInferenceEngine != nullptr);
 
 		FT_COUT << "###################################" << std::endl;
-		m_xVariablesManager->DebugPrint();
+		m_xVariablesManager->PrintVariables();
 		m_xRulesManager->PrintRules();
 		FT_COUT << std::endl;
 		FT_COUT << "###################################" << std::endl;

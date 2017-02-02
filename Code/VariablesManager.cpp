@@ -36,15 +36,14 @@ namespace ft
 		m_oVariables[iId].m_bState = bState;
 	}
 	
-	void			VariablesManager::DebugPrint() const
+	void			VariablesManager::PrintVariables() const
 	{
 		FT_COUT << "VARIABLES MANAGER" << std::endl;
-		FT_COUT << m_oVariables.size() << " variables" << std::endl;
 
-		for (std::map<Variable::Id, Variable>::const_iterator itVar = m_oVariables.begin(), itEnd = m_oVariables.end();
-			itVar != itEnd; ++itVar)
-		{
-			FT_COUT << itVar->first << " : " << itVar->second.GetState() << std::endl;
-		}
+		if (m_oVariables.size() == 0)
+			FT_COUT << "Aucune variable" << std::endl;
+
+		for (const std::pair<Variable::Id, Variable>& itVar : m_oVariables)
+			FT_COUT << itVar.first << " : " << itVar.second.GetState() << std::endl;
 	}
 }

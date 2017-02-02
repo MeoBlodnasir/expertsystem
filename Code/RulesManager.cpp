@@ -24,23 +24,33 @@ namespace ft
 	void	RulesManager::PrintRules() const
 	{
 		FT_COUT << "RULES MANAGER" << std::endl;
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(), itEnd = m_oRules.end(); itRule != itEnd; itRule++)
-			FT_COUT << *itRule << std::endl;
+		for (const Rule& itRule : m_oRules)
+			FT_COUT << itRule << std::endl;
 	}
 
 	bool	RulesManager::AddRule(const Rule& oRule)
 	{
 		// N'ajoute la règle que si elle est valide.
-		bool bIsValid = oRule.CheckComponentsValidity();
-
-		if (bIsValid)
+		if (oRule.CheckComponentsValidity())
 		{
-			DivideBidirectionnalRule(oRule);
-			m_oRules.push_back(oRule);
-			DivideRule(m_oRules.end() - 1);
+			if (!oRule.CheckUnacceptedConditions())
+			{
+				DivideBidirectionnalRule(oRule);
+				m_oRules.push_back(oRule);
+				DivideRule(m_oRules.end() - 1);
+				return true;
+			}
+			else
+			{
+				FT_CERR << "Regle non acceptee: " << oRule << std::endl;
+			}
+		}
+		else
+		{
+			FT_CERR << "Regle invalide: " << oRule << std::endl;
 		}
 
-		return bIsValid;
+		return false;
 	}
 
 	void	RulesManager::DivideBidirectionnalRule(const Rule& oRule)
@@ -62,37 +72,16 @@ namespace ft
 		itRule->GetConsequent().GetAtomsId(&pIdSet);
 		if (pIdSet.size() > 1)
 		{
-			for (std::unordered_set<Atom::Id>::iterator itSet = pIdSet.begin(); itSet != pIdSet.end(); itSet++)
+			for (Atom::Id iId : pIdSet)
 			{
 				Rule oNewRule(*itRule);
 				oNewRule.SetAntecedentProposition(itRule->GetAntecedent());
-				oNewRule.SetConsequentProposition(Proposition(Atom(*itSet)));
+				oNewRule.SetConsequentProposition(Proposition(Atom(iId)));
 				oNewRules.push_back(oNewRule);
 			}
 			m_oRules.erase(itRule);
 		}
-		for (std::vector<Rule>::const_iterator itNewRule = oNewRules.begin(); itNewRule != oNewRules.end();itNewRule++ )
-			m_oRules.push_back(*itNewRule);
-	}
-
-
-	bool	RulesManager::CheckRules() const
-	{
-		for (std::vector<Rule>::const_iterator itRule = m_oRules.begin(); itRule != m_oRules.end(); ++itRule)
-		{
-			const Proposition& oConsequent = itRule->GetConsequent();
-			const Proposition& oAntecedent = itRule->GetAntecedent();
-			if (oConsequent.XorPresent() || oConsequent.OrPresent() || oConsequent.NotPresent())
-			{
-				FT_COUT << "Xor, Or or Not present in Consequent of a rule" << std::endl;
-				return false;
-			}
-			if (itRule->IsBidirectionnal() && (oAntecedent.XorPresent() || oAntecedent.OrPresent() || oAntecedent.NotPresent()))
-			{
-				FT_COUT << "Xor, Or or Not present in Antecedent of a bidirectional rule" << std::endl;
-				return false;
-			}
-		}
-		return true;
+		for (const Rule& itNewRule : oNewRules)
+			m_oRules.push_back(itNewRule);
 	}
 }

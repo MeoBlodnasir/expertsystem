@@ -17,7 +17,6 @@ namespace ft
 
 			void	Reset();
 			bool	AddRule(const Rule& oRule);
-			bool	CheckRules() const;
 			void	PrintRules() const;
 
 		private:

@@ -39,7 +39,7 @@ namespace ft
 				SetVariableState(*it, bState);
 		}
 
-		void			DebugPrint() const;
+		void			PrintVariables() const;
 
 	private:
 

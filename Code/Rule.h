@@ -28,7 +28,7 @@ namespace ft
 		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
 
 		bool			CheckComponentsValidity() const;
-
+		bool			CheckUnacceptedConditions() const;
 	private:
 
 		Proposition		m_oAntecedent;

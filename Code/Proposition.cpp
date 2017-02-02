@@ -18,10 +18,9 @@ namespace ft
 	Proposition::Proposition(const Proposition& oProposition)
 		: IProposition(oProposition)
 	{
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = oProposition.m_oElements.begin(), itEnd = oProposition.m_oElements.end();
-			itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : oProposition.m_oElements)
 		{
-			m_oElements.push_back((*itElem)->Duplicate());
+			m_oElements.push_back(xElem->Duplicate());
 		}
 	}
 
@@ -38,8 +37,8 @@ namespace ft
 	std::string		Proposition::GetDesc() const 
 	{
 		std::string sDesc;
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
-			sDesc += (*itElem)->GetDesc();
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
+			sDesc += xElem->GetDesc();
 		return sDesc;
 	}
 
@@ -54,26 +53,26 @@ namespace ft
 
 		std::stack<bool> oResultStack;
 
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if ((*itElem)->GetType() == E_PROPOSITION || (*itElem)->GetType() == E_ATOM)
+			if (xElem->GetType() == E_PROPOSITION || xElem->GetType() == E_ATOM)
 			{
-				bool bState = dynamic_cast<const IProposition*>(itElem->Get())->Evaluate(pVariablesManager);
+				bool bState = dynamic_cast<const IProposition*>(xElem.Get())->Evaluate(pVariablesManager);
 				oResultStack.push(bState);
 			}
-			else if ((*itElem)->GetType() == ILogicElement::E_OPERATOR)
+			else if (xElem->GetType() == ILogicElement::E_OPERATOR)
 			{
-				const uint32 iOperandCount = dynamic_cast<const ALogicOperator*>(itElem->Get())->iOperandCount;
+				const uint32 iOperandCount = dynamic_cast<const ALogicOperator*>(xElem.Get())->iOperandCount;
 
 				if (iOperandCount == 1)
 				{
-					oResultStack.top() = dynamic_cast<const AUnaryOperator*>(itElem->Get())->Evaluate(oResultStack.top());
+					oResultStack.top() = dynamic_cast<const AUnaryOperator*>(xElem.Get())->Evaluate(oResultStack.top());
 				}
 				else if (iOperandCount == 2)
 				{
 					bool bTemp = oResultStack.top();
 					oResultStack.pop();
-					oResultStack.top() = dynamic_cast<const ABinaryOperator*>(itElem->Get())->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (1, 2) ou (2, 1)
+					oResultStack.top() = dynamic_cast<const ABinaryOperator*>(xElem.Get())->Evaluate(bTemp, oResultStack.top()); // vérifier pour l'ordre (1, 2) ou (2, 1)
 				}
 				else
 					FT_FAILED_ASSERTION("Operateur inconnu");
@@ -92,17 +91,17 @@ namespace ft
 		// Simulation d'évaluation
 		int32	iElementsCount = 0;
 
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if ((*itElem)->GetType() == E_PROPOSITION || (*itElem)->GetType() == E_ATOM)
+			if (xElem->GetType() == E_PROPOSITION || xElem->GetType() == E_ATOM)
 			{
-				if (!dynamic_cast<const IProposition*>(itElem->Get())->CheckValidity())
+				if (!dynamic_cast<const IProposition*>(xElem.Get())->CheckValidity())
 					return false;
 				++iElementsCount;
 			}
-			else if ((*itElem)->GetType() == ILogicElement::E_OPERATOR)
+			else if (xElem->GetType() == ILogicElement::E_OPERATOR)
 			{
-				const uint32 iOperandCount = dynamic_cast<const ALogicOperator*>(itElem->Get())->iOperandCount;
+				const uint32 iOperandCount = dynamic_cast<const ALogicOperator*>(xElem.Get())->iOperandCount;
 
 				if (iOperandCount == 1 && iElementsCount > 0)
 					continue;
@@ -122,15 +121,15 @@ namespace ft
 	{
 		FT_ASSERT(pIdSet != nullptr);
 
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if ((*itElem)->GetType() == E_PROPOSITION)
+			if (xElem->GetType() == E_PROPOSITION)
 			{
-				dynamic_cast<const Proposition*>(itElem->Get())->GetAtomsId(pIdSet);
+				dynamic_cast<const Proposition*>(xElem.Get())->GetAtomsId(pIdSet);
 			}
-			else if ((*itElem)->GetType() == E_ATOM)
+			else if (xElem->GetType() == E_ATOM)
 			{
-				dynamic_cast<const Atom*>(itElem->Get())->GetAtomsId(pIdSet);
+				dynamic_cast<const Atom*>(xElem.Get())->GetAtomsId(pIdSet);
 			}
 		}
 	}
@@ -142,19 +141,19 @@ namespace ft
 
 	void	Proposition::ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew)
 	{
-		for (std::vector< SPtr<ILogicElement> >::iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if ((*itElem)->GetType() == E_PROPOSITION)
+			if (xElem->GetType() == E_PROPOSITION)
 			{
-				dynamic_cast<Proposition*>(itElem->Get())->ReplaceAtom(iId, oNew);
+				dynamic_cast<Proposition*>(xElem.Get())->ReplaceAtom(iId, oNew);
 			}
-			else if ((*itElem)->GetType() == E_ATOM)
+			else if (xElem->GetType() == E_ATOM)
 			{
-				const Atom*	pAtom = dynamic_cast<const Atom*>(itElem->Get());
+				const Atom*	pAtom = dynamic_cast<const Atom*>(xElem.Get());
 				if (pAtom->GetId() == iId)
 				{
-					itElem->Release();
-					*itElem = oNew.Duplicate();
+					xElem.Release();
+					xElem = oNew.Duplicate();
 				}
 			}
 		}
@@ -162,9 +161,9 @@ namespace ft
 
 	bool	Proposition::XorPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if (dynamic_cast<const OperatorXOR*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorXOR*>(xElem.Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -172,9 +171,9 @@ namespace ft
 
 	bool	Proposition::AndPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if (dynamic_cast<const OperatorAND*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorAND*>(xElem.Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -182,9 +181,9 @@ namespace ft
 
 	bool	Proposition::OrPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if (dynamic_cast<const OperatorOR*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorOR*>(xElem.Get()) != nullptr)
 				return true;
 		}
 		return false;
@@ -192,9 +191,9 @@ namespace ft
 
 	bool	Proposition::NotPresent() const
 	{
-		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin(), itEnd = m_oElements.end(); itElem != itEnd; ++itElem)
+		for (const SPtr<ILogicElement>& xElem : m_oElements)
 		{
-			if (dynamic_cast<const OperatorNOT*>(itElem->Get()) != nullptr)
+			if (dynamic_cast<const OperatorNOT*>(xElem.Get()) != nullptr)
 				return true;
 		}
 		return false;

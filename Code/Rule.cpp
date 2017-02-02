@@ -47,4 +47,10 @@ namespace ft
 	{
 		return m_oAntecedent.CheckValidity() && m_oConsequent.CheckValidity();
 	}
+
+	bool		Rule::CheckUnacceptedConditions() const
+	{
+		return (m_oConsequent.XorPresent() || m_oConsequent.OrPresent() || m_oConsequent.NotPresent())
+			|| (m_bIsBidirectionnal && (m_oAntecedent.XorPresent() || m_oAntecedent.OrPresent() || m_oAntecedent.NotPresent()));
+	}
 }

@@ -142,9 +142,9 @@ namespace ft
 		oData.eDataType = OutData::E_RULE;
 		oData.oRule = Rule();
 		m_eRuleState = E_ANTECEDENT;
-		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
+		for (const Token& itToken : oTokens)
 		{
-			switch (itToken->GetType())
+			switch (itToken.GetType())
 			{
 			case Token::E_EOF:
 			case Token::E_EOL:
@@ -167,12 +167,12 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					++iParenthesisLevel;
 
-					oPendingTokens.push(&(*itToken));
+					oPendingTokens.push(&itToken);
 					break;
 				}
 			case Token::E_SYM_CLOSE_PAR:
@@ -181,7 +181,7 @@ namespace ft
 						|| !(iWaitingStateFlags & E_WAITFOR_CLOSE_PAR)
 						|| iParenthesisLevel == 0)
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					--iParenthesisLevel;
@@ -203,13 +203,13 @@ namespace ft
 						|| !(iWaitingStateFlags & E_WAITFOR_IMPLY)
 						|| iParenthesisLevel > 0)
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
 
 					UnstackPendingElements(&oPendingTokens, &oData.oRule);
-					if (itToken->GetType() == Token::E_OP_IMPLIES_IFANDONLYIF)
+					if (itToken.GetType() == Token::E_OP_IMPLIES_IFANDONLYIF)
 						oData.oRule.SetBidirectionnal(true);
 
 					m_eRuleState = E_CONSEQUENT;
@@ -220,7 +220,7 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
@@ -233,7 +233,7 @@ namespace ft
 							oPendingTokens.pop();
 						}
 					}
-					oPendingTokens.push(&(*itToken));
+					oPendingTokens.push(&itToken);
 					break;
 				}
 
@@ -243,14 +243,14 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_OPERATOR))
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
 
 					if (!oPendingTokens.empty())
 					{
-						if (itToken->GetType() == Token::E_OP_LOGIC_AND)
+						if (itToken.GetType() == Token::E_OP_LOGIC_AND)
 						{
 							while (!oPendingTokens.empty()
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
@@ -260,7 +260,7 @@ namespace ft
 								oPendingTokens.pop();
 							}
 						}
-						else if (itToken->GetType() == Token::E_OP_LOGIC_OR)
+						else if (itToken.GetType() == Token::E_OP_LOGIC_OR)
 						{
 							while (!oPendingTokens.empty()
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
@@ -271,7 +271,7 @@ namespace ft
 								oPendingTokens.pop();
 							}
 						}
-						else if (itToken->GetType() == Token::E_OP_LOGIC_XOR)
+						else if (itToken.GetType() == Token::E_OP_LOGIC_XOR)
 						{
 							while (!oPendingTokens.empty()
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
@@ -284,7 +284,7 @@ namespace ft
 							}
 						}
 					}
-					oPendingTokens.push(&(*itToken));
+					oPendingTokens.push(&itToken);
 					break;
 				}
 
@@ -292,19 +292,19 @@ namespace ft
 				{
 					if (!(iWaitingStateFlags & E_WAITFOR_VARIABLE))
 					{
-						PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+						PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_EOL_EOF | E_WAITFOR_OPERATOR | E_WAITFOR_IMPLY | E_WAITFOR_CLOSE_PAR;
 
-					AddTokenToRule(&oData.oRule, *itToken);
-					oData.oAtoms.insert(itToken->GetDesc()[0]);
+					AddTokenToRule(&oData.oRule, itToken);
+					oData.oAtoms.insert(itToken.GetDesc()[0]);
 					break;
 				}
 
 			default:
 				{
-					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+					PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 					break;
 				}
 			}
@@ -319,9 +319,9 @@ namespace ft
 
 		OutData& oData = *pData;
 		oData.eDataType = OutData::E_FACTS;
-		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
+		for (const Token& itToken : oTokens)
 		{
-			switch (itToken->GetType())
+			switch (itToken.GetType())
 			{
 			case Token::E_EOF:
 			case Token::E_EOL:
@@ -330,13 +330,13 @@ namespace ft
 
 			case Token::E_VARIABLE:
 				{
-					oData.oAtoms.insert(itToken->GetDesc()[0]);
+					oData.oAtoms.insert(itToken.GetDesc()[0]);
 					break;
 				}
 
 			default:
 				{
-					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+					PrintUnexpectedTokenError(sLine, itToken.GetDesc());
 					break;
 				}
 			}
@@ -351,9 +351,9 @@ namespace ft
 
 		OutData& oData = *pData;
 		oData.eDataType = OutData::E_QUERIES;
-		for (std::vector<Token>::const_iterator itToken = oTokens.begin(), itEnd = oTokens.end(); itToken != itEnd; ++itToken)
+		for (const Token& itToken : oTokens)
 		{
-			switch (itToken->GetType())
+			switch (itToken.GetType())
 			{
 			case Token::E_EOF:
 			case Token::E_EOL:
@@ -362,13 +362,13 @@ namespace ft
 
 			case Token::E_VARIABLE:
 				{
-					oData.oAtoms.insert(itToken->GetDesc()[0]);
+					oData.oAtoms.insert(itToken.GetDesc()[0]);
 					break;
 				}
 
 			default:
 				{
-					PrintUnexpectedTokenError(sLine, itToken->GetDesc());
+					PrintUnexpectedTokenError(sLine,itToken.GetDesc());
 					break;
 				}
 			}
