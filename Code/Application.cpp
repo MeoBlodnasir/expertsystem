@@ -10,10 +10,8 @@
 #include "LogicOperator.h"
 #include "Proposition.h"
 #include "Parser.h"
+#include "Output.h"
 
-#include "Output.h" // tmp
-
-#include <stack>
 #include <fstream>
 #include <sstream>
 
@@ -78,7 +76,6 @@ namespace ft
 		for (int32 i = 1; i < ac; ++i)
 		{
 			csFilePath = av[i];
-			//csFilePath = "./Assets/test08.txt"; (void)ac; (void)av;
 			FT_COUT << "Fichier " << csFilePath << std::endl;
 			oIFStream.open(csFilePath);
 			if (oIFStream.rdstate() & std::ifstream::failbit)
@@ -94,6 +91,7 @@ namespace ft
 				if (ProcessInputLine(sLine) != FT_OK)
 					continue;
 			}
+			oSStream.clear();
 
 			EvaluatePendingQueries();
 			Flush();
@@ -257,11 +255,11 @@ namespace ft
 		FT_ASSERT(m_xRulesManager != nullptr);
 		FT_ASSERT(m_xInferenceEngine != nullptr);
 
-		FT_COUT << "###################################" << std::endl;
+		FT_COUT << "###################################\n" << std::endl;
 		m_xVariablesManager->PrintVariables();
+		FT_COUT << '\n';
 		m_xRulesManager->PrintRules();
-		FT_COUT << std::endl;
-		FT_COUT << "###################################" << std::endl;
+		FT_COUT << "\n###################################" << std::endl;
 	}
 }
 

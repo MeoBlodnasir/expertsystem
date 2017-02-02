@@ -24,7 +24,7 @@ namespace ft
 
 	void	RulesManager::PrintRules() const
 	{
-		FT_COUT << "RULES MANAGER" << std::endl;
+		FT_COUT << "REGLES" << std::endl;
 		for (const Rule& itRule : m_oRules)
 			FT_COUT << itRule << std::endl;
 	}

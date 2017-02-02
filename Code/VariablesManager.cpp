@@ -38,7 +38,7 @@ namespace ft
 	
 	void			VariablesManager::PrintVariables() const
 	{
-		FT_COUT << "VARIABLES MANAGER" << std::endl;
+		FT_COUT << "VARIABLES" << std::endl;
 
 		if (m_oVariables.size() == 0)
 			FT_COUT << "Aucune variable" << std::endl;
