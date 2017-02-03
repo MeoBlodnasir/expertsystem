@@ -159,8 +159,17 @@ namespace ft
 
 		case Parser::OutData::E_RULE:
 			{
-				if (!m_xRulesManager->AddRule(oParsingData.oRule))
+				try
+				{
+					if (!m_xRulesManager->AddRule(oParsingData.oRule))
+						return FT_FAIL;
+				}
+				catch (RulesManager::ContradictionException& e)
+				{
+					FT_COUT << "Regle " << oParsingData.oRule << " en contradiction avec " << e.oRule << " : regle non ajoutee" << std::endl;
 					return FT_FAIL;
+				}
+				
 				m_xVariablesManager->DeclareVariables(oParsingData.oAtoms.begin(), oParsingData.oAtoms.end());
 				break;
 			}
