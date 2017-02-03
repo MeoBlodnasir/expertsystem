@@ -2,8 +2,6 @@ Bin/
 *.o
 *.obj
 obj
-*.make
-Makefile
 *.swp
 *.sdf
 *.opensdf
