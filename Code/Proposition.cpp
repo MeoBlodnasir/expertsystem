@@ -47,14 +47,19 @@ namespace ft
 		return new Proposition(*this);
 	}
 
-	bool	Proposition::operator == (const Proposition& oProposition) const
+	bool	Proposition::operator == (const ILogicElement& oElem) const 
 	{
-		bool bEquivalent = m_oElements.size() == oProposition.m_oElements.size();
+		const Proposition* pProposition = dynamic_cast<const Proposition*>(&oElem);
+		if (pProposition != nullptr)
+		{
+			bool bEquivalent = m_oElements.size() == pProposition->m_oElements.size();
 
-		for (uint32 i = 0, iCount = m_oElements.size(); bEquivalent && i < iCount; ++i)
-			bEquivalent &= m_oElements[i] == oProposition.m_oElements[i];
+			for (uint32 i = 0, iCount = m_oElements.size(); bEquivalent && i < iCount; ++i)
+				bEquivalent &= *m_oElements[i] == *pProposition->m_oElements[i];
 
-		return bEquivalent;
+			return bEquivalent;
+		}
+		return false;
 	}
 
 	bool	Proposition::Evaluate(const VariablesManager& pVariablesManager) const
@@ -170,6 +175,29 @@ namespace ft
 					xElem = oNew.Duplicate();
 				}
 			}
+		}
+	}
+
+	void	Proposition::DeleteNotPairs()
+	{
+		for (std::vector< SPtr<ILogicElement> >::const_iterator itElem = m_oElements.begin();
+			itElem != m_oElements.end(); )
+		{
+			if (dynamic_cast<OperatorNOT*>((*itElem).Get()) != nullptr
+				&& itElem + 1 != m_oElements.end()
+				&& dynamic_cast<OperatorNOT*>((*(itElem + 1)).Get()) != nullptr)
+			{
+				// A faire dans cet ordre impérativement!
+				// "all iterators, pointers and references to elements before position (or first)
+				// are guaranteed to keep referring to the same elements
+				// they were referring to before the call."
+				m_oElements.erase(itElem + 1);
+				itElem = m_oElements.erase(itElem);
+				if (itElem != m_oElements.begin())
+					--itElem;
+			}
+			else
+				++itElem;
 		}
 	}
 

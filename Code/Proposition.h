@@ -22,16 +22,16 @@ namespace ft
 		// Implémentation de l'interface ILogicElement
 		virtual	std::string		GetDesc() const override;
 		virtual ILogicElement*	Duplicate() const override;
+		virtual bool			operator == (const ILogicElement& oElem) const override;
 
 		// Implémentation de l'interface IProposition
 		virtual bool	Evaluate(const VariablesManager& pVariablesManager) const override;
 		virtual bool	CheckValidity() const override;
 		virtual void	GetAtomsId(AtomIdSet* pIdSet) const override;
 
-		bool			operator == (const Proposition& oProposition) const;
-
 		void			AddElement(const ILogicElement& oElement);
 		void			ReplaceAtom(ILogicElement::AtomId iId, const IProposition& oNew);
+		void			DeleteNotPairs();
 
 		inline const std::vector< SPtr<ILogicElement> >&	GetElements() const		{ return m_oElements; }
 

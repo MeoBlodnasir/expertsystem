@@ -21,7 +21,7 @@ namespace ft
 		return m_oRules.count(iId) > 0;
 	}
 
-	const std::vector<Rule>&	RulesManager::GetRulesThatImply(ILogicElement::AtomId iId) const
+	const RulesManager::RulesSet&	RulesManager::GetRulesThatImply(ILogicElement::AtomId iId) const
 	{
 		return m_oRules.at(iId);
 	}
@@ -34,31 +34,37 @@ namespace ft
 	void	RulesManager::PrintRules() const
 	{
 		FT_COUT << "REGLES" << std::endl;
-		for (const std::pair< ILogicElement::AtomId, std::vector<Rule> >& itRules : m_oRules)
+		for (const std::pair< ILogicElement::AtomId, RulesSet >& itRules : m_oRules)
 		{
 			for (const Rule& itRule : itRules.second)
 				FT_COUT << itRule << std::endl;
 		}
 	}
 
-	bool	RulesManager::AddRule(const Rule& oRule)
+	bool	RulesManager::AddRule(const Rule& oRule, bool bCheckBidirectionnal /*= true*/)
 	{
 		// N'ajoute la règle que si elle est valide.
+		bool bAdd = false;
+
 		if (oRule.CheckComponentsValidity())
 		{
 			if (!oRule.CheckUnacceptedConditions())
 			{
-				ILogicElement::AtomId	iConsequentFirstAtomId;
+				if (bCheckBidirectionnal)
+					DivideBidirectionnalRule(oRule);
 
-				DivideBidirectionnalRule(oRule);
-				iConsequentFirstAtomId = oRule.GetConsequentFirstAtomId();
-				m_oRules[iConsequentFirstAtomId].push_back(oRule);
-				DivideRule(m_oRules[iConsequentFirstAtomId].end() - 1, iConsequentFirstAtomId);
-
-				// Vérifier les contradictions entre règles
-				// ex: a=>b		a=>!b
-
-				return true;
+				if (!DivideRule(oRule))
+				{
+					ILogicElement::AtomId iConsequentFirstAtomId = oRule.GetConsequentFirstAtomId();
+					if (!CheckDuplications(oRule, iConsequentFirstAtomId)
+						&& !CheckContradictions(oRule, iConsequentFirstAtomId))
+					{
+						m_oRules[iConsequentFirstAtomId].push_back(oRule);
+						bAdd = true;
+					}
+				}
+				else
+					bAdd = true;
 			}
 			else
 			{
@@ -70,36 +76,33 @@ namespace ft
 			FT_CERR << "Regle invalide: " << oRule << std::endl;
 		}
 
-		return false;
+		return bAdd;
 	}
 
 	void	RulesManager::DivideBidirectionnalRule(const Rule& oRule)
 	{
 		if (oRule.IsBidirectionnal())
 		{
-			Rule					oNewRule(oRule);
-			ILogicElement::AtomId	iConsequentFirstAtomId;
+			Rule oNewRule(oRule);
 			oNewRule.SetAntecedentProposition(oRule.GetConsequent());
 			oNewRule.SetConsequentProposition(oRule.GetAntecedent());
-			iConsequentFirstAtomId = oNewRule.GetConsequentFirstAtomId();
-			m_oRules[iConsequentFirstAtomId].push_back(oNewRule);
-			DivideRule(m_oRules[iConsequentFirstAtomId].end() - 1, iConsequentFirstAtomId);
+			AddRule(oNewRule, false);
 		}
 	}
 	
-	void	RulesManager::DivideRule(std::vector<Rule>::iterator itRule, ILogicElement::AtomId iVectorKey)
+	bool	RulesManager::DivideRule(const Rule& oRule)
 	{
 		std::vector<Rule>	oNewRules;
 		uint32				iConsequentAtomCount = 0;
 
-		const std::vector< SPtr<ILogicElement> >& oConsequentElements = itRule->GetConsequent().GetElements();
+		const std::vector< SPtr<ILogicElement> >& oConsequentElements = oRule.GetConsequent().GetElements();
 
 		for (std::vector< SPtr<ILogicElement> >::const_iterator itConsequentElement = oConsequentElements.begin(), itEnd = oConsequentElements.end();
 			itConsequentElement != itEnd; ++itConsequentElement)
 		{
 			if ((*itConsequentElement)->GetType() == ILogicElement::E_ATOM)
 			{
-				Rule oNewRule(*itRule);
+				Rule oNewRule(oRule);
 				oNewRule.SetConsequentProposition(Proposition(*dynamic_cast<const Atom*>(itConsequentElement->Get())));
 				if (itConsequentElement + 1 != itEnd)
 				{
@@ -116,14 +119,48 @@ namespace ft
 
 		if (iConsequentAtomCount > 1)
 		{
-			ILogicElement::AtomId iConsequentFirstAtomId;
-
-			m_oRules[iVectorKey].erase(itRule);
 			for (const Rule& itNewRule : oNewRules)
+				AddRule(itNewRule, false);
+		}
+
+		return iConsequentAtomCount > 1;
+	}
+
+	bool	RulesManager::CheckDuplications(const Rule& oRule, ILogicElement::AtomId iVectorKey) const
+	{
+		bool bDuplication = false;
+		if (m_oRules.count(iVectorKey) > 0)
+		{
+			for (const Rule& itRule : m_oRules.at(iVectorKey))
 			{
-				iConsequentFirstAtomId = itNewRule.GetConsequentFirstAtomId();
-				m_oRules[iConsequentFirstAtomId].push_back(itNewRule);
+				if (itRule == oRule)
+				{
+					bDuplication = true;
+					break;
+				}
 			}
 		}
+		return bDuplication;
 	}
+
+	bool	RulesManager::CheckContradictions(const Rule& oRule, ILogicElement::AtomId iVectorKey) const
+	{
+		bool bContradiction = false;
+		if (m_oRules.count(iVectorKey) > 0)
+		{
+			Rule oOppositeRule(oRule);
+			oOppositeRule.AddConsequentElement(OperatorNOT());
+			oOppositeRule.DeleteNotPairs();
+			for (const Rule& itRule : m_oRules.at(iVectorKey))
+			{
+				if (itRule == oOppositeRule)
+				{
+					bContradiction = true;
+					break;
+				}
+			}
+		}
+		return bContradiction;
+	}
+
 }

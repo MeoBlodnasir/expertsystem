@@ -5,29 +5,33 @@
 #include "Rule.h"
 
 #include <map>
+#include <xstddef>
 
 namespace ft
 {
 	class RulesManager : public CountableSPtr
 	{
-		public:
+	public:
 
-			RulesManager();
-			~RulesManager();
+		typedef std::vector<Rule>	RulesSet;
 
-			bool						DoesExistRuleThatImplies(ILogicElement::AtomId iId) const;
-			const std::vector<Rule>&	GetRulesThatImply(ILogicElement::AtomId iId) const;
+		RulesManager();
+		~RulesManager();
 
-			void	Flush();
-			bool	AddRule(const Rule& oRule);
-			void	PrintRules() const;
+		bool			DoesExistRuleThatImplies(ILogicElement::AtomId iId) const;
+		const RulesSet&	GetRulesThatImply(ILogicElement::AtomId iId) const;
 
-		private:
-			
-			std::map< ILogicElement::AtomId, std::vector<Rule> >	m_oRules;
+		void	Flush();
+		bool	AddRule(const Rule& oRule, bool bCheckBidirectionnal = true);
+		void	PrintRules() const;
 
-			void	DivideBidirectionnalRule(const Rule& oRule);
-			void	DivideRule(std::vector<Rule>::iterator itRule, ILogicElement::AtomId iVectorKey);
-			bool	CheckContradictions(ILogicElement::AtomId iVectorKey) const;
+	private:
+
+		std::map<ILogicElement::AtomId, RulesSet>	m_oRules;
+
+		void	DivideBidirectionnalRule(const Rule& oRule);
+		bool	DivideRule(const Rule& oRule);
+		bool	CheckDuplications(const Rule& oRule, ILogicElement::AtomId iVectorKey) const;
+		bool	CheckContradictions(const Rule& oRule, ILogicElement::AtomId iVectorKey) const;
 	};
 }

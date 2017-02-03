@@ -25,6 +25,13 @@ namespace ft
 	{
 	}
 
+	bool	Rule::operator == (const Rule& oRule) const
+	{
+		return m_oAntecedent == oRule.m_oAntecedent
+			/*&& m_bIsBidirectionnal == oRule.m_bIsBidirectionnal*/
+			&& m_oConsequent == oRule.m_oConsequent;
+	}
+
 	ILogicElement::AtomId	Rule::GetConsequentFirstAtomId() const
 	{
 		FT_ASSERT(m_oConsequent.GetElements().size() > 0);
@@ -40,6 +47,12 @@ namespace ft
 	void		Rule::AddConsequentElement(const ILogicElement& oElement)
 	{
 		m_oConsequent.AddElement(oElement);
+	}
+
+	void		Rule::DeleteNotPairs()
+	{
+		m_oAntecedent.DeleteNotPairs();
+		m_oConsequent.DeleteNotPairs();
 	}
 
 	bool		Rule::CheckComponentsValidity() const

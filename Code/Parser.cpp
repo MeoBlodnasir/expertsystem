@@ -226,15 +226,6 @@ namespace ft
 						return FT_FAIL;
 					}
 					iWaitingStateFlags = E_WAITFOR_VARIABLE;
-
-					if (!oPendingTokens.empty())
-					{
-						if (oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT)
-						{
-							AddTokenToRule(&oData.oRule, *oPendingTokens.top());
-							oPendingTokens.pop();
-						}
-					}
 					oPendingTokens.push(&itToken);
 					break;
 				}
@@ -255,8 +246,7 @@ namespace ft
 						if (itToken.GetType() == Token::E_OP_LOGIC_AND)
 						{
 							while (!oPendingTokens.empty()
-								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
-								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND))
+								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT))
 							{
 								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
@@ -266,8 +256,7 @@ namespace ft
 						{
 							while (!oPendingTokens.empty()
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
-								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND
-								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_OR))
+								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND))
 							{
 								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
@@ -278,8 +267,7 @@ namespace ft
 							while (!oPendingTokens.empty()
 								&&	(oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_NOT
 								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_AND
-								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_OR
-								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_XOR))
+								|| oPendingTokens.top()->GetType() == Token::E_OP_LOGIC_OR))
 							{
 								AddTokenToRule(&oData.oRule, *oPendingTokens.top());
 								oPendingTokens.pop();
@@ -311,6 +299,8 @@ namespace ft
 				}
 			}
 		}
+
+		oData.oRule.DeleteNotPairs();
 
 		return FT_OK;
 	}
@@ -390,7 +380,7 @@ namespace ft
 		return FT_OK;
 	}
 
-	void	Parser::PrintUnexpectedTokenError(const std::string& sLine, const std::string& oTokenDesc) const
+	void		Parser::PrintUnexpectedTokenError(const std::string& sLine, const std::string& oTokenDesc) const
 	{
 		FT_CERR << "Erreur ligne: " << sLine << std::endl;
 		FT_CERR << "Erreur de syntaxe: Token " << oTokenDesc << " inattendu" << std::endl;

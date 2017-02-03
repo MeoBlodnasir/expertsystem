@@ -33,6 +33,16 @@ namespace ft
 		return new Atom(*this);
 	}
 
+	bool	Atom::operator == (const ILogicElement& oElem) const 
+	{
+		const Atom* pAtom = dynamic_cast<const Atom*>(&oElem);
+		if (pAtom != nullptr)
+		{
+			return m_iId == pAtom->m_iId;
+		}
+		return false;
+	}
+
 	bool	Atom::Evaluate(const VariablesManager& oVariablesManager) const
 	{
 		return oVariablesManager.GetVariable(m_iId)->GetState();

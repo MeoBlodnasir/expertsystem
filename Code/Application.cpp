@@ -95,6 +95,8 @@ namespace ft
 			}
 
 			EvaluatePendingQueries();
+			m_iOptions = E_OPT_NONE;
+			m_xInferenceEngine->SetVerbose(false);
 			Flush();
 		}
 

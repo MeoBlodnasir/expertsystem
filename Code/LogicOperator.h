@@ -79,10 +79,9 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override				{ return "!"; }
 		inline virtual	ILogicElement*	Duplicate() const override				{ return new OperatorNOT(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorNOT*>(&oElem) != nullptr; }
 		// implémentation interface AUnaryOperator
 		inline virtual	bool			Evaluate(bool b) const override			{ return !b; }
-
-		inline			bool			operator == (const OperatorNOT&) const	{ return true; }
 	};
 
 	// Et
@@ -103,10 +102,9 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override					{ return "+"; }
 		inline virtual	ILogicElement*	Duplicate() const override					{ return new OperatorAND(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorAND*>(&oElem) != nullptr; }
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 && b2; }
-
-		inline			bool			operator == (const OperatorAND&) const		{ return true; }
 	};
 
 	// Ou
@@ -127,10 +125,9 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override					{ return "|"; }
 		inline virtual	ILogicElement*	Duplicate() const override					{ return new OperatorOR(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorOR*>(&oElem) != nullptr; }
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 || b2; }
-
-		inline			bool			operator == (const OperatorOR&) const		{ return true; }
 	};
 
 	// Ou exclusif
@@ -151,10 +148,9 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override					{ return "^"; }
 		inline virtual	ILogicElement*	Duplicate() const override					{ return new OperatorXOR(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorXOR*>(&oElem) != nullptr; }
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 ^ b2; }
-
-		inline			bool			operator == (const OperatorXOR&) const		{ return true; }
 	};
 
 	// Implique
@@ -175,10 +171,9 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override					{ return "=>"; }
 		inline virtual	ILogicElement*	Duplicate() const override					{ return new OperatorIMP(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorIMP*>(&oElem) != nullptr; }
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return (!b1) || b2; }
-
-		inline			bool			operator == (const OperatorIMP&) const		{ return true; }
 	};
 
 	// Equivalence (bidirectionnal implication)
@@ -199,9 +194,8 @@ namespace ft
 		// implémentation interface ILogicElement
 		inline virtual	std::string		GetDesc() const override					{ return "<=>"; }
 		inline virtual	ILogicElement*	Duplicate() const override					{ return new OperatorBIMP(); }
+		inline virtual	bool			operator == (const ILogicElement& oElem) const override		{ return dynamic_cast<const OperatorBIMP*>(&oElem) != nullptr; }
 		// implémentation interface ABinaryOperator
 		inline virtual	bool			Evaluate(bool b1, bool b2) const override	{ return b1 == b2; }
-
-		inline			bool			operator == (const OperatorBIMP&) const		{ return true; }
 	};
 }

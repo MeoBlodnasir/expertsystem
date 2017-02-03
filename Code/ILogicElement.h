@@ -35,7 +35,6 @@ namespace ft
 		virtual	std::string		GetDesc() const = 0;
 		virtual	ILogicElement*	Duplicate() const = 0;
 
-		template <typename T>
-		inline bool				operator == (const T&) const	{ return false; }
+		virtual bool			operator == (const ILogicElement&) const = 0;
 	};
 }

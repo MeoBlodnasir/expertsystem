@@ -14,6 +14,8 @@ namespace ft
 		Rule(const Rule& oRule);
 		~Rule();
 
+		bool	operator == (const Rule& oRule) const;
+
 		inline const Proposition&	GetConsequent() const		{ return m_oConsequent; }
 		inline const Proposition&	GetAntecedent() const		{ return m_oAntecedent; }
 		ILogicElement::AtomId		GetConsequentFirstAtomId() const;
@@ -27,6 +29,7 @@ namespace ft
 		inline void		SetBidirectionnal(bool bValue)			{ m_bIsBidirectionnal = bValue; }
 		inline bool		IsBidirectionnal() const				{ return m_bIsBidirectionnal; }
 
+		void			DeleteNotPairs();
 		bool			CheckComponentsValidity() const;
 		bool			CheckUnacceptedConditions() const;
 	private:

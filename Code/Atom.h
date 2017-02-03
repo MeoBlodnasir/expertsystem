@@ -22,6 +22,7 @@ namespace ft
 		inline	virtual EType			GetType() const override		{ return E_ATOM; }
 				virtual	std::string		GetDesc() const override		{ return std::string(1, m_iId); }
 				virtual	ILogicElement*	Duplicate() const override;
+				virtual bool			operator == (const ILogicElement& oElem) const override;
 
 		// implémentation interface IProposition
 				virtual bool	Evaluate(const VariablesManager& oVariablesManager) const override;
@@ -30,8 +31,6 @@ namespace ft
 
 		inline	Id				GetId() const							{ return m_iId; }
 		inline	virtual void	SetId(Id iId)							{ m_iId = iId; }
-
-		inline			bool	operator == (const Atom& oAtom) const	{ return m_iId == oAtom.m_iId; }
 
 	protected:
 
