@@ -14,6 +14,13 @@ namespace ft
 
 		typedef std::vector<Rule>	RulesSet;
 
+		class ContradictionException : public std::exception
+		{
+		public:
+			ContradictionException(const Rule& _oRule = Rule()) : oRule(_oRule) {}
+			Rule oRule;
+		};
+
 		RulesManager();
 		~RulesManager();
 

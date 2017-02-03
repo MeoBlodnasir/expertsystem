@@ -156,6 +156,7 @@ namespace ft
 				if (itRule == oOppositeRule)
 				{
 					bContradiction = true;
+					throw ContradictionException(itRule);
 					break;
 				}
 			}
