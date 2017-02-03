@@ -1,0 +1,23 @@
+# Cas d'erreur
+
+# Regles
+A + B + => C 		# Erreur de syntaxe
+AB + B  => C 		# Erreur de syntaxe
+A + B + C 			# Erreur de syntaxe
+=> C				# Erreur de syntaxe
+A       => C | B  	# Non traite
+A       => C ^ B  	# Non traite
+A       => !(A + B)	# Non traite
+A       => !B
+A       => B 		# Contradiction avec la precedente
+C       => B 		# Contradiction a l'execution
+
+# Faits
+=AC
+
+print
+verbose
+
+# Requetes
+#000
+?ABC

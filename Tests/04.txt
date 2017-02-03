@@ -1,10 +1,9 @@
-# Plusieurs regles en cascade
+# Operateurs + en consequence
 
 # Regles
-!A                => B
-A + B             => C
-B | C             => D
-A ^ B + C | A + D => E
+!A    => B + C
+A + G => D + E + F
+B | C => G
 
 # Faits
 =AB
@@ -13,5 +12,5 @@ print
 verbose
 
 # Requetes
-#1110
-?BCDE
+#101111
+?BCDEFG

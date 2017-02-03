@@ -308,6 +308,7 @@ namespace ft
 				catch (InferenceEngine::ContradictionException&)
 				{
 					FT_COUT << "Contradiction dans les resultats au moment de l'evaluation" << std::endl;
+					FT_COUT << "Evaluation de " << itQuery << " : INDETERMINE" << std::endl;
 				}
 			}
 			m_oPendingQueries.clear();

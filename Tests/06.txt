@@ -1,0 +1,22 @@
+# Bonus
+
+# Regles
+Z               => !Y
+X ^ W           => V + (!U + T)
+
+A 		       <=> B
+C + !D 	       <=> E
+F + (!G + !!H) <=> !I
+H              <=> C | E 	# non traitee
+F ^ A          <=> C 		# non traitee
+!(B + G)       <=> F 		# non traitee
+
+# Faits
+=ACU
+
+print
+#verbose
+
+# Requetes
+#100100000 0100000
+?ABCDEFGHI TUVWXYZ

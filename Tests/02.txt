@@ -4,7 +4,7 @@
 # Regles
  A |   !B  + C   ^ D => E
 (A | ((!B) + C)) ^ D => F
-!(A + B) | !C ^ !D   => G
+!(A | B) + !C ^ !D   => G
 !!(!!!!A + !!!B)     => H
 
 # Faits

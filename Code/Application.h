@@ -6,6 +6,7 @@
 #include "Rule.h"
 
 #include <vector>
+#include <set>
 
 namespace ft
 {
@@ -45,13 +46,13 @@ namespace ft
 			E_OPT_VERBOSE	= (1 << 0)
 		};
 
-		bool					m_bQuitApplication;
-		ECommand				m_ePendingCommand;
-		uint32					m_iOptions;
-		SPtr<VariablesManager>	m_xVariablesManager;
-		SPtr<RulesManager>		m_xRulesManager;
-		SPtr<InferenceEngine>	m_xInferenceEngine;
-		AtomIdSet				m_oPendingQueries;
+		bool							m_bQuitApplication;
+		ECommand						m_ePendingCommand;
+		uint32							m_iOptions;
+		SPtr<VariablesManager>			m_xVariablesManager;
+		SPtr<RulesManager>				m_xRulesManager;
+		SPtr<InferenceEngine>			m_xInferenceEngine;
+		std::set<ILogicElement::AtomId>	m_oPendingQueries;
 
 		EErrorCode	ReadInputFiles(const int32 ac, const char* const* av);
 		EErrorCode	AskUserInput();
