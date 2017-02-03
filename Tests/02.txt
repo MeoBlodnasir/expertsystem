@@ -1,0 +1,18 @@
+# Commandes (bonus)
+# Plusieurs operateurs differents, priorites, parentheses, regles non verifiees a l'execution
+
+# Regles
+ A |   !B  + C   ^ D => E
+(A | ((!B) + C)) ^ D => F
+!(A + B) | !C ^ !D   => G
+!!(!!!!A + !!!B)     => H
+
+# Faits
+= ABCD G
+
+print
+verbose
+
+# Requetes
+#0010
+?EFGH

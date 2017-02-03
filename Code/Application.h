@@ -21,10 +21,10 @@ namespace ft
 		Application();
 		~Application();
 
-		EErrorCode	Init(const int32 ac, const char* const* av);
+		EErrorCode	Init();
 		EErrorCode	Destroy();
 
-		EErrorCode	Run();
+		EErrorCode	Run(const int32 ac, const char* const* av);
 
 	private:
 

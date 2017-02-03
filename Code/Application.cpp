@@ -2,7 +2,6 @@
 #include "Application.h"
 
 #include "Core.h"
-#include "File.h"
 #include "Lexer.h"
 #include "VariablesManager.h"
 #include "RulesManager.h"
@@ -10,6 +9,7 @@
 #include "LogicOperator.h"
 #include "Proposition.h"
 #include "Parser.h"
+#include "StringUtils.h"
 #include "Output.h"
 
 #include <fstream>
@@ -31,13 +31,11 @@ namespace ft
 	{
 	}
 
-	EErrorCode	Application::Init(const int32 ac, const char* const* av)
+	EErrorCode	Application::Init()
 	{
 		m_xVariablesManager	= new VariablesManager();
 		m_xRulesManager		= new RulesManager();
 		m_xInferenceEngine	= new InferenceEngine();
-
-		FT_TEST_OK(ReadInputFiles(ac, av));
 
 		return FT_OK;
 	}
@@ -51,14 +49,20 @@ namespace ft
 		return FT_OK;
 	}
 
-	EErrorCode	Application::Run()
+	EErrorCode	Application::Run(const int32 ac, const char* const* av)
 	{
-		// Vérifie que c'est initialisé
 		FT_ASSERT(m_xVariablesManager != nullptr);
 		FT_ASSERT(m_xRulesManager != nullptr);
 		FT_ASSERT(m_xInferenceEngine != nullptr);
 
-		FT_TEST_OK(AskUserInput());
+		if (ac > 1)
+		{
+			FT_TEST_OK(ReadInputFiles(ac, av));
+		}
+		else
+		{
+			FT_TEST_OK(AskUserInput());
+		}
 
 		return FT_OK;
 	}
@@ -90,6 +94,7 @@ namespace ft
 
 			while (std::getline(oSStream, sLine))
 			{
+				TrimWhiteSpaces(sLine);
 				if (ProcessInputLine(sLine) != FT_OK)
 					continue;
 			}
@@ -119,6 +124,7 @@ namespace ft
 			std::getline(std::cin, sLine);
 			if (std::cin.rdstate() & std::ifstream::failbit)
 				break;
+			TrimWhiteSpaces(sLine);
 			if (ProcessInputLine(sLine) != FT_OK)
 				continue;
 
@@ -292,7 +298,7 @@ namespace ft
 				}
 				catch (InferenceEngine::ContradictionException&)
 				{
-					FT_COUT << "Contradiction dans les résultats au moment de l'évaluation" << std::endl;
+					FT_COUT << "Contradiction dans les resultats au moment de l'evaluation" << std::endl;
 				}
 			}
 			m_oPendingQueries.clear();

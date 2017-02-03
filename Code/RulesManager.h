@@ -5,7 +5,6 @@
 #include "Rule.h"
 
 #include <map>
-#include <xstddef>
 
 namespace ft
 {

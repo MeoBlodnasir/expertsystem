@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 namespace ft
 {
 	inline bool	IsWhiteSpace(char c)
@@ -21,4 +23,6 @@ namespace ft
 	{
 		return IsDigit(c) || c == '.' || c == '+' || c == '-';
 	}
+
+	std::string&	TrimWhiteSpaces(std::string& s);
 }

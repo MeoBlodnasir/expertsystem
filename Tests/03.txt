@@ -1,0 +1,17 @@
+# Plusieurs regles en cascade
+
+# Regles
+!A                => B
+A + B             => C
+B | C             => D
+A ^ B + C | A + D => E
+
+# Faits
+=AB
+
+print
+verbose
+
+# Requetes
+#1110
+?BCDE

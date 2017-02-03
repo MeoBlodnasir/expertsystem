@@ -1,0 +1,14 @@
+# Plusieurs regles, operateurs differents, plusieurs faits, plusieurs requetes
+
+# Regles
+!B    => C
+A + B => D
+A | B => E
+A ^ B => F
+
+# Faits
+=AB
+
+# Requetes
+#0110
+?CDEF

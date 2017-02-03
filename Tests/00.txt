@@ -1,0 +1,12 @@
+# Lecture: regles, faits, requetes, commentaires
+# Evaluation simple
+
+# Regles
+A => B
+
+# Faits
+=A
+
+# Requetes
+#1
+?B

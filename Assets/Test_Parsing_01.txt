@@ -1,6 +1,12 @@
+verbose
+
 #Commentairetiti
-A + D | (B^C)=> E#Commentaire tutu
-!B<=>C
-#Commentaire toto  
+
+A + D | (B^C)=> E#Commentaire tutu     
+!B<=>C  
+#Commentaire toto     
+
 =AC
+print
 ?B#Commentaitaire
+#commentairrrrr
